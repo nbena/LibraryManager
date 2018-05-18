@@ -122,7 +122,7 @@ public class DbManager {
 	
 	public void updateLoan(Loan loan) throws SQLException{
 		
-		String query = "update loan set start=?, end=?, renew_available=?, restitution_date=?";
+		String query = "update loan set start_date=?, end_date=?, renew_available=?, restitution_date=?";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -425,7 +425,7 @@ public class DbManager {
 	}
 	
 	public void endConsultation(Consultation consultation)throws SQLException{
-		String query = "update consultation set end=current_time where id=?";
+		String query = "update consultation set end_date=current_time where id=?";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		

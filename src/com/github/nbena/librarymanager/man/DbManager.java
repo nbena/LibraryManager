@@ -149,7 +149,7 @@ public class DbManager {
 	
 	public SeatReservation saveSeatReservation(SeatReservation reservation) throws SQLException{
 		
-		String query = "insert into seat_reservation (userid, seat_number, table_number, date) values (?,?,?,?)";
+		String query = "insert into seat_reservation (userid, seat_number, table_number, reservation_date) values (?,?,?,?)";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -193,7 +193,7 @@ public class DbManager {
 	
 	public ConsultationReservation saveConsultationReservation(ConsultationReservation reservation) throws SQLException{
 				
-		String query = "insert into consultation_reservation (userid, copyid, date, seat_reservation) values (?,?,?,?)";
+		String query = "insert into consultation_reservation (userid, copyid, reservation_date, seat_reservation) values (?,?,?,?)";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -301,8 +301,8 @@ public class DbManager {
 	
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
 		
-		String query = "select id, copyid, title, authors, year, topic, phouse, timestamp "+
-		"from copy as c join loan_reservation as l on c.id = l.copyid where userid=? order by timestamp desc";
+		String query = "select id, copyid, title, authors, year, topic, phouse, time_stamp "+
+		"from copy as c join loan_reservation as l on c.id = l.copyid where userid=? order by time_stamp desc";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -356,7 +356,7 @@ public class DbManager {
 	}
 	
 	public SeatReservation getSeatReservationOrNothing(InternalUser user, OffsetDateTime date)throws SQLException{
-		String query = "select id, seat_number, table_number, timestamp, reservation_date from seat_reservation where userid=? and date=?";
+		String query = "select id, seat_number, table_number, time_stamp, reservation_date from seat_reservation where userid=? and date=?";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -376,9 +376,9 @@ public class DbManager {
 	}
 	
 	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, OffsetDateTime date)throws SQLException{
-		String query = "select cr.id, copyid, title, authors, year, topic, phouse, seat_number, table_number, free, timestamp, reservation_date "+
-						"from book join copy on book.id = copy.id "+
-						"join consultation_reservation as cr on copy.id = consultation.copyid "+
+		String query = "select cr.id, copyid, title, authors, year, topic, phouse, seat_number, table_number, free, time_stamp, reservation_date "+
+						"from book join lm_copy on book.id = lm_copy.id "+
+						"join consultation_reservation as cr on lm_copy.id = consultation.copyid "+
 						"join user on cr.userid = user.id "+
 						"user.id=? and book.id=? and reservation_date = ?;";
 		

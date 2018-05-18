@@ -34,5 +34,16 @@ public class CopyForConsultation extends Copy {
 	public void setInConsultation(boolean inConsultation) {
 		this.inConsultation = inConsultation;
 	}
+	
+	public static CopyForConsultation create(Copy c){
+		CopyForConsultation copy = new CopyForConsultation(
+				c.getTitle(),
+				c.getAuthors(),
+				c.getYearOfPublishing(),
+				c.getMainTopic(),
+				c.getPublishingHouse()
+				);
+		return copy;
+	}
 
 }

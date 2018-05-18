@@ -22,6 +22,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.LinkedList;
@@ -31,6 +32,7 @@ import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
+import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
@@ -78,7 +80,7 @@ public class DbManager {
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
 		pstmt.setString(0, book.getTitle());
-		pstmt.setString(1, null);
+		pstmt.setArray(1, connection.createArrayOf("String", book.getAuthors()));
 		pstmt.setInt(2, book.getYearsOfPublishing());
 		pstmt.setString(3, book.getMainTopic());
 		pstmt.setString(4, book.getPublishingHouse());
@@ -136,7 +138,7 @@ public class DbManager {
 		pstmt.setInt(0, reservation.getUser().getID());
 		pstmt.setInt(1, reservation.getSeat().getNumber());
 		pstmt.setInt(2, reservation.getSeat().getTableNumber());
-		pstmt.setString(3, reservation.getReservationDate().toString());
+		pstmt.setObject(3, reservation.getReservationDate());
 		
 		pstmt.execute();
 		
@@ -167,7 +169,7 @@ public class DbManager {
 		
 		pstmt.setInt(0, reservation.getUser().getID());
 		pstmt.setInt(1, reservation.getCopy().getID());
-		pstmt.setString(2, reservation.getReservationDate().toString());
+		pstmt.setObject(2, reservation.getReservationDate());
 		pstmt.setInt(3, 0);
 		
 		pstmt.execute();
@@ -235,9 +237,35 @@ public class DbManager {
 		return null;
 	}
 	
+	private Copy getCopyFrom(ResultSet rs, int startingIndex) throws SQLException{
+		
+		int copyid = rs.getInt(startingIndex);
+		String title = rs.getString(startingIndex + 1);
+		String [] authors = (String[]) rs.getArray(startingIndex + 2).getArray();
+		int year = rs.getInt(startingIndex + 3);
+		String topic = rs.getString(startingIndex + 4);
+		String phouse = rs.getString(startingIndex + 5);
+		
+		Copy copy = new Copy(title, authors, year, topic, phouse);
+		copy.setID(copyid);
+		
+		return copy;
+		
+	}
+	
+	private Seat getSeatFrom(ResultSet rs, int startingIndex) throws SQLException{
+		
+		int seatNumber = rs.getInt(startingIndex );
+		int tableNumber = rs.getInt(startingIndex + 1);
+		boolean free = rs.getBoolean(startingIndex + 2);
+		
+		Seat seat = new Seat(seatNumber, tableNumber, free);
+		return seat;
+	}
+	
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
 		
-		String query = "select copyid, title, authors, year, topic, phouse, timestamp "+
+		String query = "select id, copyid, title, authors, year, topic, phouse, timestamp "+
 		"from copy as c join loan_reservation as l on c.id = l.copyid where userid=? order by timestamp desc";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
@@ -250,18 +278,20 @@ public class DbManager {
 		while (rs.next()){
 			
 			int id = rs.getInt(0);
-			String title = rs.getString(1);
-			String notParsedAuthors = rs.getString(2);
-			int year = rs.getInt(3);
-			String topic = rs.getString(4);
-			String phouse = rs.getString(5);
+//			int copyid = rs.getInt(1);
+//			String title = rs.getString(1);
+//			int year = rs.getInt(3);
+//			String topic = rs.getString(4);
+//			String phouse = rs.getString(5);
 			
 			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(6);
 			
-			String[] authors = notParsedAuthors.split(";");
+//			String[] authors = (String[]) rs.getArray(2).getArray();
+//			
+//			Copy copy = new Copy(title, authors, year, topic, phouse);
+//			copy.setID(copyid);
 			
-			Copy copy = new Copy(title, authors, year, topic, phouse);
-			copy.setID(id);
+			Copy copy = getCopyFrom(rs, 1);
 			
 			LoanReservation reservation = new LoanReservation(id, timestamp, user, copy);
 			reservation.setTimestamp(timestamp);
@@ -289,7 +319,7 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
-	public SeatReservation getSeatReservationOrNothing(InternalUser user, LocalDateTime date)throws SQLException{
+	public SeatReservation getSeatReservationOrNothing(InternalUser user, OffsetDateTime date)throws SQLException{
 		String query = "select id, seat_number, table_number, timestamp, reservation_date from seat_reservation where userid=? and date=?";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
@@ -302,37 +332,68 @@ public class DbManager {
 		if (rs.next()){
 			int id = rs.getInt(0);
 			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(3);
-			OffsetDateTime reservationDate = (OffsetDateTime) rs.getObject(4);
+			LocalDate reservationDate = (LocalDate) rs.getObject(4);
 			Seat seat = new Seat(rs.getInt(1), rs.getInt(2), false);
 			reservation = new SeatReservation(id, timestamp, reservationDate, user, seat);
 		}
 		return reservation;
 	}
 	
-	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDateTime date)throws SQLException{
-		return null;
-	}
-	
-	public void startConsultation(Consultation consultation)throws SQLException{
-		String query = "";
+	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, OffsetDateTime date)throws SQLException{
+		String query = "select cr.id, copyid, title, authors, year, topic, phouse, seat_number, table_number, free, timestamp, reservation_date "+
+						"from book join copy on book.id = copy.id "+
+						"join consultation_reservation as cr on copy.id = consultation.copyid "+
+						"join user on cr.userid = user.id "+
+						"user.id=? and book.id=? and reservation_date = ?;";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
-		pstmt.setString(0, );
-		pstmt.setString(1, );
-		pstmt.setString(2, );
+		pstmt.setInt(0, user.getID());
+		pstmt.setInt(1, book.getID());
+		pstmt.setObject(2, date);
 		
-		pstmt.execute();
+		ResultSet rs = pstmt.executeQuery();
+		ConsultationReservation reservation = null;
+		if (rs.next()){
+			int id = rs.getInt(0);
+			
+			Copy copy = getCopyFrom(rs, 1);
+			CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
+			Seat seat = getSeatFrom(rs, 6);
+			
+			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(9);
+			LocalDate reservationDate = (LocalDate) rs.getObject(10);
+			
+			reservation = new ConsultationReservation(id, user, copyForConsultation, seat, reservationDate, timestamp);
+		}
+		return reservation;
+		
+	}
+	
+	public Consultation startConsultation(Consultation consultation)throws SQLException{
+		String query = "insert into consultation (userid, copyid) values (?,?) returning id";
+		
+		PreparedStatement pstmt = connection.prepareStatement(query);
+		
+		pstmt.setInt(0, consultation.getUser().getID());
+		pstmt.setInt(1, consultation.getCopy().getID());
+		
+		ResultSet rs = pstmt.executeQuery();
+		if (rs.next()){
+			int id = rs.getInt(0);
+			consultation.setID(id);
+		}else{
+			throw new SQLException("Cannot return id");
+		}
+		return consultation;
 	}
 	
 	public void endConsultation(Consultation consultation)throws SQLException{
-		String query = "";
+		String query = "update consultation set end=current_time where id=?";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
-		pstmt.setString(0, );
-		pstmt.setString(1, );
-		pstmt.setString(2, );
+		pstmt.setInt(0, consultation.getID());
 		
 		pstmt.execute();
 	}

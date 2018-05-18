@@ -17,17 +17,18 @@
 
 package com.github.nbena.librarymanager.core;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 public class SeatReservation {
 	
 	private int ID;
 	private OffsetDateTime timestamp;
-	private OffsetDateTime reservationDate;
+	private LocalDate reservationDate;
 	private InternalUser user;
 	private Seat seat;
 
-	public SeatReservation(int iD, OffsetDateTime timestamp, OffsetDateTime reservationDate, InternalUser user,
+	public SeatReservation(int iD, OffsetDateTime timestamp, LocalDate reservationDate, InternalUser user,
 			Seat seat) {
 		ID = iD;
 		this.timestamp = timestamp;
@@ -36,7 +37,7 @@ public class SeatReservation {
 		this.seat = seat;
 	}
 
-	public SeatReservation(OffsetDateTime reservationDate, InternalUser user, Seat seat) {
+	public SeatReservation(LocalDate reservationDate, InternalUser user, Seat seat) {
 		this.timestamp = OffsetDateTime.now();
 		this.reservationDate = reservationDate;
 		this.user = user;
@@ -51,11 +52,11 @@ public class SeatReservation {
 		this.timestamp = timestamp;
 	}
 
-	public OffsetDateTime getReservationDate() {
+	public LocalDate getReservationDate() {
 		return reservationDate;
 	}
 
-	public void setReservationDate(OffsetDateTime reservationDate) {
+	public void setReservationDate(LocalDate reservationDate) {
 		this.reservationDate = reservationDate;
 	}
 

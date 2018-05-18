@@ -18,7 +18,8 @@
 
 package com.github.nbena.librarymanager.core;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class ConsultationReservation {
 	
@@ -28,16 +29,27 @@ public class ConsultationReservation {
 	private CopyForConsultation copy;
 	private Seat seat;
 	
-	private LocalDateTime reservationDate;
-	private LocalDateTime timestamp;
+	private LocalDate reservationDate;
+	private OffsetDateTime timestamp;
+
 	
-	public ConsultationReservation(InternalUser user, CopyForConsultation copy, Seat seat,
-			LocalDateTime reservationDate) {
+	public ConsultationReservation(int iD, InternalUser user, CopyForConsultation copy, Seat seat,
+			LocalDate reservationDate, OffsetDateTime timestamp) {
+		ID = iD;
 		this.user = user;
 		this.copy = copy;
 		this.seat = seat;
 		this.reservationDate = reservationDate;
-		this.timestamp = LocalDateTime.now();
+		this.timestamp = timestamp;
+	}
+
+	public ConsultationReservation(InternalUser user, CopyForConsultation copy, Seat seat,
+			LocalDate reservationDate) {
+		this.user = user;
+		this.copy = copy;
+		this.seat = seat;
+		this.reservationDate = reservationDate;
+		this.timestamp = OffsetDateTime.now();
 	}
 
 	public InternalUser getUser() {
@@ -58,13 +70,13 @@ public class ConsultationReservation {
 	public void setSeat(Seat seat) {
 		this.seat = seat;
 	}
-	public LocalDateTime getReservationDate() {
+	public LocalDate getReservationDate() {
 		return reservationDate;
 	}
-	public void setReservationDate(LocalDateTime reservationDate) {
+	public void setReservationDate(LocalDate reservationDate) {
 		this.reservationDate = reservationDate;
 	}
-	public LocalDateTime getTimestamp() {
+	public OffsetDateTime getTimestamp() {
 		return timestamp;
 	}
 
@@ -76,7 +88,7 @@ public class ConsultationReservation {
 		ID = iD;
 	}
 
-	public void setTimestamp(LocalDateTime timestamp) {
+	public void setTimestamp(OffsetDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
 

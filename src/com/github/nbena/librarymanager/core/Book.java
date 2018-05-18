@@ -19,17 +19,17 @@ package com.github.nbena.librarymanager.core;
 
 public class Book {
 	
-	private String title;
+	protected String title;
 	private int ID;
-	private String [] authors;
-	private int yearsOfPublishing;
-	private String mainTopic;
-	public String publishingHouse;
+	protected String [] authors;
+	protected int yearOfPublishing;
+	protected String mainTopic;
+	protected String publishingHouse;
 	
-	public Book(String title, String[] authors, int yearsOfPublishing, String mainTopic, String publishingHouse) {
+	public Book(String title, String[] authors, int yearOfPublishing, String mainTopic, String publishingHouse) {
 		this.title = title;
 		this.authors = authors;
-		this.yearsOfPublishing = yearsOfPublishing;
+		this.yearOfPublishing = yearOfPublishing;
 		this.mainTopic = mainTopic;
 		this.publishingHouse = publishingHouse;
 	}
@@ -46,11 +46,11 @@ public class Book {
 	public void setAuthors(String[] authors) {
 		this.authors = authors;
 	}
-	public int getYearsOfPublishing() {
-		return yearsOfPublishing;
+	public int getYearOfPublishing() {
+		return yearOfPublishing;
 	}
-	public void setYearsOfPublishing(int yearsOfPublishing) {
-		this.yearsOfPublishing = yearsOfPublishing;
+	public void setYearOfPublishing(int yearOfPublishing) {
+		this.yearOfPublishing = yearOfPublishing;
 	}
 	public String getMainTopic() {
 		return mainTopic;

@@ -54,9 +54,9 @@ public class DbManager {
 		connection.close();
 	}
 	
-	public void saveUser(User user) throws SQLException{
+	public User saveUser(User user) throws SQLException{
 		
-		String query = "insert into user (name, surname, email, password, internal) values (?,?,?,?)";
+		String query = "insert into user (name, surname, email, password, internal) values (?,?,?,?) returning id";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -68,30 +68,41 @@ public class DbManager {
 		
 		ResultSet rs = pstmt.executeQuery();
 		
-		rs.next();
-		
-		// get id
+		if (rs.next()){
+			int id = rs.getInt(0);
+			user.setID(id);
+		}else{
+			throw new SQLException("User: cannot return id");
+		}
+
+		return user;
 	}
 	
-	public void addBook(Book book) throws SQLException{
+	public Book addBook(Book book) throws SQLException{
 		
-		String query = "insert into book (title, authors, year, topic, phouse) values (?,?,?,?,?)";
+		String query = "insert into book (title, authors, year, topic, phouse) values (?,?,?,?,?) returning id";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
 		pstmt.setString(0, book.getTitle());
 		pstmt.setArray(1, connection.createArrayOf("String", book.getAuthors()));
-		pstmt.setInt(2, book.getYearsOfPublishing());
+		pstmt.setInt(2, book.getYearOfPublishing());
 		pstmt.setString(3, book.getMainTopic());
 		pstmt.setString(4, book.getPublishingHouse());
 		
-		pstmt.execute();
-		
+		ResultSet rs = pstmt.executeQuery();
+		if (rs.next()){
+			int id = rs.getInt(0);
+			book.setID(id);
+		}else{
+			throw new SQLException("Book: cannot return id");
+		}
+		return book;
 	}
 	
-	public void saveLoan(Loan loan)  throws SQLException{
+	public Loan saveLoan(Loan loan) throws SQLException{
 		
-		String query = "insert into loan (userid, copyid )  values (?,?)";
+		String query = "insert into loan (userid, copyid )  values (?,?) returning id";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -99,7 +110,14 @@ public class DbManager {
 		pstmt.setInt(1, loan.getCopy().getID());
 		
 		
-		pstmt.execute();
+		ResultSet rs = pstmt.executeQuery();
+		if (rs.next()){
+			int id = rs.getInt(0);
+			loan.setID(id);
+		}else{
+			throw new SQLException("Loan: cannot return id");
+		}
+		return loan;
 	}
 	
 	public void updateLoan(Loan loan) throws SQLException{
@@ -140,7 +158,13 @@ public class DbManager {
 		pstmt.setInt(2, reservation.getSeat().getTableNumber());
 		pstmt.setObject(3, reservation.getReservationDate());
 		
-		pstmt.execute();
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next()){
+			int id = rs.getInt(0);
+			reservation.setID(id);
+		}else{
+			throw new SQLException("SeatReservation: cannot get id");
+		}
 		
 		return reservation;
 		
@@ -155,7 +179,13 @@ public class DbManager {
 		pstmt.setInt(0, reservation.getUser().getID());
 		pstmt.setInt(1, reservation.getCopy().getID());
 		
-		pstmt.execute();
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next()){
+			int id = rs.getInt(0);
+			reservation.setID(id);
+		}else{
+			throw new SQLException("LoanReservation: cannot get id");
+		}
 		
 		return reservation;
 		
@@ -172,7 +202,13 @@ public class DbManager {
 		pstmt.setObject(2, reservation.getReservationDate());
 		pstmt.setInt(3, 0);
 		
-		pstmt.execute();
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next()){
+			int id = rs.getInt(0);
+			reservation.setID(id);
+		}else{
+			throw new SQLException("ConsultationReservation: cannot get id");
+		}
 		
 		return reservation;
 		

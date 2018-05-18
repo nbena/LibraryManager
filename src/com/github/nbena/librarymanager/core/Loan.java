@@ -17,31 +17,80 @@
 
 package com.github.nbena.librarymanager.core;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Loan {
 	
 	private User user;
 	private Copy copy;
-	private LocalDateTime start;
-	private LocalDateTime end;
+	private LocalDate start;
+	private LocalDate end;
 	private boolean active;
-	private LocalDateTime restitutionDate;
+	private LocalDate restitutionDate;
 	private boolean renewAvailable;
-	
-	public static final int ONE_LOAN_MAX_DURATION_MONTH = 4;
+	int ID;
 
-	public Loan(User user, Copy copy, boolean setOthers) {
+	public Loan(int ID, User user, Copy copy, LocalDate start, LocalDate end, boolean active, LocalDate restitutionDate,
+			boolean renewAvailable) {
 		this.user = user;
 		this.copy = copy;
-		
-		if (setOthers){
-			this.start = LocalDateTime.now();
-			this.end = this.start.plusMonths(4);
-			this.active = true;
-			this.renewAvailable = true;
-		}
+		this.start = start;
+		this.end = end;
+		this.active = active;
+		this.restitutionDate = restitutionDate;
+		this.renewAvailable = renewAvailable;
+		this.ID = ID;
 	}
+
+	
+	
+	public LocalDate getEnd() {
+		return end;
+	}
+
+	public void setEnd(LocalDate end) {
+		this.end = end;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public LocalDate getRestitutionDate() {
+		return restitutionDate;
+	}
+
+	public void setRestitutionDate(LocalDate restitutionDate) {
+		this.restitutionDate = restitutionDate;
+	}
+
+	public int getID() {
+		return ID;
+	}
+
+	public void setID(int iD) {
+		ID = iD;
+	}
+
+
+
+	public static final int ONE_LOAN_MAX_DURATION_MONTH = 4;
+
+//	public Loan(User user, Copy copy, boolean setOthers) {
+//		this.user = user;
+//		this.copy = copy;
+//		
+//		if (setOthers){
+//			this.start = LocalDateTime.now();
+//			this.end = this.start.plusMonths(4);
+//			this.active = true;
+//			this.renewAvailable = true;
+//		}
+//	}
 
 	public User getUser() {
 		return user;
@@ -59,37 +108,6 @@ public class Loan {
 		this.copy = copy;
 	}
 
-	public LocalDateTime getStart() {
-		return start;
-	}
-
-	public void setStart(LocalDateTime start) {
-		this.start = start;
-	}
-
-	public LocalDateTime getEnd() {
-		return end;
-	}
-
-	public void setEnd(LocalDateTime end) {
-		this.end = end;
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
-	public LocalDateTime getRestitutionDate() {
-		return restitutionDate;
-	}
-
-	public void setRestitutionDate(LocalDateTime restitutionDate) {
-		this.restitutionDate = restitutionDate;
-	}
 
 	public boolean isRenewAvailable() {
 		return renewAvailable;
@@ -100,7 +118,15 @@ public class Loan {
 	}
 	
 	
-	
+	public LocalDate getStart() {
+		return start;
+	}
+
+
+
+	public void setStart(LocalDate start) {
+		this.start = start;
+	}
 	
 
 }

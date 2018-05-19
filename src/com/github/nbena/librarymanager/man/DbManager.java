@@ -177,7 +177,7 @@ public class DbManager {
 		ResultSet rs = stat.executeQuery(query);
 		List<Seat> seats = new LinkedList<Seat>();
 		while(rs.next()){
-			Seat seat = getSeatFrom(rs, 1);
+			Seat seat = getSeatFrom(rs, 1, true);
 			seats.add(seat);
 		}
 		return seats;
@@ -375,11 +375,15 @@ public class DbManager {
 		
 	}
 	
-	private Seat getSeatFrom(ResultSet rs, int startingIndex) throws SQLException{
+	private Seat getSeatFrom(ResultSet rs, int startingIndex, boolean useFree) throws SQLException{
 		
 		int seatNumber = rs.getInt(startingIndex );
 		int tableNumber = rs.getInt(startingIndex + 1);
-		boolean free = rs.getBoolean(startingIndex + 2);
+		boolean free = false;
+		if (useFree){
+			free = rs.getBoolean(startingIndex + 2);
+		}
+		
 		
 		Seat seat = new Seat(seatNumber, tableNumber, free);
 		return seat;
@@ -462,18 +466,19 @@ public class DbManager {
 		return reservation;
 	}
 	
-	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, OffsetDateTime date)throws SQLException{
-		String query = "select cr.id, copyid, title, authors, year, main_topic, phouse, status, seat_number, table_number, free, time_stamp, reservation_date "+
-						"from book join lm_copy on book.id = lm_copy.id "+
-						"join consultation_reservation as cr on lm_copy.id = consultation.copyid "+
-						"join user on cr.userid = user.id "+
-						"user.id=? and book.id=? and reservation_date = ?;";
+	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDate date)throws SQLException{
+		String query = "select cr.id, copyid, title, authors, year, main_topic, phouse, status, seat_number, table_number, time_stamp, reservation_date "+
+						"from book join lm_copy on book.id = lm_copy.bookid "+
+						"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
+						"where cr.userid=? and reservation_date = ? and "+
+						"title=?";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
 		pstmt.setInt(1, user.getID());
-		pstmt.setInt(2, book.getID());
-		pstmt.setObject(3, date);
+		// pstmt.setInt(2, book.getID());
+		pstmt.setObject(2, date);
+		pstmt.setString(3, book.getTitle());
 		
 		ResultSet rs = pstmt.executeQuery();
 		ConsultationReservation reservation = null;
@@ -482,7 +487,7 @@ public class DbManager {
 			
 			Copy copy = getCopyFrom(rs, 2);
 			CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
-			Seat seat = getSeatFrom(rs, 8);
+			Seat seat = getSeatFrom(rs, 9, false);
 			
 			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(11, OffsetDateTime.class);
 			LocalDate reservationDate = (LocalDate) rs.getObject(12, LocalDate.class);

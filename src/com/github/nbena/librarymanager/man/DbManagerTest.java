@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.IDble;
@@ -34,11 +35,13 @@ public class DbManagerTest {
 	private boolean usersCreated = false;
 	private boolean seatReservationsCreated = false;
 	private boolean loanReservationsCreated = false;
+	private boolean consultationReservationsCreated = false;
 	
 	private boolean deleteBooks = false;
 	private boolean deleteUsers = false;
 	private boolean deleteSeatReservations = false;
 	private boolean deleteLoanReservations = false;
+	private boolean deleteConsultationReservations = false;
 
 	private User [] users;
 	private Book [] books;
@@ -48,10 +51,11 @@ public class DbManagerTest {
 	private LoanReservation [] loanReservations;
 	private List<Seat> seats;
 	private SeatReservation [] seatReservations;
+	private ConsultationReservation [] consultationReservations;
 
 	@Before
 	public void setUp() throws Exception {
-		db = new DbManager("localhost:5434/docker", "docker", "docker");
+		this.db = new DbManager("localhost:5434/docker", "docker", "docker");
 		books = new Book[]{
 				new Book("Title1", new String[]{
 						"Me",
@@ -118,47 +122,65 @@ public class DbManagerTest {
 						copies[0]
 						)
 		};
-		seats = db.getSeats();
+		seats = this.db.getSeats();
 		seatReservations = new SeatReservation[]{
-				new SeatReservation(LocalDate.now(), (InternalUser)users[1], seats.get(0))
+				new SeatReservation(LocalDate.now(), (InternalUser)users[1], this.seats.get(0))
 		};
 		loanReservations = new LoanReservation[]{
 				new LoanReservation(
 						(InternalUser)users[1], copies[1], true)
 		};
+		this.consultationReservations = new ConsultationReservation[]{
+				new ConsultationReservation(
+						LocalDate.now(), (InternalUser)this.users[1],
+						this.copiesForConsultation[0], this.seats.get(0)
+						),
+				new ConsultationReservation(
+						LocalDate.now(), (InternalUser)this.users[1],
+						this.copiesForConsultation[0], this.seats.get(0)
+						),			
+		};
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		if (booksCreated && deleteBooks){
+		if (this.booksCreated && this.deleteBooks){
 			for (Book b: books){
-				db.deleteItem(b);
+				this.db.deleteItem(b);
 			}
-			booksCreated = false;
+			this.booksCreated = false;
 		}
-		if (usersCreated && deleteUsers){
+		if (this.usersCreated && this.deleteUsers){
 			for (User u: users){
-				db.deleteItem(u);
+				this.db.deleteItem(u);
 			}
-			usersCreated = false;
+			this.usersCreated = false;
 		}
 		// no need to delete copies
-		if (seatReservationsCreated && deleteSeatReservations){
-			for (SeatReservation sr: seatReservations){
-				db.deleteItem(sr);
+		if (this.seatReservationsCreated && this.deleteSeatReservations){
+			for (SeatReservation sr: this.seatReservations){
+				this.db.deleteItem(sr);
 			}
+			this.seatReservationsCreated = false;
 		}
-		if (loanReservationsCreated && deleteLoanReservations){
-			for(LoanReservation lr: loanReservations){
-				db.deleteItem(lr);
+		if (this.loanReservationsCreated && this.deleteLoanReservations){
+			for(LoanReservation lr: this.loanReservations){
+				this.db.deleteItem(lr);
 			}
+			this.loanReservationsCreated = false;
 		}
-		db.close();
+		if (this.consultationReservationsCreated && this.deleteConsultationReservations){
+			for(ConsultationReservation cr: this.consultationReservations){
+				this.db.deleteItem(cr);
+			}
+			this.consultationReservationsCreated = false;
+		}
+		this.db.close();
 	}
 	
 	private PreparedStatement prepareMulti(String inital, IDble []items) throws SQLException{
-		String query = db.queryOnMultipleId(inital, items.length, false);
-		Connection c= db.connection;
+		String query = this.db.queryOnMultipleId(inital, items.length, false);
+		Connection c= this.db.connection;
 		PreparedStatement pstmt = c.prepareStatement(query);
 		int i=1;
 		for (IDble item: items){
@@ -184,7 +206,7 @@ public class DbManagerTest {
 	
 	public void addBooks() throws SQLException{
 		for (Book b: books){
-			db.addBook(b);
+			this.db.addBook(b);
 			// query += "id=? or";
 		}
 		booksCreated = true;
@@ -207,7 +229,7 @@ public class DbManagerTest {
 	
   public void addUser() throws SQLException{
 	  for (User u: users){
-		  db.addUser(u);
+		  this.db.addUser(u);
 	  }
 	  usersCreated = true;
 	  int count = getCountOf("select count (*) from lm_user where ", users);
@@ -219,7 +241,7 @@ public class DbManagerTest {
 	  addBooks();
 	  Copy [] allCopies = (Copy[])ArrayUtils.addAll(copies, copiesForConsultation);
 	  for (Copy c: allCopies){
-		  db.addCopy(c, books[0]);
+		  this.db.addCopy(c, books[0]);
 	  }
 	  int count = getCountOf("select count (*) from lm_copy where ", allCopies);
 	  assertTrue(count == copies.length + copiesForConsultation.length);
@@ -228,7 +250,7 @@ public class DbManagerTest {
   public void addLoan() throws SQLException{
 	  // addCopies();
 	  for (Loan l: loans){
-		  db.addLoan(l);
+		  this.db.addLoan(l);
 	  }
 	  int count = getCountOf("select count (*) from loan where ", loans);
 	  assertTrue(count == loans.length);
@@ -246,32 +268,31 @@ public class DbManagerTest {
 	  
 	  addLoan();
 	  
-	  for (LoanReservation lr: loanReservations){
-		  System.out.println();
-		  db.addLoanReservation(lr);
+	  for (LoanReservation lr: this.loanReservations){
+		  this.db.addLoanReservation(lr);
 	  }
 	  
 	  int count = getCountOf("select count (*) from loan_reservation where ", loanReservations);
-	  assertTrue(count == loanReservations.length);
+	  assertTrue(count == this.loanReservations.length);
 	  
-	  LoanReservation expected = loanReservations[0];
-	  LoanReservation got = db.getLoanReservationsByUser(expected.getUser()).get(0);
+	  LoanReservation expected = this.loanReservations[0];
+	  LoanReservation got = this.db.getLoanReservationsByUser(expected.getUser()).get(0);
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  
-	  db.cancelLoanReservation(got);
+	  this.db.cancelLoanReservation(got);
 	  
 	  count = getCountOf("select count (*) from loan_reservation where ", new LoanReservation[]{got});
 	  assertTrue(count == 0);
 	  
 	  // Now we resave it and try to create another and
-	  // trigger will raise
-	  db.addLoanReservation(expected);
+	  // trigger will be raised
+	  this.db.addLoanReservation(expected);
 	  
 	  boolean thrown = false;
 	 
 	  try{
-		  db.addLoanReservation(expected);
+		  this.db.addLoanReservation(expected);
 	  }catch(SQLException e){
 		  thrown = true;
 		  assertTrue(e.getMessage().contains("this copy is already reserved"));
@@ -280,30 +301,58 @@ public class DbManagerTest {
 	  assertTrue(thrown);
   }
   
-  public void seatReservationOps() throws SQLException{
-	  for (SeatReservation sr: seatReservations){
-		  db.addSeatReservation(sr);
+  
+  public void consultationOps() throws SQLException{
+	  this.addCopies();
+	  
+	  for (ConsultationReservation cr: this.consultationReservations){
+		  db.addConsultationReservation(cr);
 	  }
 	  
-	  seatReservationsCreated = true;
+	  this.consultationReservationsCreated = true;
 	  
-	  int count = getCountOf("select count (*) from seat_reservation where ", seatReservations);
-	  assertTrue(count == seatReservations.length);
+	  int count = getCountOf("select count (*) from consultation_reservation where ", this.consultationReservations);
+	  assertTrue(count == this.consultationReservations.length);
 	  
-	  int availableSeats = db.getAvailableSeats(LocalDate.now()).size();
-	  
-	  assertTrue(availableSeats < seats.size());
-	  
-	  SeatReservation expected = seatReservations[0];
-	  SeatReservation got = db.getSeatReservationOrNothing(expected.getUser(), expected.getReservationDate());
+	  ConsultationReservation expected = this.consultationReservations[0];
+	  ConsultationReservation got = this.db.getConsultationReservation(
+			  expected.getUser(),
+			  expected.getCopy(),
+			  expected.getReservationDate()
+			  );
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  
-	  db.cancelSeatReservation(got);
+	  this.db.cancelConsultationReservation(got);
+	  count = getCountOf("select count (*) from consultation_reservation where ", new ConsultationReservation[]{got});
+	  assertTrue(count == 0);
+	   
+  }
+  
+  public void seatReservationOps() throws SQLException{
+	  for (SeatReservation sr: seatReservations){
+		  this.db.addSeatReservation(sr);
+	  }
+	  
+	  this.seatReservationsCreated = true;
+	  
+	  int count = getCountOf("select count (*) from seat_reservation where ", this.seatReservations);
+	  assertTrue(count == this.seatReservations.length);
+	  
+	  int availableSeats = this.db.getAvailableSeats(LocalDate.now()).size();
+	  
+	  assertTrue(availableSeats < this.seats.size());
+	  
+	  SeatReservation expected = seatReservations[0];
+	  SeatReservation got = this.db.getSeatReservationOrNothing(expected.getUser(), expected.getReservationDate());
+	  
+	  assertTrue(expected.getID() == got.getID());
+	  
+	  this.db.cancelSeatReservation(got);
 	  count = getCountOf("select count (*) from seat_reservation where ", new SeatReservation[]{got});
 	  assertTrue(count == 0);
 	  
-	  int newAvailableSeats = db.getAvailableSeats(LocalDate.now()).size();
+	  int newAvailableSeats = this.db.getAvailableSeats(LocalDate.now()).size();
 	  assertTrue(availableSeats + 1 == newAvailableSeats);
 	  
 	  }
@@ -324,9 +373,18 @@ public class DbManagerTest {
 	  addUser();
 	  addCopies();
 	  seatReservationOps();
-	  deleteBooks = true;
-	  deleteUsers = true;	  
-	  deleteSeatReservations = true;
+	  this.deleteBooks = true;
+	  this.deleteUsers = true;	  
+	  this.deleteSeatReservations = true;
+  }
+  
+  @Test
+  public void testConsultations() throws SQLException {
+	  this.addUser();
+	  this.consultationOps();
+	  this.deleteBooks = true;
+	  this.deleteUsers = true;
+	  this.deleteConsultationReservations = true;
   }
   
 //  @Test

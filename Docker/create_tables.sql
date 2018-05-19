@@ -94,6 +94,8 @@ create table consultation_reservation (
 	reservation_date date not null,
 	seat_number integer not null,
 	table_number integer not null,
+	constraint cr_unique_1 unique(reservation_date, seat_number, table_numer),
+	constraint cr_unique_2 unique(reservation_date, userid, copyid),
 	primary key (id),
 	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
 	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade,

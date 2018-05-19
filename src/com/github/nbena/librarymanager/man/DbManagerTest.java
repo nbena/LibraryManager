@@ -137,7 +137,7 @@ public class DbManagerTest {
 						),
 				new ConsultationReservation(
 						LocalDate.now(), (InternalUser)this.users[1],
-						this.copiesForConsultation[0], this.seats.get(0)
+						this.copiesForConsultation[1], this.seats.get(1)
 						),			
 		};
 	}
@@ -326,7 +326,27 @@ public class DbManagerTest {
 	  this.db.cancelConsultationReservation(got);
 	  count = getCountOf("select count (*) from consultation_reservation where ", new ConsultationReservation[]{got});
 	  assertTrue(count == 0);
-	   
+	  
+	  // already used seat
+	  got.setSeat(this.consultationReservations[1].getSeat());
+	  boolean thrown = false;
+	  try{
+		  this.db.addConsultationReservation(got);
+	  }catch(SQLException e){
+		  thrown = true;
+		  assertTrue(e.getMessage().contains("violates unique constraint"));
+	  }
+	  assertTrue(thrown);
+	  
+	  got.setCopy(this.consultationReservations[1].getCopy());
+	  thrown = false;
+	  try{
+		  this.db.addConsultationReservation(got);
+	  }catch(SQLException e){
+		  thrown = true;
+		  assertTrue(e.getMessage().contains("violates unique constraint"));
+	  }
+	  assertTrue(thrown);	  
   }
   
   public void seatReservationOps() throws SQLException{

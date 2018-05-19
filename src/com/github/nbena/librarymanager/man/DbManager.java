@@ -471,7 +471,7 @@ public class DbManager {
 						"from book join lm_copy on book.id = lm_copy.bookid "+
 						"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
 						"where cr.userid=? and reservation_date = ? and "+
-						"title=?";
+						"title=? and authors=?";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -479,6 +479,7 @@ public class DbManager {
 		// pstmt.setInt(2, book.getID());
 		pstmt.setObject(2, date);
 		pstmt.setString(3, book.getTitle());
+		pstmt.setArray(4, connection.createArrayOf("varchar", book.getAuthors()));
 		
 		ResultSet rs = pstmt.executeQuery();
 		ConsultationReservation reservation = null;

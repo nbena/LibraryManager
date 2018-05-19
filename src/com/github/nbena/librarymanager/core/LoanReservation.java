@@ -66,7 +66,7 @@ public class LoanReservation {
 	
 	
 	public Loan createLoan(){
-		return new Loan(this.user, this.copy, true);
+		return new Loan(this.user, this.copy);
 	}
 
 	public int getID() {

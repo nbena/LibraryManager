@@ -1,5 +1,6 @@
-FROM postgres:latest
+FROM postgres:9.5
 USER postgres
+ENV POSTGRES_DB docker
 ENV POSTGRES_USER docker
 ENV POSTGRES_PASSWORD docker
 ADD create_tables.sql /docker-entrypoint-initdb.d/

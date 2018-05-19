@@ -29,6 +29,11 @@ public class Loan {
 	private LocalDate restitutionDate;
 	private boolean renewAvailable;
 	int ID;
+	
+	public Loan(User user, Copy copy){
+		this.user = user;
+		this.copy = copy;
+	}
 
 	public Loan(int ID, User user, Copy copy, LocalDate start, LocalDate end, boolean active, LocalDate restitutionDate,
 			boolean renewAvailable) {

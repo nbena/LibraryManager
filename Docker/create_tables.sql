@@ -125,6 +125,25 @@ begin
 end
 $$ language plpgsql;
 
+create or replace function trigger_function_update_copy_status_after_ins_loan_res () returns trigger as $$
+begin
+	update lm_copy set status = 'reserved'
+	where id = new.copyid;
+
+	return new;
+end
+$$ language plpgsql;
+
+
+create or replace function trigger_function_update_copy_status_after_delete_loan_res() returns trigger as $$
+begin
+	update lm_copy set status = 'free'
+	where id = old.copyid;
+
+	return new;
+end
+$$ language plpgsql;
+
 
 create trigger trigger_set_end_loans
 before insert on loan
@@ -135,6 +154,16 @@ create trigger trigger_new_loan_reservation
 before insert on loan_reservation
 for each row
 execute procedure trigger_function_check_copy_can_be_reserved();
+
+create trigger trigger_update_copy_status_after_ins
+after insert on loan_reservation
+for each row
+execute procedure trigger_function_update_copy_status_after_ins_loan_res();
+
+create trigger trigger_update_copy_status_after_del
+after delete on loan_reservation
+for each row
+execute procedure trigger_function_update_copy_status_after_delete_loan_res();
 
 insert into seat (table_number, seat_number)  values
 (1, 1),

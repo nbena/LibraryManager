@@ -264,6 +264,20 @@ public class DbManagerTest {
 	  count = getCountOf("select count (*) from loan_reservation where ", new LoanReservation[]{got});
 	  assertTrue(count == 0);
 	  
+	  // Now we resave it and try to create another and
+	  // trigger will raise
+	  db.addLoanReservation(expected);
+	  
+	  boolean thrown = false;
+	 
+	  try{
+		  db.addLoanReservation(expected);
+	  }catch(SQLException e){
+		  thrown = true;
+		  assertTrue(e.getMessage().contains("this copy is already reserved"));
+	  }
+	  // db.addLoanReservation(expected);
+	  assertTrue(thrown);
   }
   
   public void seatReservationOps() throws SQLException{

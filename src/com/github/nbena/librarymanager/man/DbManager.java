@@ -22,6 +22,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -132,7 +133,7 @@ public class DbManager {
 	}
 	
 	
-	public Loan saveLoan(Loan loan) throws SQLException{
+	public Loan addLoan(Loan loan) throws SQLException{
 		
 		String query = "insert into loan (userid, copyid )  values (?,?) returning id";
 		
@@ -165,6 +166,20 @@ public class DbManager {
 		
 		pstmt.execute();
 		
+	}
+	
+	public List<Seat> getSeats() throws SQLException{
+		
+		String query = "select seat_number, table_number, free from seat";
+		Statement stat = connection.createStatement();
+		
+		ResultSet rs = stat.executeQuery(query);
+		List<Seat> seats = new LinkedList<Seat>();
+		while(rs.next()){
+			Seat seat = getSeatFrom(rs, 1);
+			seats.add(seat);
+		}
+		return seats;
 	}
 	
 //	public void deleteBook(Book book) throws SQLException{
@@ -212,9 +227,9 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
-	public SeatReservation saveSeatReservation(SeatReservation reservation) throws SQLException{
+	public SeatReservation addSeatReservation(SeatReservation reservation) throws SQLException{
 		
-		String query = "insert into seat_reservation (userid, seat_number, table_number, reservation_date) values (?,?,?,?)";
+		String query = "insert into seat_reservation (userid, seat_number, table_number, reservation_date) values (?,?,?,?) returning id";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -386,7 +401,7 @@ public class DbManager {
 //			String topic = rs.getString(4);
 //			String phouse = rs.getString(5);
 			
-			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(6);
+			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(6, OffsetDateTime.class);
 			
 //			String[] authors = (String[]) rs.getArray(2).getArray();
 //			
@@ -421,20 +436,20 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
-	public SeatReservation getSeatReservationOrNothing(InternalUser user, OffsetDateTime date)throws SQLException{
-		String query = "select id, seat_number, table_number, time_stamp, reservation_date from seat_reservation where userid=? and date=?";
+	public SeatReservation getSeatReservationOrNothing(InternalUser user, LocalDate date)throws SQLException{
+		String query = "select id, seat_number, table_number, time_stamp, reservation_date from seat_reservation where userid=? and reservation_date=?";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
 		pstmt.setInt(1, user.getID());
-		pstmt.setString(2, date.toString());
+		pstmt.setObject(2, date);
 		
 		ResultSet rs = pstmt.executeQuery();
 		SeatReservation reservation = null;
 		if (rs.next()){
 			int id = rs.getInt(1);
-			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(4);
-			LocalDate reservationDate = (LocalDate) rs.getObject(5);
+			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(4, OffsetDateTime.class);
+			LocalDate reservationDate = (LocalDate) rs.getObject(5, LocalDate.class);
 			Seat seat = new Seat(rs.getInt(2), rs.getInt(3), false);
 			reservation = new SeatReservation(id, timestamp, reservationDate, user, seat);
 		}
@@ -463,8 +478,8 @@ public class DbManager {
 			CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
 			Seat seat = getSeatFrom(rs, 7);
 			
-			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(10);
-			LocalDate reservationDate = (LocalDate) rs.getObject(11);
+			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(10, OffsetDateTime.class);
+			LocalDate reservationDate = (LocalDate) rs.getObject(11, LocalDate.class);
 			
 			reservation = new ConsultationReservation(id, user, copyForConsultation, seat, reservationDate, timestamp);
 		}

@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.Arrays;
@@ -18,6 +20,10 @@ import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.Loan;
+import com.github.nbena.librarymanager.core.LoanReservation;
+import com.github.nbena.librarymanager.core.Seat;
+import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.core.User;
 
 public class DbManagerTest {
@@ -28,16 +34,21 @@ public class DbManagerTest {
 	private boolean usersCreated = false;
 	private boolean copiesCreated = false;
 	private boolean copiesForConsultationCreated = false;
+	private boolean seatReservationsCreated = false;
 	
 	private boolean deleteBooks = false;
 	private boolean deleteCopies = false;
 	private boolean deleteUsers = false;
+	private boolean deleteSeatReservations = false;
 
 	private User [] users;
 	private Book [] books;
 	private Copy [] copies;
 	private CopyForConsultation [] copiesForConsultation;
-	
+	private Loan [] loans;
+	private LoanReservation [] loanReservations;
+	private List<Seat> seats;
+	private SeatReservation [] seatReservations;
 
 	@Before
 	public void setUp() throws Exception {
@@ -101,7 +112,17 @@ public class DbManagerTest {
 						"Info",
 						"phouse")
 				
-		};		
+		};
+		loans = new Loan[]{
+				new Loan(
+						users[0],
+						copies[0]
+						)
+		};
+		seats = db.getSeats();
+		seatReservations = new SeatReservation[]{
+				new SeatReservation(LocalDate.now(), (InternalUser)users[1], seats.get(0))
+		};
 	}
 
 	@After
@@ -119,6 +140,11 @@ public class DbManagerTest {
 			usersCreated = false;
 		}
 		// no need to delete copies
+		if (seatReservationsCreated && deleteSeatReservations){
+			for (SeatReservation sr: seatReservations){
+				db.deleteItem(sr);
+			}
+		}
 		db.close();
 	}
 	
@@ -189,21 +215,68 @@ public class DbManagerTest {
 	  }
 	  int count = getCountOf("select count (*) from lm_copy where ", allCopies);
 	  assertTrue(count == copies.length + copiesForConsultation.length);
-	  copiesCreated = false;
+	  copiesCreated = true;
   }
   
-  @Test
-  public void testAddCopies() throws SQLException{
+  public void addLoan() throws SQLException{
 	  addCopies();
+	  for (Loan l: loans){
+		  db.addLoan(l);
+	  }
+	  int count = getCountOf("select count (*) from loan where ", loans);
+	  assertTrue(count == loans.length);
+	  // loansCreated = true;
+  }
+  
+  public void updateLoan() throws SQLException{
+	  addLoan();
+	  Loan l = loans[0];
+	  l.setRenewAvailable(false);
+  }
+  
+  public void seatReservationOps() throws SQLException{
+	  for (SeatReservation sr: seatReservations){
+		  db.addSeatReservation(sr);
+	  }
+	  
+	  seatReservationsCreated = true;
+	  
+	  int count = getCountOf("select count (*) from seat_reservation where ", seatReservations);
+	  assertTrue(count == seatReservations.length);
+	  
+	  SeatReservation expected = seatReservations[0];
+	  SeatReservation got = db.getSeatReservationOrNothing(expected.getUser(), expected.getReservationDate());
+	  
+	  assertTrue(expected.getID() == got.getID());
+	  
+	  db.cancelSeatReservation(got);
+	  count = getCountOf("select count (*) from seat_reservation where ", new SeatReservation[]{got});
+	  assertTrue(count == 0);
+	  
+	  }
+  
+  
+  
+  @Test
+  public void testAddLoans() throws SQLException{
+	  addUser();
+	  // addCopies();
+	  // addLoan();
+	  updateLoan();
+	  seatReservationOps();
 	  deleteCopies = true;
 	  deleteBooks = true;
+	  deleteUsers = true;
+	  deleteSeatReservations = true;
   }
   
-  @Test
-  public void testAddUsers() throws SQLException{
-	  addUser();
-	  deleteUsers = true;
-  }
+//  @Test
+//  public void testAddUsers() throws SQLException{
+//	  addUser();
+//	  deleteUsers = true;
+//  }
+  
+ 
 	
 	
 

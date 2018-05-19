@@ -17,17 +17,20 @@
 
 package com.github.nbena.librarymanager.core;
 
+
 public class Copy extends Book {
 
 	
 	private int ID;
 	private boolean reserved;
+	private CopyStatus status;
 	
 
 	public Copy(String title, String[] authors, int yearsOfPublishing, String mainTopic, String publishingHouse) {
 		super(title, authors, yearsOfPublishing, mainTopic, publishingHouse);
 		
 		reserved = false;
+		status = CopyStatus.FREE;
 	}
 
 	public int getID() {
@@ -45,14 +48,16 @@ public class Copy extends Book {
 	public void setReserved(boolean reserved) {
 		this.reserved = reserved;
 	}
-	
-	public String getState(){
-		return null;
+
+	public CopyStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(CopyStatus status) {
+		this.status = status;
 	}
 	
-	public void setState(String state){
-		
-	}
+
 	
 
 }

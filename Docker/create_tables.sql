@@ -31,6 +31,8 @@ create table lm_copy (
 	id serial,
 	bookid integer,
 	for_consultation boolean not null default false,
+	status varchar(50) default 'free'
+		constraint status_check check (status = 'free' or status = 'reserved'),
 	primary key (id),
 	foreign key (bookid) references book(id) on update cascade on delete cascade
 );
@@ -108,10 +110,31 @@ end
 $$ language plpgsql;
 
 
+create or replace function trigger_function_check_copy_can_be_reserved () returns trigger as $$
+declare
+	got_status varchar;
+begin
+	got_status := (select status
+						from lm_copy
+						where id=new.copyid);
+
+	if got_status = 'reserved' then
+		raise exception 'this copy is already reserved';
+	end if;
+	return new;
+end
+$$ language plpgsql;
+
+
 create trigger trigger_set_end_loans
 before insert on loan
 for each row
 execute procedure trigger_function_set_end_loans();
+
+create trigger trigger_new_loan_reservation
+before insert on loan_reservation
+for each row
+execute procedure trigger_function_check_copy_can_be_reserved();
 
 insert into seat (table_number, seat_number)  values
 (1, 1),

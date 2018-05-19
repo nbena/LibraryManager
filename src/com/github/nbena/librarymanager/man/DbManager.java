@@ -34,6 +34,7 @@ import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
+import com.github.nbena.librarymanager.core.CopyStatus;
 import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
@@ -364,8 +365,10 @@ public class DbManager {
 		int year = rs.getInt(startingIndex + 3);
 		String topic = rs.getString(startingIndex + 4);
 		String phouse = rs.getString(startingIndex + 5);
+		String status = rs.getString(startingIndex + 6);
 		
 		Copy copy = new Copy(title, authors, year, topic, phouse);
+		copy.setStatus(CopyStatus.from(status));
 		copy.setID(copyid);
 		
 		return copy;
@@ -384,7 +387,7 @@ public class DbManager {
 	
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
 		
-		String query = "select l.id, copyid, title, authors, year, main_topic, phouse, time_stamp "+
+		String query = "select l.id, copyid, title, authors, year, main_topic, phouse, status, time_stamp "+
 		"from book join lm_copy as c on book.id = c.bookid join loan_reservation as l on c.id = l.copyid where userid=? order by time_stamp desc";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
@@ -404,7 +407,7 @@ public class DbManager {
 //			String topic = rs.getString(4);
 //			String phouse = rs.getString(5);
 			
-			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(8, OffsetDateTime.class);
+			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(9, OffsetDateTime.class);
 			
 //			String[] authors = (String[]) rs.getArray(2).getArray();
 //			
@@ -460,7 +463,7 @@ public class DbManager {
 	}
 	
 	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, OffsetDateTime date)throws SQLException{
-		String query = "select cr.id, copyid, title, authors, year, main_topic, phouse, seat_number, table_number, free, time_stamp, reservation_date "+
+		String query = "select cr.id, copyid, title, authors, year, main_topic, phouse, status, seat_number, table_number, free, time_stamp, reservation_date "+
 						"from book join lm_copy on book.id = lm_copy.id "+
 						"join consultation_reservation as cr on lm_copy.id = consultation.copyid "+
 						"join user on cr.userid = user.id "+
@@ -479,10 +482,10 @@ public class DbManager {
 			
 			Copy copy = getCopyFrom(rs, 2);
 			CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
-			Seat seat = getSeatFrom(rs, 7);
+			Seat seat = getSeatFrom(rs, 8);
 			
-			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(10, OffsetDateTime.class);
-			LocalDate reservationDate = (LocalDate) rs.getObject(11, LocalDate.class);
+			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(11, OffsetDateTime.class);
+			LocalDate reservationDate = (LocalDate) rs.getObject(12, LocalDate.class);
 			
 			reservation = new ConsultationReservation(id, user, copyForConsultation, seat, reservationDate, timestamp);
 		}

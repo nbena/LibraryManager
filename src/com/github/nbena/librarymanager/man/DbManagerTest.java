@@ -32,14 +32,13 @@ public class DbManagerTest {
 	
 	private boolean booksCreated = false;
 	private boolean usersCreated = false;
-	private boolean copiesCreated = false;
-	private boolean copiesForConsultationCreated = false;
 	private boolean seatReservationsCreated = false;
+	private boolean loanReservationsCreated = false;
 	
 	private boolean deleteBooks = false;
-	private boolean deleteCopies = false;
 	private boolean deleteUsers = false;
 	private boolean deleteSeatReservations = false;
+	private boolean deleteLoanReservations = false;
 
 	private User [] users;
 	private Book [] books;
@@ -123,6 +122,10 @@ public class DbManagerTest {
 		seatReservations = new SeatReservation[]{
 				new SeatReservation(LocalDate.now(), (InternalUser)users[1], seats.get(0))
 		};
+		loanReservations = new LoanReservation[]{
+				new LoanReservation(
+						(InternalUser)users[1], copies[1], true)
+		};
 	}
 
 	@After
@@ -143,6 +146,11 @@ public class DbManagerTest {
 		if (seatReservationsCreated && deleteSeatReservations){
 			for (SeatReservation sr: seatReservations){
 				db.deleteItem(sr);
+			}
+		}
+		if (loanReservationsCreated && deleteLoanReservations){
+			for(LoanReservation lr: loanReservations){
+				db.deleteItem(lr);
 			}
 		}
 		db.close();
@@ -215,11 +223,10 @@ public class DbManagerTest {
 	  }
 	  int count = getCountOf("select count (*) from lm_copy where ", allCopies);
 	  assertTrue(count == copies.length + copiesForConsultation.length);
-	  copiesCreated = true;
   }
   
   public void addLoan() throws SQLException{
-	  addCopies();
+	  // addCopies();
 	  for (Loan l: loans){
 		  db.addLoan(l);
 	  }
@@ -232,6 +239,31 @@ public class DbManagerTest {
 	  addLoan();
 	  Loan l = loans[0];
 	  l.setRenewAvailable(false);
+  }
+  
+  public void loanOps() throws SQLException{
+	  addCopies();
+	  
+	  addLoan();
+	  
+	  for (LoanReservation lr: loanReservations){
+		  System.out.println();
+		  db.addLoanReservation(lr);
+	  }
+	  
+	  int count = getCountOf("select count (*) from loan_reservation where ", loanReservations);
+	  assertTrue(count == loanReservations.length);
+	  
+	  LoanReservation expected = loanReservations[0];
+	  LoanReservation got = db.getLoanReservationsByUser(expected.getUser()).get(0);
+	  
+	  assertTrue(expected.getID() == got.getID());
+	  
+	  db.cancelLoanReservation(got);
+	  
+	  count = getCountOf("select count (*) from loan_reservation where ", new LoanReservation[]{got});
+	  assertTrue(count == 0);
+	  
   }
   
   public void seatReservationOps() throws SQLException{
@@ -265,15 +297,21 @@ public class DbManagerTest {
   
   
   @Test
-  public void testAddLoans() throws SQLException{
+  public void testLoans() throws SQLException{
 	  addUser();
-	  // addCopies();
-	  // addLoan();
-	  updateLoan();
-	  seatReservationOps();
-	  deleteCopies = true;
+	  loanOps();
 	  deleteBooks = true;
 	  deleteUsers = true;
+	  // deleteSeatReservations = true;
+  }
+  
+  @Test
+  public void testSeats() throws SQLException{
+	  addUser();
+	  addCopies();
+	  seatReservationOps();
+	  deleteBooks = true;
+	  deleteUsers = true;	  
 	  deleteSeatReservations = true;
   }
   

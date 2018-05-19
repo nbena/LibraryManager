@@ -250,9 +250,9 @@ public class DbManager {
 		
 	}
 	
-	public LoanReservation saveLoanReservation(LoanReservation reservation) throws SQLException{
+	public LoanReservation addLoanReservation(LoanReservation reservation) throws SQLException{
 		
-		String query = "insert into loan_reservation (userid, copyid) values (?,?)";
+		String query = "insert into loan_reservation (userid, copyid) values (?,?) returning id";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -271,9 +271,9 @@ public class DbManager {
 		
 	}
 	
-	public ConsultationReservation saveConsultationReservation(ConsultationReservation reservation) throws SQLException{
+	public ConsultationReservation addConsultationReservation(ConsultationReservation reservation) throws SQLException{
 				
-		String query = "insert into consultation_reservation (userid, copyid, reservation_date, seat_number, table_number) values (?,?,?,?,?)";
+		String query = "insert into consultation_reservation (userid, copyid, reservation_date, seat_number, table_number) values (?,?,?,?,?) returning id";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -384,10 +384,11 @@ public class DbManager {
 	
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
 		
-		String query = "select id, copyid, title, authors, year, main_topic, phouse, time_stamp "+
-		"from copy as c join loan_reservation as l on c.id = l.copyid where userid=? order by time_stamp desc";
+		String query = "select l.id, copyid, title, authors, year, main_topic, phouse, time_stamp "+
+		"from book join lm_copy as c on book.id = c.bookid join loan_reservation as l on c.id = l.copyid where userid=? order by time_stamp desc";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
+		pstmt.setInt(1, user.getID());
 		
 		ResultSet rs = pstmt.executeQuery();
 		
@@ -403,7 +404,7 @@ public class DbManager {
 //			String topic = rs.getString(4);
 //			String phouse = rs.getString(5);
 			
-			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(6, OffsetDateTime.class);
+			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(8, OffsetDateTime.class);
 			
 //			String[] authors = (String[]) rs.getArray(2).getArray();
 //			

@@ -17,7 +17,9 @@
 
 package com.github.nbena.librarymanager.core;
 
-public class Book {
+import java.util.Arrays;
+
+public class Book implements IDble {
 	
 	protected String title;
 	private int ID;
@@ -73,6 +75,12 @@ public class Book {
 		ID = iD;
 	}
 	
+	public String toString(){
+		String r = "Book, title: "+title+ ", authors "+
+				Arrays.toString(authors);
+			r += "ID: "+Integer.toString(ID);
+		return r;
+	}
 
 }
 

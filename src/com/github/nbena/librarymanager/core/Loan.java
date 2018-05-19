@@ -19,7 +19,7 @@ package com.github.nbena.librarymanager.core;
 
 import java.time.LocalDate;
 
-public class Loan {
+public class Loan implements IDble {
 	
 	private User user;
 	private Copy copy;

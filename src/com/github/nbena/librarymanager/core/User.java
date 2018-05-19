@@ -17,7 +17,7 @@
 
 package com.github.nbena.librarymanager.core;
 
-public class User {
+public class User implements IDble{
 	
 	private int ID;
 	private String name;
@@ -33,6 +33,15 @@ public class User {
 
 
 	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	
+
+	public User(String name, String surname, String hashedPassword, String email) {
+		this.name = name;
+		this.surname = surname;
+		this.hashedPassword = hashedPassword;
 		this.email = email;
 	}
 

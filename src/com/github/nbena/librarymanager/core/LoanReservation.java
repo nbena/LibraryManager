@@ -20,7 +20,7 @@ package com.github.nbena.librarymanager.core;
 
 import java.time.OffsetDateTime;
 
-public class LoanReservation {
+public class LoanReservation implements IDble{
 	
 	private int ID;
 	private OffsetDateTime timestamp;

@@ -20,7 +20,7 @@ package com.github.nbena.librarymanager.core;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-public class SeatReservation {
+public class SeatReservation implements IDble {
 	
 	private int ID;
 	private OffsetDateTime timestamp;

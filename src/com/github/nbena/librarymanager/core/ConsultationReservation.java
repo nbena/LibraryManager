@@ -21,7 +21,7 @@ package com.github.nbena.librarymanager.core;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-public class ConsultationReservation {
+public class ConsultationReservation implements IDble{
 	
 	private int ID;
 	

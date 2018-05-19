@@ -55,6 +55,16 @@ public class DbManager {
 		connection.close();
 	}
 	
+	String queryOnMultipleId(String initial, int length, boolean and){
+		String logical = and ? "and" : "or";
+		String query = initial;
+		for (int i=0;i<length;i++){
+			query += "id=? "+logical;
+		}
+		query = query.substring(0, query.lastIndexOf(logical));
+		return query;
+	}
+	
 	public User saveUser(User user) throws SQLException{
 		
 		String query = "insert into user (name, surname, email, password, internal) values (?,?,?,?) returning id";

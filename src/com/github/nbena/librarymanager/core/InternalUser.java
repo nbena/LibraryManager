@@ -28,6 +28,10 @@ public class InternalUser extends User {
 		super(iD, hashedPassword);
 	}
 
+	public InternalUser(String name, String surname, String hashedPassword, String email) {
+		super(name, surname, hashedPassword, email);
+	}
+
 	public InternalUser(int iD) {
 		super(iD);
 	}

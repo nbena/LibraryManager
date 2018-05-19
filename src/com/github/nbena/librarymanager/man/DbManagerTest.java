@@ -244,6 +244,10 @@ public class DbManagerTest {
 	  int count = getCountOf("select count (*) from seat_reservation where ", seatReservations);
 	  assertTrue(count == seatReservations.length);
 	  
+	  int availableSeats = db.getAvailableSeats(LocalDate.now()).size();
+	  
+	  assertTrue(availableSeats < seats.size());
+	  
 	  SeatReservation expected = seatReservations[0];
 	  SeatReservation got = db.getSeatReservationOrNothing(expected.getUser(), expected.getReservationDate());
 	  
@@ -252,6 +256,9 @@ public class DbManagerTest {
 	  db.cancelSeatReservation(got);
 	  count = getCountOf("select count (*) from seat_reservation where ", new SeatReservation[]{got});
 	  assertTrue(count == 0);
+	  
+	  int newAvailableSeats = db.getAvailableSeats(LocalDate.now()).size();
+	  assertTrue(availableSeats + 1 == newAvailableSeats);
 	  
 	  }
   

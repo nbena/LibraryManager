@@ -295,12 +295,14 @@ public class DbManager {
 		
 	}
 	
-	public List<Seat> getAvailableSeats(LocalDateTime date) throws SQLException{
+	public List<Seat> getAvailableSeats(LocalDate date) throws SQLException{
 		
-		String query = "select seat_number,table_number from seats where seats_number, table_number not in "+
-				"(select seat_number, table_number from seat_reservation where date = ?)";
+		String query = "select seat_number,table_number, free  from seat as s where not exists "+
+				"(select * from seat_reservation as sr where reservation_date = ? and "+
+				"s.seat_number = sr.seat_number and s.table_number = sr.table_number)";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
+		pstmt.setObject(1, date);
 		
 		ResultSet rs = pstmt.executeQuery();
 		

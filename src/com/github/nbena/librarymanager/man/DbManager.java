@@ -33,6 +33,7 @@ import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
+import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
@@ -59,15 +60,15 @@ public class DbManager {
 		String logical = and ? "and" : "or";
 		String query = initial;
 		for (int i=0;i<length;i++){
-			query += "id=? "+logical;
+			query += " id=? "+logical;
 		}
 		query = query.substring(0, query.lastIndexOf(logical));
 		return query;
 	}
 	
-	public User saveUser(User user) throws SQLException{
+	public User addUser(User user) throws SQLException{
 		
-		String query = "insert into user (name, surname, email, password, internal) values (?,?,?,?) returning id";
+		String query = "insert into lm_user(name, surname, email, password, internal) values (?,?,?,?,?) returning id";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		
@@ -80,7 +81,7 @@ public class DbManager {
 		ResultSet rs = pstmt.executeQuery();
 		
 		if (rs.next()){
-			int id = rs.getInt(0);
+			int id = rs.getInt(1);
 			user.setID(id);
 		}else{
 			throw new SQLException("User: cannot return id");
@@ -110,6 +111,26 @@ public class DbManager {
 		}
 		return book;
 	}
+	
+	public Copy addCopy(Copy copy, Book book) throws SQLException{
+		
+		String query = "insert into lm_copy(bookid, for_consultation) values (?,?) returning id";
+		
+		PreparedStatement pstmt = connection.prepareStatement(query);
+		
+		pstmt.setInt(1, book.getID());
+		pstmt.setBoolean(2, copy instanceof CopyForConsultation);
+		
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next()){
+			int id = rs.getInt(1);
+			copy.setID(id);
+		}else{
+			throw new SQLException("Copy: cannot return id");
+		}
+		return copy;
+	}
+	
 	
 	public Loan saveLoan(Loan loan) throws SQLException{
 		
@@ -146,16 +167,49 @@ public class DbManager {
 		
 	}
 	
-	public void deleteBook(Book book) throws SQLException{
-		
-		String query = "delete from book where id=?";
-		
+//	public void deleteBook(Book book) throws SQLException{
+//		
+//		String query = "delete from book where id=?";
+//		
+//		PreparedStatement pstmt = connection.prepareStatement(query);
+//		
+//		pstmt.setInt(1, book.getID());
+//		
+//		pstmt.execute();
+//		
+//	}
+//	
+//	private void deleteUser(User u){
+//		String query = "delete from lm_user where id=?";
+//		
+//		PreparedStatement pstmt = connection.prepareStatement(query);
+//		
+//		pstmt.setInt(1, user.getID());
+//		
+//		pstmt.execute();		
+//	}
+	
+	void deleteItem(IDble item) throws SQLException{
+		String table = "";
+		if (item instanceof Book){
+			table = "book";
+		}else if (item instanceof Copy || item instanceof CopyForConsultation){
+			table = "lm_copy";
+		}else if (item instanceof ConsultationReservation){
+			table = "consultation_reservation";
+		}else if (item instanceof User || item instanceof InternalUser){
+			table = "lm_user";
+		}else if (item instanceof Loan){
+			table = "loan";
+		}else if(item instanceof LoanReservation){
+			table = "loan_reservation";
+		}else if(item instanceof SeatReservation){
+			table = "seat_reservation";
+		}
+		String query = "delete from "+table+" where id=?";
 		PreparedStatement pstmt = connection.prepareStatement(query);
-		
-		pstmt.setInt(1, book.getID());
-		
+		pstmt.setInt(1, item.getID());
 		pstmt.execute();
-		
 	}
 	
 	public SeatReservation saveSeatReservation(SeatReservation reservation) throws SQLException{

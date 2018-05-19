@@ -32,7 +32,7 @@ create table lm_copy (
 	bookid integer,
 	for_consultation boolean not null default false,
 	primary key (id),
-	foreign key (id) references book(id) on update cascade on delete cascade
+	foreign key (bookid) references book(id) on update cascade on delete cascade
 );
 
 create table loan (
@@ -45,8 +45,8 @@ create table loan (
 	renew_available boolean not null default true,
 	restitution_date date default null,
 	primary key (id),
-	foreign key (userid) references lm_user(id) on update cascade on delete set null,
-	foreign key (copyid) references lm_copy(id) on update cascade on delete set null
+	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
+	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade
 );
 
 create table consultation (
@@ -56,8 +56,8 @@ create table consultation (
 	start_date timestamp with time zone not null,
 	end_date timestamp with time zone default null,
 	primary key (id),
-	foreign key (userid) references lm_user(id) on update cascade on delete set null,
-	foreign key (copyid) references lm_copy(id) on update cascade on delete set null
+	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
+	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade
 );
 
 create table seat_reservation (
@@ -78,8 +78,8 @@ create table loan_reservation (
 	time_stamp timestamp with time zone not null default current_timestamp,
 	done boolean not null default false,
 	primary key (id),
-	foreign key (userid) references lm_user(id) on update cascade on delete set null,
-	foreign key (copyid) references lm_copy(id) on update cascade on delete set null
+	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
+	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade
 );
 
 create table consultation_reservation (
@@ -91,8 +91,8 @@ create table consultation_reservation (
 	seat_number integer not null,
 	table_number integer not null,
 	primary key (id),
-	foreign key (userid) references lm_user(id) on update cascade on delete set null,
-	foreign key (copyid) references lm_copy(id) on update cascade on delete set null,
+	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
+	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade,
 	foreign key (seat_number, table_number) references
 		seat(seat_number, table_number) on update cascade on delete cascade
 );

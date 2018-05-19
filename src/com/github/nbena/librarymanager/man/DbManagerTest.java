@@ -6,13 +6,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.bouncycastle.util.Arrays;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.Copy;
+import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.User;
@@ -20,8 +23,20 @@ import com.github.nbena.librarymanager.core.User;
 public class DbManagerTest {
 	
 	private DbManager db;
-	private Book [] books;
+	
+	private boolean booksCreated = false;
+	private boolean usersCreated = false;
+	private boolean copiesCreated = false;
+	private boolean copiesForConsultationCreated = false;
+	
+	private boolean deleteBooks = false;
+	private boolean deleteCopies = false;
+	private boolean deleteUsers = false;
+
 	private User [] users;
+	private Book [] books;
+	private Copy [] copies;
+	private CopyForConsultation [] copiesForConsultation;
 	
 
 	@Before
@@ -50,15 +65,60 @@ public class DbManagerTest {
 						"user2@example.org",
 						"password2"						
 						)
+		};
+		copies = new Copy[]{
+				new Copy("Title1", new String[]{
+						"Me",
+						"You",
+					},
+						2018,
+						"Info",
+						"phouse"		
+						),
+				new Copy("Title1", new String[]{
+						"Me",
+						"You",
+					},
+						2018,
+						"Info",
+						"phouse")
+				
+		};
+		copiesForConsultation = new CopyForConsultation[]{
+				new CopyForConsultation("Title1", new String[]{
+						"Me",
+						"You",
+					},
+						2018,
+						"Info",
+						"phouse"		
+						),
+				new CopyForConsultation("Title1", new String[]{
+						"Me",
+						"You",
+					},
+						2018,
+						"Info",
+						"phouse")
+				
 		};		
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		for (Book b: books){
-			// System.out.println(b.getID());
-			db.deleteBook(b);
+		if (booksCreated && deleteBooks){
+			for (Book b: books){
+				db.deleteItem(b);
+			}
+			booksCreated = false;
 		}
+		if (usersCreated && deleteUsers){
+			for (User u: users){
+				db.deleteItem(u);
+			}
+			usersCreated = false;
+		}
+		// no need to delete copies
 		db.close();
 	}
 	
@@ -87,12 +147,13 @@ public class DbManagerTest {
 //		prepareMulti(initial, items).execute();
 //	}
 	
-	@Test
-	public void testAddBooks() throws SQLException{
+	
+	public void addBooks() throws SQLException{
 		for (Book b: books){
 			db.addBook(b);
 			// query += "id=? or";
 		}
+		booksCreated = true;
 		// query = query.substring(0, query.lastIndexOf("or"));
 //		String query = db.queryOnMultipleId(inital, books.length, false); 
 //		Connection c = db.connection;
@@ -110,10 +171,38 @@ public class DbManagerTest {
 	}
 	
 	
+  public void addUser() throws SQLException{
+	  for (User u: users){
+		  db.addUser(u);
+	  }
+	  usersCreated = true;
+	  int count = getCountOf("select count (*) from lm_user where ", users);
+	  assertTrue(count == users.length);
+  }
+  
+
+  public void addCopies() throws SQLException{
+	  addBooks();
+	  Copy [] allCopies = (Copy[])ArrayUtils.addAll(copies, copiesForConsultation);
+	  for (Copy c: allCopies){
+		  db.addCopy(c, books[0]);
+	  }
+	  int count = getCountOf("select count (*) from lm_copy where ", allCopies);
+	  assertTrue(count == copies.length + copiesForConsultation.length);
+	  copiesCreated = false;
+  }
+  
   @Test
-  public void testAddUser(){
-	  int i = 0;
-	  String inital = "select count (*)";
+  public void testAddCopies() throws SQLException{
+	  addCopies();
+	  deleteCopies = true;
+	  deleteBooks = true;
+  }
+  
+  @Test
+  public void testAddUsers() throws SQLException{
+	  addUser();
+	  deleteUsers = true;
   }
 	
 	

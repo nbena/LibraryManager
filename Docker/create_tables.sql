@@ -55,7 +55,7 @@ create table consultation (
 	id serial,
 	userid integer not null,
 	copyid integer not null,
-	start_date timestamp with time zone not null,
+	start_date timestamp with time zone not null default current_timestamp,
 	end_date timestamp with time zone default null,
 	primary key (id),
 	foreign key (userid) references lm_user(id) on update cascade on delete cascade,

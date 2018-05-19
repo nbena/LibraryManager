@@ -7,15 +7,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bouncycastle.util.Arrays;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
@@ -36,12 +37,14 @@ public class DbManagerTest {
 	private boolean seatReservationsCreated = false;
 	private boolean loanReservationsCreated = false;
 	private boolean consultationReservationsCreated = false;
+	private boolean consultationsCreated = false;
 	
 	private boolean deleteBooks = false;
 	private boolean deleteUsers = false;
 	private boolean deleteSeatReservations = false;
 	private boolean deleteLoanReservations = false;
 	private boolean deleteConsultationReservations = false;
+	private boolean deleteConsultations = false;
 
 	private User [] users;
 	private Book [] books;
@@ -52,7 +55,8 @@ public class DbManagerTest {
 	private List<Seat> seats;
 	private SeatReservation [] seatReservations;
 	private ConsultationReservation [] consultationReservations;
-
+	private Consultation [] consultations;
+	
 	@Before
 	public void setUp() throws Exception {
 		this.db = new DbManager("localhost:5434/docker", "docker", "docker");
@@ -140,6 +144,12 @@ public class DbManagerTest {
 						this.copiesForConsultation[1], this.seats.get(1)
 						),			
 		};
+		this.consultations = new Consultation[]{
+				new Consultation(
+						  this.consultationReservations[1].getUser(),
+						  this.consultationReservations[1].getCopy()
+						  )			
+		};
 	}
 
 	@After
@@ -175,6 +185,12 @@ public class DbManagerTest {
 			}
 			this.consultationReservationsCreated = false;
 		}
+		if (this.consultationsCreated && this.deleteConsultations){
+			for(Consultation c: this.consultations){
+				this.db.deleteItem(c);
+			}
+			this.consultationsCreated = false;
+		}		
 		this.db.close();
 	}
 	
@@ -257,16 +273,18 @@ public class DbManagerTest {
 	  // loansCreated = true;
   }
   
-  public void updateLoan() throws SQLException{
-	  addLoan();
-	  Loan l = loans[0];
-	  l.setRenewAvailable(false);
-  }
+//  public void updateLoan() throws SQLException{
+//	  addLoan();
+//	  Loan l = loans[0];
+//	  l.setRenewAvailable(false);
+//  }
   
   public void loanOps() throws SQLException{
-	  addCopies();
+	  this.addCopies();
 	  
-	  addLoan();
+	  this.addLoan();
+	  Loan l = loans[0];
+	  l.setRenewAvailable(false);
 	  
 	  for (LoanReservation lr: this.loanReservations){
 		  this.db.addLoanReservation(lr);
@@ -346,7 +364,19 @@ public class DbManagerTest {
 		  thrown = true;
 		  assertTrue(e.getMessage().contains("violates unique constraint"));
 	  }
-	  assertTrue(thrown);	  
+	  assertTrue(thrown);
+	  
+	  for(Consultation c: this.consultations){
+		  db.startConsultation(c);
+	  }
+	  
+	  count = getCountOf("select count (*) from consultation where ",
+			 this.consultations);
+	  
+	  assertTrue(count == this.consultations.length);
+	  
+	  
+	  
   }
   
   public void seatReservationOps() throws SQLException{
@@ -405,6 +435,7 @@ public class DbManagerTest {
 	  this.deleteBooks = true;
 	  this.deleteUsers = true;
 	  this.deleteConsultationReservations = true;
+	  this.deleteConsultations = true;
   }
   
 //  @Test

@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
@@ -65,32 +66,32 @@ public class LibraryManager {
 	
 	
 	public SeatReservation tryReserveSeat(InternalUser user, LocalDate date) throws ReservationException, SQLException{
+		
 			List<Seat> seats = this.dbManager.getAvailableSeats(date);
-			if (seats.size() > 0){
-				SeatReservation reservation = new SeatReservation(user, date, seats.get(0));
-				this.dbManager.addSeatReservation(reservation);
-				return reservation;
-			}else{
+			if (seats.size() <= 0){
 				throw new ReservationException("No seats available");
-			}			
+			}
+
+			SeatReservation reservation = new SeatReservation(user, date, seats.get(0));
+			this.dbManager.addSeatReservation(reservation);
+			return reservation;			
 	}
 	
 	public ConsultationReservation tryReserveConsultation(InternalUser user, Book book, LocalDate date) throws ReservationException, SQLException{
 
 		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, date);
-		if (copy != null){
-			List<Seat> seats = this.dbManager.getAvailableSeats(date);
-			if (seats.size() > 0){
-				ConsultationReservation reservation = new ConsultationReservation(
-						user, date, copy, seats.get(0));
-				this.dbManager.addConsultationReservation(reservation);
-				return reservation;
-			}else{
-				throw new ReservationException("No seats available");
-			}
-		}else{
+		if (copy == null){
 			throw new ReservationException("No copies available");
 		}
+		List<Seat> seats = this.dbManager.getAvailableSeats(date);
+		if (seats.size() <= 0){
+			throw new ReservationException("No seats available");
+		}
+
+		ConsultationReservation reservation = new ConsultationReservation(
+						user, date, copy, seats.get(0));
+		this.dbManager.addConsultationReservation(reservation);
+		return reservation;
 	}
 	
 	public void addBook(Book book) throws SQLException{
@@ -107,12 +108,12 @@ public class LibraryManager {
 	
 	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
 		Loan loan = this.dbManager.getLoanByUserCopy(user, copy, false);
-		if (loan != null){
-			loan.setEnd(LocalDate.now());
-			this.dbManager.registerLoanDelivered(loan);
-		}else{
+		if (loan == null){
 			throw new ReservationException("Loan not found");
 		}
+
+		loan.setEnd(LocalDate.now());
+		this.dbManager.registerLoanDelivered(loan);			
 	}
 	
 	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
@@ -123,13 +124,12 @@ public class LibraryManager {
 	
 	public Loan loanReserved(InternalUser user, Copy copy) throws ReservationException, SQLException{
 		LoanReservation reservation = this.dbManager.getLoanReservationByUserCopy(user, copy);
-		if (reservation != null){
-			Loan loan = reservation.createLoan();
-			this.dbManager.addLoan(loan);
-			return loan;
-		}else{
+		if (reservation == null){
 			throw new ReservationException("Reservation not found");
 		}
+		Loan loan = reservation.createLoan();
+		this.dbManager.addLoan(loan);
+		return loan;
 	}
 	
 	
@@ -143,6 +143,26 @@ public class LibraryManager {
 			possible = false;
 		}
 		return possible;
+	}
+	
+	public Seat startNotReservedConsultation(User user, Book book) throws SQLException, ReservationException{
+		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, LocalDate.now());
+		if (copy == null){
+			throw new ReservationException("No copies available");
+		}
+		List<Seat> seats = this.dbManager.getAvailableSeats(LocalDate.now());
+		if (seats.size() <= 0){
+			throw new ReservationException("No seats available");
+		}
+		Seat seat = seats.get(0);
+		seat.setFree(false);
+		
+		Consultation consultation = copy.startConsultation(user);
+		
+		this.dbManager.startConsultation(consultation);
+		this.dbManager.setSeatOccupied(seat, true);
+		
+		return seat;
 	}
 	
 	

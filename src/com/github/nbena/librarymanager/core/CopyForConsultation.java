@@ -18,6 +18,9 @@
 
 package com.github.nbena.librarymanager.core;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+
 public class CopyForConsultation extends Copy {
 
 	private boolean inConsultation;
@@ -44,6 +47,12 @@ public class CopyForConsultation extends Copy {
 				c.getPublishingHouse()
 				);
 		return copy;
+	}
+	
+	public Consultation startConsultation(User user){
+		Consultation consultation = new Consultation(user, this);
+		consultation.setStart(OffsetDateTime.now());
+		return consultation;
 	}
 
 }

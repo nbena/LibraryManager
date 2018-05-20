@@ -7,6 +7,7 @@ import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.man.LibraryManager;
 
@@ -51,6 +52,10 @@ public class LibrarianModel extends AbstractModel {
 	
 	public boolean renewLoan(Loan loan) throws SQLException{
 		return super.manager.tryRenewLoan(loan);
+	}
+	
+	public Seat startNotReservedConsultation(User user, Book book) throws SQLException, ReservationException{
+		return super.manager.startNotReservedConsultation(user, book);
 	}
 
 }

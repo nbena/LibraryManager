@@ -28,6 +28,7 @@ import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
+import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
@@ -104,13 +105,13 @@ public class LibraryManager {
 		this.dbManager.deleteItem(reservation);
 	}
 	
-	public void deliveryBook(User user, Copy copy) throws SQLException{
+	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
 		Loan loan = this.dbManager.getLoanByUserCopy(user, copy, false);
 		if (loan != null){
 			loan.setEnd(LocalDate.now());
 			this.dbManager.registerLoanDelivered(loan);
 		}else{
-			throw new SQLException("Loan not found");
+			throw new ReservationException("Loan not found");
 		}
 	}
 	
@@ -120,8 +121,28 @@ public class LibraryManager {
 		return loan;
 	}
 	
-	public Loan loanReserved(InternalUser user, Copy copy){
-		return null;
+	public Loan loanReserved(InternalUser user, Copy copy) throws ReservationException, SQLException{
+		LoanReservation reservation = this.dbManager.getLoanReservationByUserCopy(user, copy);
+		if (reservation != null){
+			Loan loan = reservation.createLoan();
+			this.dbManager.addLoan(loan);
+			return loan;
+		}else{
+			throw new ReservationException("Reservation not found");
+		}
+	}
+	
+	
+	public boolean tryRenewLoan(Loan loan) throws SQLException{
+		boolean possible = true;
+		if(loan.isRenewAvailable()){
+			loan.setRenewAvailable(false);
+			loan.setRestitutionDate(LocalDate.now().plusMonths(Loan.MAX_MONTHS_SINGLE_LOAN_DURATION));
+			this.dbManager.updateLoan(loan);
+		}else{
+			possible = false;
+		}
+		return possible;
 	}
 	
 	

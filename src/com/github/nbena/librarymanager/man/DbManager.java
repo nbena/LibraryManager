@@ -425,7 +425,6 @@ public class DbManager {
 			Copy copy = getCopyFrom(rs, 2);
 			
 			LoanReservation reservation = new LoanReservation(id, user, copy, timestamp);
-			reservation.setTimestamp(timestamp);
 			
 			reservations.add(reservation);
 			
@@ -436,8 +435,24 @@ public class DbManager {
 	
 	public LoanReservation getLoanReservationByUserCopy(InternalUser user, Copy copy) throws SQLException{
 		
-		String query = "select id, time_stamp";
-		return null;
+		String query = "select id, time_stamp from loan_reservation "+
+						"where userid=? and copyid=? and done = false "+
+						"order by time_stamp desc limit 1";
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		pstmt.setInt(1, user.getID());
+		pstmt.setInt(2, copy.getID());
+		
+		LoanReservation reservation = null;
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next()){
+			
+			int id = rs.getInt(1);
+			OffsetDateTime timestamp = rs.getObject(2, OffsetDateTime.class);
+			reservation = new LoanReservation(id, user, copy, timestamp);
+			
+		}
+		return reservation;
 	}
 	
 	private Loan getLoanFrom(ResultSet rs, int startingIndex, Copy copy, User user) throws SQLException{

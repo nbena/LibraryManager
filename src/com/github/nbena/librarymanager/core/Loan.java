@@ -30,6 +30,8 @@ public class Loan implements IDble {
 	private boolean renewAvailable;
 	int ID;
 	
+	public static final int MAX_MONTHS_SINGLE_LOAN_DURATION = 2;
+	
 	public Loan(User user, Copy copy){
 		this.user = user;
 		this.copy = copy;
@@ -80,10 +82,6 @@ public class Loan implements IDble {
 	public void setID(int iD) {
 		ID = iD;
 	}
-
-
-
-	public static final int ONE_LOAN_MAX_DURATION_MONTH = 4;
 
 //	public Loan(User user, Copy copy, boolean setOthers) {
 //		this.user = user;

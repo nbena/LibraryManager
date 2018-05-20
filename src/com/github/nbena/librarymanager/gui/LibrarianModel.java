@@ -6,6 +6,7 @@ import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
+import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.man.LibraryManager;
 
@@ -36,7 +37,7 @@ public class LibrarianModel extends AbstractModel {
 		super.manager.deleteBook(book);
 	}
 	
-	public void deliveryBook(User user, Copy copy) throws SQLException{
+	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
 		super.manager.deliveryBook(user, copy);
 	}
 	
@@ -44,8 +45,12 @@ public class LibrarianModel extends AbstractModel {
 		return super.manager.loanNotReserved(user, copy);
 	}
 	
-	public Loan loanReserved(InternalUser user, Copy copy){
-		return null;
+	public Loan loanReserved(InternalUser user, Copy copy) throws ReservationException, SQLException{
+		return super.manager.loanReserved(user, copy);
+	}
+	
+	public boolean renewLoan(Loan loan) throws SQLException{
+		return super.manager.tryRenewLoan(loan);
 	}
 
 }

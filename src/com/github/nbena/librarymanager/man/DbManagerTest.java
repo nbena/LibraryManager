@@ -308,6 +308,9 @@ public class DbManagerTest {
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  
+	  got = this.db.getLoanReservationByUserCopy(expected.getUser(), expected.getCopy());
+	  assertTrue(got.getID() ==  expected.getID());
+	  
 	  // this.db.cancelLoanReservation(got);
 	  this.db.deleteItem(got);
 	  

@@ -57,5 +57,9 @@ public class LibrarianModel extends AbstractModel {
 	public Seat startNotReservedConsultation(User user, Book book) throws SQLException, ReservationException{
 		return super.manager.startNotReservedConsultation(user, book);
 	}
+	
+	public Seat startReservedConsultation(InternalUser user, Book book) throws SQLException, ReservationException{
+		return super.manager.startReservedConsultation(user, book);
+	}
 
 }

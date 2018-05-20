@@ -94,6 +94,10 @@ public class LibraryManager {
 		return reservation;
 	}
 	
+	public Loan tryReserveLoan(InternalUser user, Copy copy){
+		
+	}	
+	
 	public void addBook(Book book) throws SQLException{
 		this.dbManager.addBook(book);
 	}
@@ -165,7 +169,23 @@ public class LibraryManager {
 		return seat;
 	}
 	
-	
+	public Seat startReservedConsultation(InternalUser user, Book book) throws SQLException, ReservationException{
+		ConsultationReservation reservation = this.dbManager.getConsultationReservation(user, book, LocalDate.now());
+		if (reservation == null){
+			throw new ReservationException("Reservation not found");
+		}
+		
+		Consultation consultation = reservation.getCopy().startConsultation(user);
+		
+		Seat seat = reservation.getSeat();
+		seat.setFree(false);
+		
+		this.dbManager.startConsultation(consultation);
+		this.dbManager.setSeatOccupied(seat, false);
+		
+		return seat;
+		
+	}
 	
 
 }

@@ -28,7 +28,6 @@ import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;

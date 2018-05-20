@@ -235,6 +235,11 @@ public class LibraryManager {
 		}
 		return seat;
 	}
+	
+	public void deliveryConsultation(Consultation consultation) throws SQLException{
+		consultation.getCopy().setInConsultation(false);
+		this.dbManager.endConsultation(consultation);
+	}
 
 
 }

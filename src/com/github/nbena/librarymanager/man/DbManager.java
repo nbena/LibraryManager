@@ -493,6 +493,26 @@ public class DbManager {
 		}
 		return loan;
 	}
+		
+	
+	public Loan getActiveLoanByCopy(Copy copy) throws SQLException{
+		String query = "select id, start_date, end_date, restitution_date, renew_available, userid "+
+						"from loan where copyid = ? and end_date is null";
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		pstmt.setInt(1, copy.getID());
+		
+		ResultSet rs = pstmt.executeQuery();
+		Loan loan = null;
+		if(rs.next()){
+			
+			User user = new User(rs.getInt(6));
+			loan = this.getLoanFrom(rs, 1, copy, user);
+		}
+		
+		return loan;
+	}
 	
 	public void setSeatOccupied(Seat seat, boolean occupied) throws SQLException{
 		String query = "update seat set free=? where table_number=? and seat_number=?";

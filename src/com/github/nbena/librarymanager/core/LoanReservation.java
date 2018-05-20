@@ -38,10 +38,8 @@ public class LoanReservation extends AbstractReservation {
 		this.copy = copy;
 	}
 
-	public LoanReservation(InternalUser user, Copy copy, boolean setTimestamp) {
-		if (setTimestamp){
-			super.timestamp = OffsetDateTime.now();
-		}
+	public LoanReservation(InternalUser user, Copy copy) {
+		super.timestamp = OffsetDateTime.now();
 		super.user = user;
 		this.copy = copy;
 	}

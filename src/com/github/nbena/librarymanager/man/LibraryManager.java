@@ -27,6 +27,7 @@ import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
+import com.github.nbena.librarymanager.core.CopyStatus;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
@@ -94,8 +95,28 @@ public class LibraryManager {
 		return reservation;
 	}
 	
-	public Loan tryReserveLoan(InternalUser user, Copy copy){
+	public LoanReservation tryReserveLoan(InternalUser user, Copy copy) throws SQLException, ReservationException{
 		
+		if(copy.getStatus() == CopyStatus.RESERVED){
+			throw new ReservationException("This copy is already reserved");
+		}
+
+		Loan loan = this.dbManager.getActiveLoanByCopy(copy);
+		if(loan != null){
+			if (!loan.isRenewAvailable()){
+				loan.setRenewAvailable(false);
+				this.dbManager.updateLoan(loan);
+			}
+		}
+		
+		copy.setStatus(CopyStatus.RESERVED);
+		// no need to update in the db because we have a trigger that does it
+		// for us when a new loan is inserted.
+		
+		LoanReservation reservation = new LoanReservation(user, copy);
+		this.dbManager.addLoanReservation(reservation);
+		
+		return reservation;
 	}	
 	
 	public void addBook(Book book) throws SQLException{

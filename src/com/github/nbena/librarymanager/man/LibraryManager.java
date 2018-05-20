@@ -114,6 +114,16 @@ public class LibraryManager {
 		}
 	}
 	
+	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
+		Loan loan = new Loan(user, copy);
+		this.dbManager.addLoan(loan);
+		return loan;
+	}
+	
+	public Loan loanReserved(InternalUser user, Copy copy){
+		
+	}
+	
 	
 	
 

@@ -29,7 +29,7 @@ public class LoanReservation extends AbstractReservation {
 	
 	
 
-	public LoanReservation(int iD, OffsetDateTime timestamp, InternalUser user, Copy copy) {
+	public LoanReservation(int iD, OffsetDateTime timestamp, InternalUser user, Copy copy, boolean done) {
 		super.ID = iD;
 		super.timestamp = timestamp;
 		super.user = user;

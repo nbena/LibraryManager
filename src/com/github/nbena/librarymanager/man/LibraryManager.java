@@ -78,6 +78,18 @@ public class LibraryManager {
 			return reservation;			
 	}
 	
+	private Seat getAndSetSeatOccupied(LocalDate date) throws SQLException, ReservationException{
+		List<Seat> seats = this.dbManager.getAvailableSeats(date);
+		if (seats.size() <= 0){
+			throw new ReservationException("No seats available");
+		}
+		
+		Seat seat = seats.get(0);
+		seat.setFree(false);
+		this.dbManager.setSeatOccupied(seat, true);
+		return seat;
+	}
+	
 	public ConsultationReservation tryReserveConsultation(InternalUser user, Book book, LocalDate date) throws ReservationException, SQLException{
 
 		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, date);
@@ -208,5 +220,20 @@ public class LibraryManager {
 		
 	}
 	
+	public Seat getOrAssignSeat(User user) throws SQLException, ReservationException{
+		Seat seat = null;
+		if (user instanceof InternalUser){
+			SeatReservation reservation = this.dbManager.getSeatReservationOrNothing((InternalUser) user, LocalDate.now());
+			if (reservation != null){
+				seat = reservation.getSeat();
+			}else{
+				seat = this.getAndSetSeatOccupied(LocalDate.now());
+			}
+		}else{
+			seat = this.getAndSetSeatOccupied(LocalDate.now());
+		}
+		return seat;
+	}
+
 
 }

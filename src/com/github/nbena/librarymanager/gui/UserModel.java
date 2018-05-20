@@ -6,7 +6,9 @@ import java.time.LocalDate;
 import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
+import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.core.User;
@@ -37,6 +39,10 @@ public class UserModel extends AbstractModel {
 	
 	public void cancelReservation(AbstractReservation reservation) throws SQLException{
 		super.manager.cancelReservation(reservation);
+	}
+	
+	public LoanReservation reserveLoan(Copy copy) throws SQLException, ReservationException{
+		return super.manager.tryReserveLoan((InternalUser) super.user, copy);
 	}
 
 

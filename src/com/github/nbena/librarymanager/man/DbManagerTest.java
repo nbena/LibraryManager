@@ -123,6 +123,10 @@ public class DbManagerTest {
 				new Loan(
 						users[0],
 						copies[0]
+						),
+				new Loan(
+						users[0],
+						copies[1]
 						)
 		};
 		seats = this.db.getSeats();
@@ -132,7 +136,7 @@ public class DbManagerTest {
 		};
 		loanReservations = new LoanReservation[]{
 				new LoanReservation(
-						(InternalUser)users[1], copies[1], true)
+						(InternalUser)users[1], copies[1])
 		};
 		this.consultationReservations = new ConsultationReservation[]{
 				new ConsultationReservation(
@@ -283,7 +287,7 @@ public class DbManagerTest {
 	  this.addCopies();
 	  
 	  this.addLoan();
-	  Loan l = loans[0];
+	  Loan l = this.loans[0];
 	  l.setRenewAvailable(false);
 	  
 	  Loan gotLoan = this.db.getLoanByUserCopy(l.getUser(), l.getCopy(), false);
@@ -293,6 +297,9 @@ public class DbManagerTest {
 	  gotLoan = this.db.getLoanByUserCopy(l.getUser(), l.getCopy(), true);
 	  assertTrue(gotLoan != null);
 	  assertTrue(gotLoan.getRestitutionDate().equals(LocalDate.now()));
+	  
+	  gotLoan = this.db.getActiveLoanByCopy(this.loans[1].getCopy());
+	  assertTrue(gotLoan.getID() == this.loans[1].getID());
 	  
 	  
 	  

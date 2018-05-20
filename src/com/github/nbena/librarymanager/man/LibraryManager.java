@@ -21,6 +21,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.ConsultationReservation;
+import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
@@ -57,8 +60,7 @@ public class LibraryManager {
 	}
 	
 	
-	public SeatReservation tryReserveSeat(InternalUser user, LocalDate date) throws ReservationException{
-		try{
+	public SeatReservation tryReserveSeat(InternalUser user, LocalDate date) throws ReservationException, SQLException{
 			List<Seat> seats = this.dbManager.getAvailableSeats(date);
 			if (seats.size() > 0){
 				SeatReservation reservation = new SeatReservation(user, date, seats.get(0));
@@ -67,8 +69,23 @@ public class LibraryManager {
 			}else{
 				throw new ReservationException("No seats available");
 			}			
-		}catch(SQLException e){
-			throw new ReservationException(e);
+	}
+	
+	public ConsultationReservation tryReserveConsultation(InternalUser user, Book book, LocalDate date) throws ReservationException, SQLException{
+
+		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, date);
+		if (copy != null){
+			List<Seat> seats = this.dbManager.getAvailableSeats(date);
+			if (seats.size() > 0){
+				ConsultationReservation reservation = new ConsultationReservation(
+						user, date, copy, seats.get(0));
+				this.dbManager.addConsultationReservation(reservation);
+				return reservation;
+			}else{
+				throw new ReservationException("No seats available");
+			}
+		}else{
+			throw new ReservationException("No copies available");
 		}
 	}
 	

@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -370,8 +369,16 @@ public class DbManagerTest {
 		  db.startConsultation(c);
 	  }
 	  
-	  count = getCountOf("select count (*) from consultation where ",
+	  count = this.getCountOf("select count (*) from consultation where ",
 			 this.consultations);
+	  
+	  assertTrue(count == this.consultations.length);
+	  
+	  for(Consultation c: this.consultations){
+		  db.endConsultation(c);
+	  }
+	  
+	  count = this.getCountOf("select count (*) from consultation where end_date is not null and ", this.consultations);
 	  
 	  assertTrue(count == this.consultations.length);
 	  

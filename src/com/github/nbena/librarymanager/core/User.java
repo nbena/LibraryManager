@@ -109,6 +109,10 @@ public class User implements IDble{
 		this.hashedPassword = hashedPassword;
 	}
 	
+	public void hashPassword(){
+		
+	}
+	
 	
 	
 

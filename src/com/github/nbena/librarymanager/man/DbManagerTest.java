@@ -126,6 +126,7 @@ public class DbManagerTest {
 						)
 		};
 		seats = this.db.getSeats();
+		assertTrue(seats.size() > 0);
 		seatReservations = new SeatReservation[]{
 				new SeatReservation((InternalUser)users[1], LocalDate.now(), this.seats.get(0))
 		};

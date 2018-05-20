@@ -419,22 +419,12 @@ public class DbManager {
 		while (rs.next()){
 			
 			int id = rs.getInt(1);
-//			int copyid = rs.getInt(1);
-//			String title = rs.getString(1);
-//			int year = rs.getInt(3);
-//			String topic = rs.getString(4);
-//			String phouse = rs.getString(5);
 			
 			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(9, OffsetDateTime.class);
 			
-//			String[] authors = (String[]) rs.getArray(2).getArray();
-//			
-//			Copy copy = new Copy(title, authors, year, topic, phouse);
-//			copy.setID(copyid);
-			
 			Copy copy = getCopyFrom(rs, 2);
 			
-			LoanReservation reservation = new LoanReservation(id, timestamp, user, copy);
+			LoanReservation reservation = new LoanReservation(id, user, copy, timestamp);
 			reservation.setTimestamp(timestamp);
 			
 			reservations.add(reservation);
@@ -445,6 +435,8 @@ public class DbManager {
 	}
 	
 	public LoanReservation getLoanReservationByUserCopy(InternalUser user, Copy copy) throws SQLException{
+		
+		String query = "select id, time_stamp";
 		return null;
 	}
 	
@@ -514,7 +506,7 @@ public class DbManager {
 			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(4, OffsetDateTime.class);
 			LocalDate reservationDate = (LocalDate) rs.getObject(5, LocalDate.class);
 			Seat seat = new Seat(rs.getInt(2), rs.getInt(3), false);
-			reservation = new SeatReservation(id, timestamp, reservationDate, user, seat);
+			reservation = new SeatReservation(id, reservationDate, user, seat, timestamp);
 		}
 		return reservation;
 	}

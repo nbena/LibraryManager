@@ -28,29 +28,24 @@ public class SeatReservation extends AbstractReservation {
 	// private InternalUser user;
 	private Seat seat;
 
-	public SeatReservation(int iD, OffsetDateTime timestamp, LocalDate reservationDate, InternalUser user,
-			Seat seat) {
-		super.ID = iD;
-		super.timestamp = timestamp;
+	public SeatReservation(int ID, LocalDate reservationDate, InternalUser user,
+			Seat seat, OffsetDateTime timestamp) {
+		// super.ID = iD;
+		// super.timestamp = timestamp;
+		super(ID, user, timestamp);
 		this.reservationDate = reservationDate;
-		super.user = user;
+		// super.user = user;
 		this.seat = seat;
 	}
 
 	public SeatReservation(InternalUser user, LocalDate reservationDate, Seat seat) {
-		super.timestamp = OffsetDateTime.now();
+		// super.timestamp = OffsetDateTime.now();
+		super(user, OffsetDateTime.now());
 		this.reservationDate = reservationDate;
-		super.user = user;
+		// super.user = user;
 		this.seat = seat;
 	}
 
-	public OffsetDateTime getTimestamp() {
-		return super.timestamp;
-	}
-
-	public void setTimestamp(OffsetDateTime timestamp) {
-		super.timestamp = timestamp;
-	}
 
 	public LocalDate getReservationDate() {
 		return reservationDate;
@@ -60,28 +55,18 @@ public class SeatReservation extends AbstractReservation {
 		this.reservationDate = reservationDate;
 	}
 
-	public InternalUser getUser() {
-		return super.user;
-	}
-
-	public void setUser(InternalUser user) {
-		super.user = user;
-	}
 
 	public Seat getSeat() {
-		return seat;
+		return this.seat;
 	}
 
 	public void setSeat(Seat seat) {
 		this.seat = seat;
 	}
 
-	public int getID() {
-		return super.ID;
-	}
-
-	public void setID(int iD) {
-		super.ID = iD;
+	
+	public boolean isDone(){
+		return this.reservationDate.isBefore(LocalDate.now());
 	}
 	
 	

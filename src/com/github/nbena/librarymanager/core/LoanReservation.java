@@ -26,13 +26,15 @@ public class LoanReservation extends AbstractReservation {
 	// private OffsetDateTime timestamp;
 	// private InternalUser user;
 	private Copy copy;
+	private boolean done;
 	
 	
 
-	public LoanReservation(int iD, OffsetDateTime timestamp, InternalUser user, Copy copy, boolean done) {
-		super.ID = iD;
-		super.timestamp = timestamp;
-		super.user = user;
+	public LoanReservation(int ID, InternalUser user, Copy copy, OffsetDateTime timestamp) {
+		// super.ID = iD;
+		// super.timestamp = timestamp;
+		// super.user = user;
+		super(ID, user, timestamp);
 		this.copy = copy;
 	}
 
@@ -44,17 +46,6 @@ public class LoanReservation extends AbstractReservation {
 		this.copy = copy;
 	}
 
-	public OffsetDateTime getTimestamp() {
-		return super.timestamp;
-	}
-	
-	public InternalUser getUser() {
-		return super.user;
-	}
-
-	public void setUser(InternalUser user) {
-		super.user = user;
-	}
 
 	public Copy getCopy() {
 		return copy;
@@ -69,16 +60,13 @@ public class LoanReservation extends AbstractReservation {
 		return new Loan(this.user, this.copy);
 	}
 
-	public int getID() {
-		return super.ID;
+
+	public boolean isDone() {
+		return done;
 	}
 
-	public void setID(int iD) {
-		super.ID = iD;
-	}
-
-	public void setTimestamp(OffsetDateTime timestamp) {
-		super.timestamp = timestamp;
+	public void setDone(boolean done) {
+		this.done = done;
 	}
 	
 	

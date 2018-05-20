@@ -7,18 +7,46 @@ public abstract class AbstractReservation implements IDble{
 	protected OffsetDateTime timestamp;
 	protected int ID;
 	protected InternalUser user;
-	protected boolean done;
 	
-	protected AbstractReservation(){
-		
-	}
+	public abstract boolean isDone();
 
-	public AbstractReservation(OffsetDateTime timestamp, InternalUser user, boolean done) {
-		this.timestamp = timestamp;
+	protected AbstractReservation(int iD, InternalUser user, OffsetDateTime timestamp) {
+		ID = iD;
 		this.user = user;
-		this.done = done;
+		this.timestamp = timestamp;
+	}
+
+	protected AbstractReservation(InternalUser user, OffsetDateTime timestamp) {
+		this.user = user;
+		this.timestamp = timestamp;
+	}
+	
+	protected AbstractReservation(){}
+
+	public OffsetDateTime getTimestamp() {
+		return this.timestamp;
+	}
+
+	public void setTimestamp(OffsetDateTime timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public int getID() {
+		return this.ID;
+	}
+
+	public void setID(int ID) {
+		this.ID = ID;
+	}
+
+	public InternalUser getUser() {
+		return user;
+	}
+
+	public void setUser(InternalUser user) {
+		this.user = user;
 	}
 	
 	
-
+	
 }

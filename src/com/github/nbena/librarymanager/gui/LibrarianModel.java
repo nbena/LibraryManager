@@ -45,7 +45,7 @@ public class LibrarianModel extends AbstractModel {
 	}
 	
 	public Loan loanReserved(InternalUser user, Copy copy){
-		
+		return null;
 	}
 
 }

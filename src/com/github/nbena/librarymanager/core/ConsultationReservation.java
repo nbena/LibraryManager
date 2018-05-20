@@ -33,31 +33,27 @@ public class ConsultationReservation extends AbstractReservation {
 	// private OffsetDateTime timestamp;
 
 	
-	public ConsultationReservation(int iD, InternalUser user, CopyForConsultation copy, Seat seat,
+	public ConsultationReservation(int ID, InternalUser user, CopyForConsultation copy, Seat seat,
 			LocalDate reservationDate, OffsetDateTime timestamp) {
-		super.ID = iD;
-		super.user = user;
+		// super.ID = iD;
+		// super.user = user;
+		super(ID, user, timestamp);
 		this.copy = copy;
 		this.seat = seat;
 		this.reservationDate = reservationDate;
-		super.timestamp = timestamp;
+		// super.timestamp = timestamp;
 	}
 
 	public ConsultationReservation(InternalUser user, LocalDate reservationDate, CopyForConsultation copy, Seat seat
 			) {
-		super.user = user;
+		super(user, OffsetDateTime.now());
+		// super.user = user;
 		this.copy = copy;
 		this.seat = seat;
 		this.reservationDate = reservationDate;
-		super.timestamp = OffsetDateTime.now();
+		// super.timestamp = OffsetDateTime.now();
 	}
 
-	public InternalUser getUser() {
-		return super.user;
-	}
-	public void setUser(InternalUser user) {
-		super.user = user;
-	}
 	public CopyForConsultation getCopy() {
 		return copy;
 	}
@@ -76,20 +72,9 @@ public class ConsultationReservation extends AbstractReservation {
 	public void setReservationDate(LocalDate reservationDate) {
 		this.reservationDate = reservationDate;
 	}
-	public OffsetDateTime getTimestamp() {
-		return super.timestamp;
-	}
-
-	public int getID() {
-		return super.ID;
-	}
-
-	public void setID(int iD) {
-		super.ID = iD;
-	}
-
-	public void setTimestamp(OffsetDateTime timestamp) {
-		super.timestamp = timestamp;
+	
+	public boolean isDone(){
+		return this.reservationDate.isAfter(LocalDate.now());
 	}
 
 }

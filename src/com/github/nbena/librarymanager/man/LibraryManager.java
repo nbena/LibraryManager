@@ -121,7 +121,7 @@ public class LibraryManager {
 	}
 	
 	public Loan loanReserved(InternalUser user, Copy copy){
-		
+		return null;
 	}
 	
 	

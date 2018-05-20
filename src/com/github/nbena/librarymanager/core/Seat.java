@@ -50,6 +50,11 @@ public class Seat {
 		this.free = free;
 	}
 	
+	public boolean equals(Seat s){
+		return (s != null && s.getNumber() == this.number
+				&& s.getTableNumber() == this.tableNumber);
+	}
+	
 	
 	
 

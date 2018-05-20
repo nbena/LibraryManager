@@ -33,12 +33,13 @@ public class Turnstile {
 		return this.controller.sendRequestForUser(user);
 	}
 	
-	void enablePass(){
-		this.controller.enablePass();
+	
+	public String showSeat(Seat seat){
+		return this.controller.showSeat(seat);
 	}
 	
-	void disablePass(){
-		this.controller.null;
+	public String showNoSeats(){
+		return this.controller.showNoSeats();
 	}
 	
 	

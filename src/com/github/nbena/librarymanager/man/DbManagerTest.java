@@ -427,14 +427,15 @@ public class DbManagerTest {
 	  assertTrue(availableSeats < this.seats.size());
 	  
 	  SeatReservation expected = seatReservations[0];
-	  SeatReservation got = this.db.getSeatReservationOrNothing(expected.getUser(), expected.getReservationDate());
+	 //  SeatReservation got = this.db.getSeatReservationOrNothing(expected.getUser(), expected.getReservationDate());
+	  Seat got = this.db.getReservedSeatOrNothing(expected.getUser(), expected.getReservationDate());
 	  
-	  assertTrue(expected.getID() == got.getID());
+	  assertTrue(expected.getSeat().equals(got));
 	  
 	  // this.db.cancelSeatReservation(got);
-	  this.db.deleteItem(got);
+	  this.db.deleteItem(expected);
 
-	  count = getCountOf("select count (*) from seat_reservation where ", new SeatReservation[]{got});
+	  count = getCountOf("select count (*) from seat_reservation where ", new SeatReservation[]{expected});
 	  assertTrue(count == 0);
 	  
 	  int newAvailableSeats = this.db.getAvailableSeats(LocalDate.now()).size();

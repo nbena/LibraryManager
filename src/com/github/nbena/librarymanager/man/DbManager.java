@@ -526,24 +526,49 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
-	public SeatReservation getSeatReservationOrNothing(InternalUser user, LocalDate date)throws SQLException{
-		String query = "select id, seat_number, table_number, time_stamp, reservation_date from seat_reservation where userid=? and reservation_date=?";
+//	public SeatReservation getSeatReservationOrNothing(InternalUser user, LocalDate date)throws SQLException{
+//		String query = "select id, seat_number, table_number, time_stamp, reservation_date from seat_reservation where userid=? and reservation_date=?";
+//		
+//		PreparedStatement pstmt = connection.prepareStatement(query);
+//		
+//		pstmt.setInt(1, user.getID());
+//		pstmt.setObject(2, date);
+//		
+//		ResultSet rs = pstmt.executeQuery();
+//		SeatReservation reservation = null;
+//		if (rs.next()){
+//			int id = rs.getInt(1);
+//			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(4, OffsetDateTime.class);
+//			LocalDate reservationDate = (LocalDate) rs.getObject(5, LocalDate.class);
+//			Seat seat = new Seat(rs.getInt(2), rs.getInt(3), false);
+//			reservation = new SeatReservation(id, reservationDate, user, seat, timestamp);
+//		}
+//		return reservation;
+//	}
+	
+	public Seat getReservedSeatOrNothing(InternalUser user, LocalDate date) throws SQLException{
 		
-		PreparedStatement pstmt = connection.prepareStatement(query);
+		String query = "select seat_number, table_number "+
+						"from seat_reservation where reservation_date = ? "+
+						"and userid=? "+
+						"union select seat_number, table_number "+
+						"from consultation_reservation where reservation_date = ? "+
+						"and userid=?";
 		
-		pstmt.setInt(1, user.getID());
-		pstmt.setObject(2, date);
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		
+		pstmt.setObject(1, date);
+		pstmt.setInt(2, user.getID());
+		pstmt.setObject(3, date);
+		pstmt.setInt(4, user.getID());
+					
+		Seat seat = null;
 		ResultSet rs = pstmt.executeQuery();
-		SeatReservation reservation = null;
-		if (rs.next()){
-			int id = rs.getInt(1);
-			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(4, OffsetDateTime.class);
-			LocalDate reservationDate = (LocalDate) rs.getObject(5, LocalDate.class);
-			Seat seat = new Seat(rs.getInt(2), rs.getInt(3), false);
-			reservation = new SeatReservation(id, reservationDate, user, seat, timestamp);
+		if(rs.next()){
+			seat = new Seat(rs.getInt(1), rs.getInt(2), false);
 		}
-		return reservation;
+		
+		return seat;
 	}
 	
 	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDate date)throws SQLException{

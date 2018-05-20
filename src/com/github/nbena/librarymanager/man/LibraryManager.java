@@ -15,6 +15,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
+//TODO add a trigger that avoids users to reserve themselves seats AND
+// consultation the same day.
+
 package com.github.nbena.librarymanager.man;
 
 import java.sql.SQLException;
@@ -223,10 +226,8 @@ public class LibraryManager {
 	public Seat getOrAssignSeat(User user) throws SQLException, ReservationException{
 		Seat seat = null;
 		if (user instanceof InternalUser){
-			SeatReservation reservation = this.dbManager.getSeatReservationOrNothing((InternalUser) user, LocalDate.now());
-			if (reservation != null){
-				seat = reservation.getSeat();
-			}else{
+			seat = this.dbManager.getReservedSeatOrNothing((InternalUser) user, LocalDate.now());
+			if(seat == null){
 				seat = this.getAndSetSeatOccupied(LocalDate.now());
 			}
 		}else{

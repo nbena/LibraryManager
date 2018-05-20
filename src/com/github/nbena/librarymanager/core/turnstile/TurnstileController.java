@@ -18,7 +18,13 @@ public class TurnstileController {
 
 	void enablePass(){}
 	
-	void showSeat(Seat seat){}
+	String showSeat(Seat seat){
+		return String.format("The seat assigned is: (%d,%d)\n", seat.getNumber(), seat.getTableNumber());
+	}
+	
+	String showNoSeats(){
+		return "No seats available";
+	}
 	
 	Seat sendRequestForUser(User user){
 		

@@ -9,9 +9,16 @@ public class IdleState implements TurnstileState {
 	
 	public void userArrive(Turnstile turnstile, User user){
 		Seat seat = turnstile.sendRequestForUser(user);
-		turnstile.setState(RequestReceivedState.REQUEST_RECEIVED_STATE);
+		// turnstile.setState(RequestState.REQUEST_STATE);
+		
+		if (seat != null){
+			turnstile.showSeat(seat);
+			turnstile.setState(OpenState.OPEN_STATE);
+		}else{
+			turnstile.showNoSeats();
+		}
 	}
 	
-	public void userPass(){}
+	public void userPass(Turnstile turnstile){}
 
 }

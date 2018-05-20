@@ -7,5 +7,5 @@ public interface TurnstileState {
 	public void userArrive(Turnstile turnstile, User user);
 	
 	public void userPass(Turnstile turnstile);
-
+	
 }

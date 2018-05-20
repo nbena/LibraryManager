@@ -285,6 +285,16 @@ public class DbManagerTest {
 	  Loan l = loans[0];
 	  l.setRenewAvailable(false);
 	  
+	  Loan gotLoan = this.db.getLoanByUserCopy(l.getUser(), l.getCopy(), false);
+	  assertTrue(gotLoan.getID() == l.getID());
+	  
+	  this.db.registerLoanDelivered(gotLoan);
+	  gotLoan = this.db.getLoanByUserCopy(l.getUser(), l.getCopy(), true);
+	  assertTrue(gotLoan != null);
+	  assertTrue(gotLoan.getRestitutionDate().equals(LocalDate.now()));
+	  
+	  
+	  
 	  for (LoanReservation lr: this.loanReservations){
 		  this.db.addLoanReservation(lr);
 	  }

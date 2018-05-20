@@ -24,8 +24,10 @@ import java.util.List;
 import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
+import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
@@ -100,6 +102,16 @@ public class LibraryManager {
 	
 	public void cancelReservation(AbstractReservation reservation) throws SQLException{
 		this.dbManager.deleteItem(reservation);
+	}
+	
+	public void deliveryBook(User user, Copy copy) throws SQLException{
+		Loan loan = this.dbManager.getLoanByUserCopy(user, copy, false);
+		if (loan != null){
+			loan.setEnd(LocalDate.now());
+			this.dbManager.registerLoanDelivered(loan);
+		}else{
+			throw new SQLException("Loan not found");
+		}
 	}
 	
 	

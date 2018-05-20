@@ -370,9 +370,6 @@ public class DbManager {
 //		pstmt.execute();
 //	}
 	
-	public Loan getLoanByUserCopy(User user, Copy copy) throws SQLException{
-		return null;
-	}
 	
 	private Copy getCopyFrom(ResultSet rs, int startingIndex) throws SQLException{
 		
@@ -449,6 +446,45 @@ public class DbManager {
 	
 	public LoanReservation getLoanReservationByUserCopy(InternalUser user, Copy copy) throws SQLException{
 		return null;
+	}
+	
+	private Loan getLoanFrom(ResultSet rs, int startingIndex, Copy copy, User user) throws SQLException{
+		int id = rs.getInt(startingIndex);
+		LocalDate start = rs.getObject(startingIndex + 1, LocalDate.class);
+		LocalDate end = rs.getObject(startingIndex + 2, LocalDate.class);
+		// boolean active = rs.getBoolean(startingIndex + 3);
+		LocalDate restitutionDate = rs.getObject(startingIndex + 3, LocalDate.class);
+		boolean renewAvailable = rs.getBoolean(startingIndex + 4);
+		
+		boolean active = (restitutionDate == null);
+		
+		Loan l = new Loan(id, user, copy, start, end, active, restitutionDate, renewAvailable);
+		
+		return l;
+	}
+	
+	public Loan getLoanByUserCopy(User user, Copy copy, boolean delivered) throws SQLException{
+		String query = "select id, start_date, end_date, restitution_date, renew_available "+
+						"from loan where userid=? "+
+						"and copyid=?";
+		
+		if (delivered){
+			query += " and restitution_date is not null";
+		}else{
+			query += " and restitution_date is null";
+		}
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		pstmt.setInt(1, user.getID());
+		pstmt.setInt(2, copy.getID());
+		
+		ResultSet rs = pstmt.executeQuery();
+		Loan loan = null;
+		if(rs.next()){
+			loan = this.getLoanFrom(rs, 1, copy, user);
+		}
+		return loan;
 	}
 	
 	public void setSeatOccupied(Seat seat, boolean occupied) throws SQLException{
@@ -568,6 +604,17 @@ public class DbManager {
 			copy.setID(from.getID());
 		}
 		return copy;
+	}
+	
+	
+	public void registerLoanDelivered(Loan loan) throws SQLException{
+		
+		String query = "update loan set restitution_date = current_date where id=?";
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+
+		pstmt.setInt(1, loan.getID());
+		pstmt.execute();
 	}
 	
 

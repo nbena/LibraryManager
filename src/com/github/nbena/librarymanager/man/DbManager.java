@@ -532,20 +532,22 @@ public class DbManager {
 	
 	public CopyForConsultation getOneAvailableCopyForConsultation(Book book, LocalDate date) throws SQLException{
 		
-		String query = "select copyid, title, authors, year, main_topic, phouse, status "+
-						"from book join lm_copy on book.id=lm_copy.bookid where copyid not in "+
+		String query = "select lm_copy.id, title, authors, year, main_topic, phouse, status "+
+						"from book join lm_copy on book.id=lm_copy.bookid where lm_copy.id not in "+
 						"(select copyid from consultation_reservation where reservation_date=?) "+
-						"and title=? and authors=?";
+						"and title=? and authors=? and for_consultation = true";
 		
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		pstmt.setObject(1, date);
 		pstmt.setString(2, book.getTitle());
-		pstmt.setArray(3, this.connection.createArrayOf("text", book.getAuthors()));
+		pstmt.setArray(3, this.connection.createArrayOf("varchar", book.getAuthors()));
 		
 		CopyForConsultation copy = null;
 		ResultSet rs = pstmt.executeQuery();
 		if(rs.next()){
-			copy = (CopyForConsultation) this.getCopyFrom(rs, 1);
+			Copy from = this.getCopyFrom(rs, 1);
+			copy = CopyForConsultation.create(from);
+			copy.setID(from.getID());
 		}
 		return copy;
 	}

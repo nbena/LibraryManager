@@ -382,7 +382,9 @@ public class DbManagerTest {
 	  
 	  assertTrue(count == this.consultations.length);
 	  
+	  CopyForConsultation c = this.db.getOneAvailableCopyForConsultation(this.copiesForConsultation[0], LocalDate.now().plusDays(4));
 	  
+	  assertTrue(this.copiesForConsultation[0].getID() == c.getID());
 	  
   }
   

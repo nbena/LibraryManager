@@ -527,7 +527,7 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
-	public boolean authenticateUser(User user)throws SQLException{
+	public boolean authenticateUser(String hashedPassword)throws SQLException{
 		return false;
 	}
 	

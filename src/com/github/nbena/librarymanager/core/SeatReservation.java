@@ -37,7 +37,7 @@ public class SeatReservation implements IDble {
 		this.seat = seat;
 	}
 
-	public SeatReservation(LocalDate reservationDate, InternalUser user, Seat seat) {
+	public SeatReservation(InternalUser user, LocalDate reservationDate, Seat seat) {
 		this.timestamp = OffsetDateTime.now();
 		this.reservationDate = reservationDate;
 		this.user = user;

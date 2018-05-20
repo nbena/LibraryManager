@@ -128,7 +128,7 @@ public class DbManagerTest {
 		};
 		seats = this.db.getSeats();
 		seatReservations = new SeatReservation[]{
-				new SeatReservation(LocalDate.now(), (InternalUser)users[1], this.seats.get(0))
+				new SeatReservation((InternalUser)users[1], LocalDate.now(), this.seats.get(0))
 		};
 		loanReservations = new LoanReservation[]{
 				new LoanReservation(
@@ -136,11 +136,11 @@ public class DbManagerTest {
 		};
 		this.consultationReservations = new ConsultationReservation[]{
 				new ConsultationReservation(
-						LocalDate.now(), (InternalUser)this.users[1],
+						(InternalUser)this.users[1], LocalDate.now(),
 						this.copiesForConsultation[0], this.seats.get(0)
 						),
 				new ConsultationReservation(
-						LocalDate.now(), (InternalUser)this.users[1],
+						(InternalUser)this.users[1],LocalDate.now(), 
 						this.copiesForConsultation[1], this.seats.get(1)
 						),			
 		};

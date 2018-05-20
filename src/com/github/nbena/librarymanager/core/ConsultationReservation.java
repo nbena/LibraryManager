@@ -43,7 +43,7 @@ public class ConsultationReservation implements IDble{
 		this.timestamp = timestamp;
 	}
 
-	public ConsultationReservation(LocalDate reservationDate, InternalUser user, CopyForConsultation copy, Seat seat
+	public ConsultationReservation(InternalUser user, LocalDate reservationDate, CopyForConsultation copy, Seat seat
 			) {
 		this.user = user;
 		this.copy = copy;

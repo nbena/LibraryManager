@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
@@ -87,6 +88,18 @@ public class LibraryManager {
 		}else{
 			throw new ReservationException("No copies available");
 		}
+	}
+	
+	public void addBook(Book book) throws SQLException{
+		this.dbManager.addBook(book);
+	}
+	
+	public void deleteBook(Book book) throws SQLException{
+		this.dbManager.deleteItem(book);
+	}
+	
+	public void cancelReservation(AbstractReservation reservation) throws SQLException{
+		this.dbManager.deleteItem(reservation);
 	}
 	
 	

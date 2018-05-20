@@ -2,7 +2,7 @@ package com.github.nbena.librarymanager.core;
 
 import java.time.OffsetDateTime;
 
-public class AbstractReservation {
+public abstract class AbstractReservation implements IDble{
 	
 	protected OffsetDateTime timestamp;
 	protected int ID;

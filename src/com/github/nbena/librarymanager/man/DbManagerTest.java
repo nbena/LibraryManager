@@ -297,7 +297,8 @@ public class DbManagerTest {
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  
-	  this.db.cancelLoanReservation(got);
+	  // this.db.cancelLoanReservation(got);
+	  this.db.deleteItem(got);
 	  
 	  count = getCountOf("select count (*) from loan_reservation where ", new LoanReservation[]{got});
 	  assertTrue(count == 0);
@@ -340,7 +341,9 @@ public class DbManagerTest {
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  
-	  this.db.cancelConsultationReservation(got);
+	  // this.db.cancelConsultationReservation(got);
+	  this.db.deleteItem(got);
+
 	  count = getCountOf("select count (*) from consultation_reservation where ", new ConsultationReservation[]{got});
 	  assertTrue(count == 0);
 	  
@@ -407,7 +410,9 @@ public class DbManagerTest {
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  
-	  this.db.cancelSeatReservation(got);
+	  // this.db.cancelSeatReservation(got);
+	  this.db.deleteItem(got);
+
 	  count = getCountOf("select count (*) from seat_reservation where ", new SeatReservation[]{got});
 	  assertTrue(count == 0);
 	  

@@ -20,40 +20,40 @@ package com.github.nbena.librarymanager.core;
 
 import java.time.OffsetDateTime;
 
-public class LoanReservation implements IDble{
+public class LoanReservation extends AbstractReservation {
 	
-	private int ID;
-	private OffsetDateTime timestamp;
-	private InternalUser user;
+	// private int ID;
+	// private OffsetDateTime timestamp;
+	// private InternalUser user;
 	private Copy copy;
 	
 	
 
 	public LoanReservation(int iD, OffsetDateTime timestamp, InternalUser user, Copy copy) {
-		ID = iD;
-		this.timestamp = timestamp;
-		this.user = user;
+		super.ID = iD;
+		super.timestamp = timestamp;
+		super.user = user;
 		this.copy = copy;
 	}
 
 	public LoanReservation(InternalUser user, Copy copy, boolean setTimestamp) {
 		if (setTimestamp){
-			this.timestamp = OffsetDateTime.now();
+			super.timestamp = OffsetDateTime.now();
 		}
-		this.user = user;
+		super.user = user;
 		this.copy = copy;
 	}
 
 	public OffsetDateTime getTimestamp() {
-		return timestamp;
+		return super.timestamp;
 	}
 	
 	public InternalUser getUser() {
-		return user;
+		return super.user;
 	}
 
 	public void setUser(InternalUser user) {
-		this.user = user;
+		super.user = user;
 	}
 
 	public Copy getCopy() {
@@ -70,15 +70,15 @@ public class LoanReservation implements IDble{
 	}
 
 	public int getID() {
-		return ID;
+		return super.ID;
 	}
 
 	public void setID(int iD) {
-		ID = iD;
+		super.ID = iD;
 	}
 
 	public void setTimestamp(OffsetDateTime timestamp) {
-		this.timestamp = timestamp;
+		super.timestamp = timestamp;
 	}
 	
 	

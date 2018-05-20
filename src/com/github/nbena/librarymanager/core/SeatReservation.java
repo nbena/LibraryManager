@@ -20,36 +20,36 @@ package com.github.nbena.librarymanager.core;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-public class SeatReservation implements IDble {
+public class SeatReservation extends AbstractReservation {
 	
-	private int ID;
-	private OffsetDateTime timestamp;
+	// private int ID;
+	// private OffsetDateTime timestamp;
 	private LocalDate reservationDate;
-	private InternalUser user;
+	// private InternalUser user;
 	private Seat seat;
 
 	public SeatReservation(int iD, OffsetDateTime timestamp, LocalDate reservationDate, InternalUser user,
 			Seat seat) {
-		ID = iD;
-		this.timestamp = timestamp;
+		super.ID = iD;
+		super.timestamp = timestamp;
 		this.reservationDate = reservationDate;
-		this.user = user;
+		super.user = user;
 		this.seat = seat;
 	}
 
 	public SeatReservation(InternalUser user, LocalDate reservationDate, Seat seat) {
-		this.timestamp = OffsetDateTime.now();
+		super.timestamp = OffsetDateTime.now();
 		this.reservationDate = reservationDate;
-		this.user = user;
+		super.user = user;
 		this.seat = seat;
 	}
 
 	public OffsetDateTime getTimestamp() {
-		return timestamp;
+		return super.timestamp;
 	}
 
 	public void setTimestamp(OffsetDateTime timestamp) {
-		this.timestamp = timestamp;
+		super.timestamp = timestamp;
 	}
 
 	public LocalDate getReservationDate() {
@@ -61,11 +61,11 @@ public class SeatReservation implements IDble {
 	}
 
 	public InternalUser getUser() {
-		return user;
+		return super.user;
 	}
 
 	public void setUser(InternalUser user) {
-		this.user = user;
+		super.user = user;
 	}
 
 	public Seat getSeat() {
@@ -77,11 +77,11 @@ public class SeatReservation implements IDble {
 	}
 
 	public int getID() {
-		return ID;
+		return super.ID;
 	}
 
 	public void setID(int iD) {
-		ID = iD;
+		super.ID = iD;
 	}
 	
 	

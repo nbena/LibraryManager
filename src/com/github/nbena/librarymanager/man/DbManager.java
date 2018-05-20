@@ -28,6 +28,7 @@ import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
@@ -316,41 +317,58 @@ public class DbManager {
 		return seats;
 	}
 	
-	public void cancelSeatReservation(SeatReservation reservation) throws SQLException{
-		
-		String query = "delete from seat_reservation where id=?";
-		
-		PreparedStatement pstmt = connection.prepareStatement(query);
-		
-		pstmt.setInt(1, reservation.getID());
-		
-		pstmt.execute();
-		
-	}
-	
-	public void cancelLoanReservation(LoanReservation reservation) throws SQLException{
-		
-		String query = "delete from loan_reservation where id=?";
-		
-		PreparedStatement pstmt = connection.prepareStatement(query);
-		
-		pstmt.setInt(1, reservation.getID());
-		
-		pstmt.execute();
-		
-	}
-	
-	public void cancelConsultationReservation(ConsultationReservation reservation) throws SQLException{
-		
-		String query = "delete from consultation_reservation where id=?";
-		
-		PreparedStatement pstmt = connection.prepareStatement(query);
-		
-		pstmt.setInt(1, reservation.getID());
-
-		pstmt.execute();
-		
-	}
+//	public void cancelSeatReservation(SeatReservation reservation) throws SQLException{
+//		
+//		String query = "delete from seat_reservation where id=?";
+//		
+//		PreparedStatement pstmt = connection.prepareStatement(query);
+//		
+//		pstmt.setInt(1, reservation.getID());
+//		
+//		pstmt.execute();
+//		
+//	}
+//	
+//	public void cancelLoanReservation(LoanReservation reservation) throws SQLException{
+//		
+//		String query = "delete from loan_reservation where id=?";
+//		
+//		PreparedStatement pstmt = connection.prepareStatement(query);
+//		
+//		pstmt.setInt(1, reservation.getID());
+//		
+//		pstmt.execute();
+//		
+//	}
+//	
+//	public void cancelConsultationReservation(ConsultationReservation reservation) throws SQLException{
+//		
+//		String query = "delete from consultation_reservation where id=?";
+//		
+//		PreparedStatement pstmt = connection.prepareStatement(query);
+//		
+//		pstmt.setInt(1, reservation.getID());
+//
+//		pstmt.execute();
+//		
+//	}
+//	
+//	public void cancelReservation(AbstractReservation reservation) throws SQLException{
+//		String tableName = "";
+//		if (reservation instanceof SeatReservation){
+//			tableName = "seat_reservation";
+//		}else if (reservation instanceof ConsultationReservation){
+//			tableName = "consultation_reservation";
+//		}else if (reservation instanceof LoanReservation){
+//			tableName = "loan_reservation";
+//		}
+//		
+//		String query = "delete from "+tableName+" where id=?";
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//		pstmt.setInt(1, reservation.getID());
+//		
+//		pstmt.execute();
+//	}
 	
 	public Loan getLoanByUserCopy(User user, Copy copy) throws SQLException{
 		return null;

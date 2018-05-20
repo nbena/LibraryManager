@@ -21,42 +21,42 @@ package com.github.nbena.librarymanager.core;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-public class ConsultationReservation implements IDble{
+public class ConsultationReservation extends AbstractReservation {
 	
-	private int ID;
+	// private int ID;
 	
-	private InternalUser user;
+	// private InternalUser user;
 	private CopyForConsultation copy;
 	private Seat seat;
 	
 	private LocalDate reservationDate;
-	private OffsetDateTime timestamp;
+	// private OffsetDateTime timestamp;
 
 	
 	public ConsultationReservation(int iD, InternalUser user, CopyForConsultation copy, Seat seat,
 			LocalDate reservationDate, OffsetDateTime timestamp) {
-		ID = iD;
-		this.user = user;
+		super.ID = iD;
+		super.user = user;
 		this.copy = copy;
 		this.seat = seat;
 		this.reservationDate = reservationDate;
-		this.timestamp = timestamp;
+		super.timestamp = timestamp;
 	}
 
 	public ConsultationReservation(InternalUser user, LocalDate reservationDate, CopyForConsultation copy, Seat seat
 			) {
-		this.user = user;
+		super.user = user;
 		this.copy = copy;
 		this.seat = seat;
 		this.reservationDate = reservationDate;
-		this.timestamp = OffsetDateTime.now();
+		super.timestamp = OffsetDateTime.now();
 	}
 
 	public InternalUser getUser() {
-		return user;
+		return super.user;
 	}
 	public void setUser(InternalUser user) {
-		this.user = user;
+		super.user = user;
 	}
 	public CopyForConsultation getCopy() {
 		return copy;
@@ -77,19 +77,19 @@ public class ConsultationReservation implements IDble{
 		this.reservationDate = reservationDate;
 	}
 	public OffsetDateTime getTimestamp() {
-		return timestamp;
+		return super.timestamp;
 	}
 
 	public int getID() {
-		return ID;
+		return super.ID;
 	}
 
 	public void setID(int iD) {
-		ID = iD;
+		super.ID = iD;
 	}
 
 	public void setTimestamp(OffsetDateTime timestamp) {
-		this.timestamp = timestamp;
+		super.timestamp = timestamp;
 	}
 
 }

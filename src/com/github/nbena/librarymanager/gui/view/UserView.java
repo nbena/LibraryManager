@@ -1,4 +1,4 @@
-package com.github.nbena.librarymanager.gui;
+package com.github.nbena.librarymanager.gui.view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;

@@ -9,6 +9,11 @@ import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.gui.view.ReservationTableView;
+import com.github.nbena.librarymanager.gui.view.UserView;
+import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
+import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
+import com.github.nbena.librarymanager.gui.view.table.SeatReservationTableModel;
 
 public class UserController {
 	
@@ -18,14 +23,18 @@ public class UserController {
 	private UserModel userModel;
 	
 
-	public UserController(UserView userView, UserModel userModel) {
+	public UserController(UserModel userModel, UserView userView) {
 		this.userView = userView;
 		this.userModel = userModel;
+		
+		this.addListeners();
+		
+		this.userView.setVisible(true);
 	}
 
 
 	private void addListeners(){
-		
+		this.addBasicListeneres();
 	}
 	
 	
@@ -57,6 +66,10 @@ public class UserController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<ConsultationReservation> reservations = userModel.getConsultationReservation();
+					ReservationTableView tableView = new ReservationTableView();
+					tableView.setVisible(true);
+					tableView.setAlwaysOnTop(true);
+					tableView.setTableModel(new ConsultationReservationTableModel(reservations));
 				} catch (SQLException e1) {
 					
 					e1.printStackTrace();
@@ -71,6 +84,7 @@ public class UserController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<Loan> loans = userModel.getActiveLoan();
+					
 				} catch (SQLException e1) {
 					
 					e1.printStackTrace();
@@ -85,6 +99,10 @@ public class UserController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<LoanReservation> reservations = userModel.getLoanReservation();
+					ReservationTableView tableView = new ReservationTableView();
+					tableView.setVisible(true);
+					tableView.setAlwaysOnTop(true);					
+					tableView.setTableModel(new LoanReservationTableModel(reservations));
 				} catch (SQLException e1) {
 					
 					e1.printStackTrace();
@@ -99,6 +117,10 @@ public class UserController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<SeatReservation> reservations = userModel.getSeatsReservations();
+					ReservationTableView tableView = new ReservationTableView();
+					tableView.setVisible(true);
+					tableView.setAlwaysOnTop(true);
+					tableView.setTableModel(new SeatReservationTableModel(reservations));					
 				} catch (SQLException e1) {
 					
 					e1.printStackTrace();

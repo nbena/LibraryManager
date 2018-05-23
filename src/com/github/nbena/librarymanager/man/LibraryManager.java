@@ -56,11 +56,11 @@ public class LibraryManager {
 		
 	}
 	
-	public boolean authenticateUser(String hashedPassword){
+	public boolean authenticateUser(User user){
 		
 		boolean authenticated = true;
 		try {
-			authenticated = this.dbManager.authenticateUser(hashedPassword);
+			authenticated = this.dbManager.authenticateUser(user);
 		} catch (SQLException e) {
 			authenticated = false;
 		}

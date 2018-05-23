@@ -25,6 +25,8 @@ public class User implements IDble{
 	private String hashedPassword;
 	private String email;
 	
+	public User(){}
+	
 
 	public String getEmail() {
 		return email;

@@ -4,11 +4,14 @@ import java.sql.SQLException;
 
 import javax.swing.UIManager;
 
+import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
+import com.github.nbena.librarymanager.gui.StartupLogin;
 import com.github.nbena.librarymanager.gui.UserController;
 import com.github.nbena.librarymanager.gui.UserModel;
 import com.github.nbena.librarymanager.gui.view.UserView;
 import com.github.nbena.librarymanager.man.LibraryManager;
+import com.github.nbena.librarymanager.utils.Hash;
 
 public class Main {
 	
@@ -18,10 +21,13 @@ public class Main {
 		this.manager = new LibraryManager("localhost:5434/docker", "docker", "docker");
 	}
 	
-	public void user(){
+	public void user(User user){
 		UserModel model = new UserModel(this.manager);
-		UserView view = new UserView();
-		UserController controller = new UserController(model, view);
+		boolean result = model.authenticate(user);
+		if (result){
+			UserView view = new UserView();
+			UserController controller = new UserController(model, view);
+		}
 	}
 	
 	public void librarian(){
@@ -42,11 +48,38 @@ public class Main {
 		
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
+		StartupLogin startup = new StartupLogin();
+		
+		String [] credentials;
+		User user = null;
+		boolean loop = true;
+		boolean authenticated = false;
+		while (loop){
+			credentials = startup.getCredentials();
+			if (credentials == null){
+				loop = false;
+			}else{
+				user = new User();
+				user.setEmail(credentials[0]);
+				user.setHashedPassword(Hash.hash(credentials[1]));
+				boolean result = main.manager.authenticateUser(user);
+				if (result){
+					loop = false;
+					authenticated = true;
+				}
+			}
+			startup.clear();
+		}
+		
+		if (!authenticated){
+			System.exit(1);
+		}
+		
 		if(args.length == 0){
-			main.user();
+			main.user(user);
 		}else{
 			if (args[0] == "user"){
-				main.user();
+				main.user(user);
 			}else if(args[0] == "librarian"){
 				main.librarian();
 			}else if(args[0] == "turnstile"){

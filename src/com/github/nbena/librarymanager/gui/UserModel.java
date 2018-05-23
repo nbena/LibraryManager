@@ -41,7 +41,7 @@ public class UserModel extends AbstractModel {
 	
 	
 	public boolean authenticate(User user){
-		boolean result = super.manager.authenticateUser(user.getHashedPassword());
+		boolean result = super.manager.authenticateUser(user);
 		if (result){
 			super.setUser(user);
 		}

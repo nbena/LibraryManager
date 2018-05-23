@@ -1,1 +1,2 @@
 dest=/media/nicola/Drive/BackupTar/librarymanager.tar.bz2
+exclude_dir=.git

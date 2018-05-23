@@ -240,6 +240,26 @@ public class LibraryManager {
 		consultation.getCopy().setInConsultation(false);
 		this.dbManager.endConsultation(consultation);
 	}
+	
+	public List<SeatReservation> getSeatReservationByUser(InternalUser user) throws SQLException{
+		return this.dbManager.getSeatsReservationByUser(user);
+	}
+	
+	public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user) throws SQLException{
+		return this.dbManager.getConsultationReservationByUser(user);
+	}
+	
+	public List<LoanReservation> getLoanReservationByUser(InternalUser user) throws SQLException{
+		return this.dbManager.getLoanReservationsByUser(user);
+	}
+	
+	public List<Loan> getLoanByUser(User user, boolean delivered) throws SQLException{
+		return this.dbManager.getLoans(user, delivered, true);
+	}
+	
+	public List<Loan> getAllLoansByUser(User user) throws SQLException{
+		return this.dbManager.getLoans(user, false, false);
+	}
 
 
 }

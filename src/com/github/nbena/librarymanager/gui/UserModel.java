@@ -19,12 +19,14 @@ package com.github.nbena.librarymanager.gui;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
@@ -60,6 +62,22 @@ public class UserModel extends AbstractModel {
 	
 	public LoanReservation reserveLoan(Copy copy) throws SQLException, ReservationException{
 		return super.manager.tryReserveLoan((InternalUser) super.user, copy);
+	}
+	
+	public List<SeatReservation> getSeatsReservations() throws SQLException{
+		return super.manager.getSeatReservationByUser((InternalUser) super.user);
+	}
+	
+	public List<ConsultationReservation> getConsultationReservation() throws SQLException{
+		return super.manager.getConsultationReservationByUser((InternalUser) super.user);
+	}
+	
+	public List<LoanReservation> getLoanReservation() throws SQLException{
+		return super.manager.getLoanReservationByUser((InternalUser) super.user);
+	}
+	
+	public List<Loan> getActiveLoan() throws SQLException{
+		return super.manager.getLoanByUser(super.user, false);
 	}
 
 

@@ -301,6 +301,14 @@ public class DbManagerTest {
 	  gotLoan = this.db.getActiveLoanByCopy(this.loans[1].getCopy());
 	  assertTrue(gotLoan.getID() == this.loans[1].getID());
 	  
+	  List<Loan> allLoans = this.db.getLoans(l.getUser(), true, true);
+	  assertTrue(allLoans.size() == 1);
+	  
+	  allLoans = this.db.getLoans(l.getUser(), false, true);
+	  assertTrue(allLoans.size() > 0);
+	  
+	  allLoans = this.db.getLoans(l.getUser(),false, false);
+	  assertTrue(allLoans.size() == this.loans.length);
 	  
 	  
 	  for (LoanReservation lr: this.loanReservations){
@@ -308,6 +316,9 @@ public class DbManagerTest {
 	  }
 	  
 	  int count = getCountOf("select count (*) from loan_reservation where ", loanReservations);
+	  assertTrue(count == this.loanReservations.length);
+	  
+	  count = this.db.getLoanReservationsByUser(this.loanReservations[0].getUser()).size();
 	  assertTrue(count == this.loanReservations.length);
 	  
 	  LoanReservation expected = this.loanReservations[0];
@@ -351,6 +362,9 @@ public class DbManagerTest {
 	  this.consultationReservationsCreated = true;
 	  
 	  int count = getCountOf("select count (*) from consultation_reservation where ", this.consultationReservations);
+	  assertTrue(count == this.consultationReservations.length);
+	  
+	  count = this.db.getConsultationReservationByUser(this.consultationReservations[0].getUser()).size();
 	  assertTrue(count == this.consultationReservations.length);
 	  
 	  ConsultationReservation expected = this.consultationReservations[0];
@@ -420,6 +434,9 @@ public class DbManagerTest {
 	  this.seatReservationsCreated = true;
 	  
 	  int count = getCountOf("select count (*) from seat_reservation where ", this.seatReservations);
+	  assertTrue(count == this.seatReservations.length);
+	  
+	  count = this.db.getSeatsReservationByUser(this.seatReservations[0].getUser()).size();
 	  assertTrue(count == this.seatReservations.length);
 	  
 	  int availableSeats = this.db.getAvailableSeats(LocalDate.now()).size();

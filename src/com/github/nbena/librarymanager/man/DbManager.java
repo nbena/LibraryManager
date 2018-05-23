@@ -570,6 +570,22 @@ public class DbManager {
 		return seat;
 	}
 	
+	private ConsultationReservation getConsultationReservationFrom(ResultSet rs, int startingIndex, InternalUser user) throws SQLException{
+		int id = rs.getInt(startingIndex);
+		
+		Copy copy = getCopyFrom(rs, startingIndex + 1);
+		CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
+		Seat seat = getSeatFrom(rs, startingIndex + 8, false);
+		
+		OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(startingIndex + 10, OffsetDateTime.class);
+		LocalDate reservationDate = (LocalDate) rs.getObject(startingIndex + 11, LocalDate.class);
+		
+		ConsultationReservation reservation = new ConsultationReservation(id, user, copyForConsultation,
+				seat, reservationDate, timestamp);
+		
+		return reservation;
+	}
+	
 	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDate date)throws SQLException{
 		String query = "select cr.id, copyid, title, authors, year, main_topic, phouse, status, seat_number, table_number, time_stamp, reservation_date "+
 						"from book join lm_copy on book.id = lm_copy.bookid "+
@@ -588,16 +604,17 @@ public class DbManager {
 		ResultSet rs = pstmt.executeQuery();
 		ConsultationReservation reservation = null;
 		if (rs.next()){
-			int id = rs.getInt(1);
-			
-			Copy copy = getCopyFrom(rs, 2);
-			CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
-			Seat seat = getSeatFrom(rs, 9, false);
-			
-			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(11, OffsetDateTime.class);
-			LocalDate reservationDate = (LocalDate) rs.getObject(12, LocalDate.class);
-			
-			reservation = new ConsultationReservation(id, user, copyForConsultation, seat, reservationDate, timestamp);
+//			int id = rs.getInt(1);
+//			
+//			Copy copy = getCopyFrom(rs, 2);
+//			CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
+//			Seat seat = getSeatFrom(rs, 9, false);
+//			
+//			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(11, OffsetDateTime.class);
+//			LocalDate reservationDate = (LocalDate) rs.getObject(12, LocalDate.class);
+//			
+//			reservation = new ConsultationReservation(id, user, copyForConsultation, seat, reservationDate, timestamp);
+			reservation = this.getConsultationReservationFrom(rs, 1, user);
 		}
 		return reservation;
 		
@@ -668,5 +685,88 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
+	
+	private SeatReservation getSeatReservationFrom(ResultSet rs, int startingIndex, InternalUser user) throws SQLException{
+		
+		int id = rs.getInt( startingIndex );
+		Seat seat = this.getSeatFrom(rs, startingIndex + 1, false);
+		LocalDate reservationDate = rs.getObject(startingIndex + 3, LocalDate.class);
+		OffsetDateTime timestamp = rs.getObject(startingIndex + 4, OffsetDateTime.class);
+		
+		SeatReservation reservation = new SeatReservation(id,
+				reservationDate, user,
+				seat, timestamp
+				);
+		
+		return reservation;
+	}
+	
+	
+	public List<SeatReservation> getSeatsReservationByUser(InternalUser user) throws SQLException{
+		
+		String query = "select id, seat_number, table_number, reservation_date, "+
+						"time_stamp from seat_reservation where userid=?";
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		pstmt.setInt(1, user.getID());
+		ResultSet rs = pstmt.executeQuery();
+		List<SeatReservation> reservations = new LinkedList<SeatReservation>();
+		while(rs.next()){
+			reservations.add(this.getSeatReservationFrom(rs, 1, user));
+		}
+		
+		return reservations;
+	}
+	
+    public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user) throws SQLException{
+    	
+		String query = "select cr.id, copyid, title, authors, year, main_topic, phouse, status, seat_number, table_number, time_stamp, reservation_date "+
+				"from book join lm_copy on book.id = lm_copy.bookid "+
+				"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
+				"where cr.userid=?";
+
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+
+		pstmt.setInt(1, user.getID());
+		
+		ResultSet rs = pstmt.executeQuery();
+		List<ConsultationReservation> reservations = new LinkedList<ConsultationReservation>();
+		while (rs.next()){
+			reservations.add(this.getConsultationReservationFrom(rs, 1, user));
+		}
+		return reservations;
+    }
+	
+    
+    public List<Loan> getLoans(User user, boolean delivered, boolean checkDelivered) throws SQLException{
+    	
+		String query = "select loan.id, start_date, end_date, restitution_date, renew_available, "+
+				"lm_copy.id, title, authors, year, main_topic, phouse, status "+
+				"from loan join lm_copy on copyid=lm_copy.id join book on bookid=book.id "
+				+"where userid=? ";
+
+		if (checkDelivered){
+			if (delivered){
+				query += " and restitution_date is not null";
+			}else{
+				query += " and restitution_date is null";
+			}		
+		}
+
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		pstmt.setInt(1, user.getID());
+		
+		ResultSet rs = pstmt.executeQuery();
+		List<Loan> loans = new LinkedList<Loan>();
+		while(rs.next()){
+			Copy copy = this.getCopyFrom(rs, 6);
+			Loan loan = this.getLoanFrom(rs, 1, copy, user);
+			
+			loans.add(loan);
+		}
+		return loans;
+    }
 
 }

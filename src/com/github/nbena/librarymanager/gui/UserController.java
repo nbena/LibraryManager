@@ -20,8 +20,7 @@ import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTab
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.SeatReservationTableModel;
 
-public class UserController {
-	
+public class UserController extends AbstractController {
 	
 	
 	private UserView userView;
@@ -147,20 +146,12 @@ public class UserController {
 			tableView.setAlwaysOnTop(true);
 			tableView.setVisible(true);		
 		}else{
-			this.displayMessage(this.userView, "No items to show");
+			super.displayMessage(this.userView, "No items to show");
 		}
 		
 		return tableView;
 	}
 	
-	private void displayMessage(Component parent, String message){
-		JOptionPane.showMessageDialog(parent, message);
-	}
-	
-	private void displayError(Component parent, Exception exception){
-		JOptionPane.showMessageDialog(parent, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	}
-
 }
 
 

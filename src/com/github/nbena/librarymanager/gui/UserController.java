@@ -1,9 +1,14 @@
 package com.github.nbena.librarymanager.gui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Loan;
@@ -66,10 +71,11 @@ public class UserController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<ConsultationReservation> reservations = userModel.getConsultationReservation();
-					ReservationTableView tableView = new ReservationTableView();
-					tableView.setVisible(true);
-					tableView.setAlwaysOnTop(true);
-					tableView.setTableModel(new ConsultationReservationTableModel(reservations));
+//					ReservationTableView tableView = new ReservationTableView();
+//					tableView.setVisible(true);
+//					tableView.setAlwaysOnTop(true);
+//					tableView.setTableModel(new ConsultationReservationTableModel(reservations));
+					displayTableItems(new ConsultationReservationTableModel(reservations));
 				} catch (SQLException e1) {
 					
 					e1.printStackTrace();
@@ -99,10 +105,11 @@ public class UserController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<LoanReservation> reservations = userModel.getLoanReservation();
-					ReservationTableView tableView = new ReservationTableView();
-					tableView.setVisible(true);
-					tableView.setAlwaysOnTop(true);					
-					tableView.setTableModel(new LoanReservationTableModel(reservations));
+//					ReservationTableView tableView = new ReservationTableView();
+//					tableView.setVisible(true);
+//					tableView.setAlwaysOnTop(true);					
+//					tableView.setTableModel(new LoanReservationTableModel(reservations));
+					displayTableItems(new LoanReservationTableModel(reservations));
 				} catch (SQLException e1) {
 					
 					e1.printStackTrace();
@@ -117,17 +124,41 @@ public class UserController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<SeatReservation> reservations = userModel.getSeatsReservations();
-					ReservationTableView tableView = new ReservationTableView();
-					tableView.setVisible(true);
-					tableView.setAlwaysOnTop(true);
-					tableView.setTableModel(new SeatReservationTableModel(reservations));					
+//					ReservationTableView tableView = new ReservationTableView();
+//					tableView.setVisible(true);
+//					tableView.setAlwaysOnTop(true);
+//					tableView.setTableModel(new SeatReservationTableModel(reservations));	
+					displayTableItems(new SeatReservationTableModel(reservations));
 				} catch (SQLException e1) {
 					
-					e1.printStackTrace();
+					displayError(userView, e1);
 				}
 			}
 			
 		});
+	}
+	
+	private ReservationTableView displayTableItems(AbstractTableModel tableModel){
+		
+		ReservationTableView tableView = null;
+		if(tableModel.getRowCount()>0){
+			tableView = new ReservationTableView();
+			tableView.setTableModel(tableModel);
+			tableView.setAlwaysOnTop(true);
+			tableView.setVisible(true);		
+		}else{
+			this.displayMessage(this.userView, "No items to show");
+		}
+		
+		return tableView;
+	}
+	
+	private void displayMessage(Component parent, String message){
+		JOptionPane.showMessageDialog(parent, message);
+	}
+	
+	private void displayError(Component parent, Exception exception){
+		JOptionPane.showMessageDialog(parent, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 }

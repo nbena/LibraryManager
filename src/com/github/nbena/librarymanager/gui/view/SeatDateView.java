@@ -2,13 +2,19 @@ package com.github.nbena.librarymanager.gui.view;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
+
+import com.github.nbena.librarymanager.core.Seat;
+import com.github.nbena.librarymanager.core.SeatReservation;
+
 import javax.swing.JLabel;
 import javax.swing.JFormattedTextField;
 
@@ -18,6 +24,8 @@ public class SeatDateView extends JDialog {
 	private JFormattedTextField formattedTextFieldDay;
 	private JFormattedTextField formattedTextFieldMonth;
 	private JFormattedTextField formattedTextFieldYear;
+	private JButton okButton;
+	private JButton cancelButton;
 	
 	public int getDay(){
 		return Integer.parseInt(this.formattedTextFieldDay.getText());
@@ -29,6 +37,14 @@ public class SeatDateView extends JDialog {
 	
 	public int getYear(){
 		return Integer.parseInt(this.formattedTextFieldYear.getText());
+	}
+	
+	public void addActionListenerOkButton(ActionListener listener){
+		this.okButton.addActionListener(listener);
+	}
+	
+	public void addActionListenerCancelButton(ActionListener listener){
+		this.cancelButton.addActionListener(listener);
 	}
 
 	private final JPanel contentPanel = new JPanel();
@@ -45,11 +61,19 @@ public class SeatDateView extends JDialog {
 //			e.printStackTrace();
 //		}
 //	}
+	
+	public SeatDateView(SeatReservation reservation){
+		this.init(false, reservation);
+	}
+	
+	public SeatDateView(){
+		this.init(false, null);
+	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public SeatDateView(boolean showSeat, boolean editable, int seatNumber, int tableNumber) {
+	private void init(boolean editable, SeatReservation reservation) {
 		setBounds(100, 100, 235, 201);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -114,14 +138,14 @@ public class SeatDateView extends JDialog {
 			contentPanel.add(buttonPane);
 			buttonPane.setLayout(null);
 			{
-				JButton okButton = new JButton("OK");
+				okButton = new JButton("OK");
 				okButton.setBounds(31, 5, 51, 24);
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				cancelButton = new JButton("Cancel");
 				cancelButton.setBounds(94, 5, 73, 24);
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
@@ -136,11 +160,14 @@ public class SeatDateView extends JDialog {
 		lblSeatValue.setBounds(158, 104, 55, 14);
 		contentPanel.add(lblSeatValue);
 		
-		lblSeat.setVisible(showSeat);
-		lblSeatValue.setVisible(showSeat);
+		lblSeat.setVisible(reservation != null);
+		lblSeatValue.setVisible(reservation != null);
 		
-		if (showSeat){
-			lblSeatValue.setText(String.format("%d,%d", seatNumber, tableNumber));
+		if (reservation != null){
+			lblSeatValue.setText(String.format("%d,%d",
+					reservation.getSeat().getNumber(),
+					reservation.getSeat().getTableNumber()
+					));
 		}
 	}
 }

@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -15,6 +17,7 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.gui.view.ReservationTableView;
+import com.github.nbena.librarymanager.gui.view.SeatDateView;
 import com.github.nbena.librarymanager.gui.view.UserView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
@@ -25,6 +28,8 @@ public class UserController extends AbstractController {
 	
 	private UserView userView;
 	private UserModel userModel;
+	
+	private LocalDate gotDate;
 	
 
 	public UserController(UserModel userModel, UserView userView) {
@@ -150,6 +155,46 @@ public class UserController extends AbstractController {
 		}
 		
 		return tableView;
+	}
+	
+	private LocalDate askDateForReservation(SeatReservation reservation){
+		SeatDateView seatDate;
+		this.gotDate = null;
+//		if(reservation != null){
+//			
+//		}else{
+//			
+//		}
+		seatDate = new SeatDateView(reservation);
+		seatDate.addActionListenerOkButton(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int day = seatDate.getDay();
+				int month = seatDate.getMonth();
+				int year = seatDate.getYear();
+				gotDate = LocalDate.of(year, Month.of(month), day);
+				
+				seatDate.setVisible(false);
+				seatDate.dispose();
+				
+			}
+			
+		});
+		
+		seatDate.addActionListenerCancelButton(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				seatDate.setVisible(false);
+				seatDate.dispose();
+			}
+			
+		});
+		seatDate.setAlwaysOnTop(true);
+		seatDate.setVisible(true);
+		return gotDate;
 	}
 	
 }

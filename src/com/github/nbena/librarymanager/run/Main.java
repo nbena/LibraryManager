@@ -23,11 +23,12 @@ public class Main {
 	
 	public void user(User user){
 		UserModel model = new UserModel(this.manager);
-		boolean result = model.authenticate(user);
-		if (result){
+		model.setUser(user);
+		// boolean result = model.authenticate(user);
+		//if (result){
 			UserView view = new UserView();
-			UserController controller = new UserController(model, view);
-		}
+			/*UserController controller = */new UserController(model, view);
+		// }
 	}
 	
 	public void librarian(){
@@ -62,8 +63,8 @@ public class Main {
 				user = new User();
 				user.setEmail(credentials[0]);
 				user.setHashedPassword(Hash.hash(credentials[1]));
-				boolean result = main.manager.authenticateUser(user);
-				if (result){
+				user = main.manager.authenticateUser(user);
+				if (user!=null){
 					loop = false;
 					authenticated = true;
 				}

@@ -648,8 +648,9 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
-	public boolean authenticateUser(User user)throws SQLException{
-		String query = "select id from lm_user where email=? and password=?";
+	public User authenticateUser(User user)throws SQLException{
+		String query = "select id, name, surname, email, internal "+
+						" from lm_user where email=? and password=?";
 		
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		
@@ -657,14 +658,25 @@ public class DbManager {
 		pstmt.setString(2, user.getHashedPassword());
 		
 		ResultSet rs = pstmt.executeQuery();
-		boolean found = true;
 		
+		User returned = null;
+
 		if(rs.next()){
-			user.setID(rs.getInt(1));
-		}else{
-			found = false;
+			int id = rs.getInt(rs.getInt(1));
+			String name = rs.getString(2);
+			String surname = rs.getString(3);
+			String email = rs.getString(4);
+			boolean internal = rs.getBoolean(5);
+			if (internal){
+				returned = new InternalUser(id);
+			}else{
+				returned = new User(id);
+			}
+			returned.setName(name);
+			returned.setSurname(surname);
+			returned.setEmail(email);
 		}
-		return found;
+		return returned;
 	}
 	
 	public CopyForConsultation getOneAvailableCopyForConsultation(Book book, LocalDate date) throws SQLException{

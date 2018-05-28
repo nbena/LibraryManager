@@ -1,7 +1,6 @@
 package com.github.nbena.librarymanager.gui.view;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -12,8 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
 
+import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.Seat;
-import com.github.nbena.librarymanager.core.SeatReservation;
 
 import javax.swing.JLabel;
 import javax.swing.JFormattedTextField;
@@ -62,19 +61,29 @@ public class SeatDateView extends JDialog {
 //		}
 //	}
 	
-	public SeatDateView(SeatReservation reservation){
-		this.init(false, reservation);
+	public SeatDateView(String title, LocalDate date, Seat seat, Copy copy){
+		this.init(title, false, date, seat, copy);
 	}
 	
-	public SeatDateView(){
-		this.init(false, null);
+	public SeatDateView(String title, LocalDate date, Seat seat){
+		this.init(title, false, date, seat, null);
+	}
+	
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public SeatDateView(String title){
+		this.init(title, false, null, null, null);
 	}
 
 	/**
 	 * Create the dialog.
+	 * editable is not directly used but we keep for future purposes,
+	 * e.g.; change seat (?)
 	 */
-	private void init(boolean editable, SeatReservation reservation) {
-		setBounds(100, 100, 235, 201);
+	private void init(String title, boolean editable, LocalDate date, Seat seat, Copy copy) {
+		this.setTitle(title);
+		setBounds(100, 100, 235, 250);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -134,7 +143,7 @@ public class SeatDateView extends JDialog {
 		
 		{
 			JPanel buttonPane = new JPanel();
-			buttonPane.setBounds(0, 138, 308, 34);
+			buttonPane.setBounds(0, 175, 213, 34);
 			contentPanel.add(buttonPane);
 			buttonPane.setLayout(null);
 			{
@@ -160,14 +169,35 @@ public class SeatDateView extends JDialog {
 		lblSeatValue.setBounds(158, 104, 55, 14);
 		contentPanel.add(lblSeatValue);
 		
-		lblSeat.setVisible(reservation != null);
-		lblSeatValue.setVisible(reservation != null);
+		JLabel lblCopyTitle = new JLabel("Titolo");
+		lblCopyTitle.setBounds(12, 133, 55, 14);
+		contentPanel.add(lblCopyTitle);
 		
-		if (reservation != null){
+		JLabel lblCopyTitleValue = new JLabel("");
+		lblCopyTitleValue.setBounds(158, 130, 55, 14);
+		contentPanel.add(lblCopyTitleValue);
+		
+		lblSeat.setVisible(seat != null);
+		lblSeatValue.setVisible(seat != null);
+		
+		if (seat != null){
 			lblSeatValue.setText(String.format("%d,%d",
-					reservation.getSeat().getNumber(),
-					reservation.getSeat().getTableNumber()
+					seat.getNumber(),
+					seat.getTableNumber()
 					));
+		}
+		
+		if (date != null){
+			this.formattedTextFieldDay.setText(Integer.toString(date.getDayOfMonth()));
+			this.formattedTextFieldMonth.setText(Integer.toString(date.getMonthValue()));
+			this.formattedTextFieldYear.setText(Integer.toString(date.getYear()));
+		}
+		
+		lblCopyTitle.setVisible(copy != null);	
+		lblCopyTitleValue.setVisible(copy != null);
+		
+		if (copy != null){
+			lblCopyTitleValue.setText(copy.getTitle());
 		}
 	}
 }

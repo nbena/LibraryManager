@@ -1,26 +1,21 @@
 package com.github.nbena.librarymanager.gui;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
+import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
-import com.github.nbena.librarymanager.gui.view.ReservationTableView;
-import com.github.nbena.librarymanager.gui.view.SeatDateView;
 import com.github.nbena.librarymanager.gui.view.UserView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
+import com.github.nbena.librarymanager.gui.view.table.LoanTableModel;
 import com.github.nbena.librarymanager.gui.view.table.SeatReservationTableModel;
 
 public class UserController extends AbstractController {
@@ -29,7 +24,7 @@ public class UserController extends AbstractController {
 	private UserView userView;
 	private UserModel userModel;
 	
-	private LocalDate gotDate;
+	// private LocalDate gotDate;
 	
 
 	public UserController(UserModel userModel, UserView userView) {
@@ -55,6 +50,16 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				LocalDate date = datePicker(userView, null, true);
+				if (date != null){
+//					try {
+//						SeatReservation reservation = userModel.reserveSeat(date);
+//						showSeatReservationDetails(reservation);
+//					} catch (ReservationException | SQLException e) {
+//						displayError(userView, e);
+//					}
+					System.out.println(date.toString());
+				}
 			}
 			
 		});
@@ -79,10 +84,9 @@ public class UserController extends AbstractController {
 //					tableView.setVisible(true);
 //					tableView.setAlwaysOnTop(true);
 //					tableView.setTableModel(new ConsultationReservationTableModel(reservations));
-					displayTableItems(new ConsultationReservationTableModel(reservations));
+					displayTableItems(new ConsultationReservationTableModel(reservations), userView);
 				} catch (SQLException e1) {
-					
-					e1.printStackTrace();
+					displayError(userView, e1);
 				}
 			}
 			
@@ -94,10 +98,10 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<Loan> loans = userModel.getActiveLoan();
+					displayTableItems(new LoanTableModel(loans), userView);
 					
 				} catch (SQLException e1) {
-					
-					e1.printStackTrace();
+					displayError(userView, e1);
 				}
 			}
 			
@@ -113,10 +117,9 @@ public class UserController extends AbstractController {
 //					tableView.setVisible(true);
 //					tableView.setAlwaysOnTop(true);					
 //					tableView.setTableModel(new LoanReservationTableModel(reservations));
-					displayTableItems(new LoanReservationTableModel(reservations));
+					displayTableItems(new LoanReservationTableModel(reservations), userView);
 				} catch (SQLException e1) {
-					
-					e1.printStackTrace();
+					displayError(userView, e1);
 				}
 			}
 			
@@ -132,69 +135,13 @@ public class UserController extends AbstractController {
 //					tableView.setVisible(true);
 //					tableView.setAlwaysOnTop(true);
 //					tableView.setTableModel(new SeatReservationTableModel(reservations));	
-					displayTableItems(new SeatReservationTableModel(reservations));
+					displayTableItems(new SeatReservationTableModel(reservations), userView);
 				} catch (SQLException e1) {
-					
 					displayError(userView, e1);
 				}
 			}
 			
 		});
-	}
-	
-	private ReservationTableView displayTableItems(AbstractTableModel tableModel){
-		
-		ReservationTableView tableView = null;
-		if(tableModel.getRowCount()>0){
-			tableView = new ReservationTableView();
-			tableView.setTableModel(tableModel);
-			tableView.setAlwaysOnTop(true);
-			tableView.setVisible(true);		
-		}else{
-			super.displayMessage(this.userView, "No items to show");
-		}
-		
-		return tableView;
-	}
-	
-	private LocalDate askDateForReservation(SeatReservation reservation){
-		SeatDateView seatDate;
-		this.gotDate = null;
-//		if(reservation != null){
-//			
-//		}else{
-//			
-//		}
-		seatDate = new SeatDateView(reservation);
-		seatDate.addActionListenerOkButton(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int day = seatDate.getDay();
-				int month = seatDate.getMonth();
-				int year = seatDate.getYear();
-				gotDate = LocalDate.of(year, Month.of(month), day);
-				
-				seatDate.setVisible(false);
-				seatDate.dispose();
-				
-			}
-			
-		});
-		
-		seatDate.addActionListenerCancelButton(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				seatDate.setVisible(false);
-				seatDate.dispose();
-			}
-			
-		});
-		seatDate.setAlwaysOnTop(true);
-		seatDate.setVisible(true);
-		return gotDate;
 	}
 	
 }

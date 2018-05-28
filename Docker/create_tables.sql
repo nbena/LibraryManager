@@ -12,7 +12,7 @@ create table lm_user (
 	name varchar(100) not null,
 	surname varchar(100) not null,
 	email varchar(100) not null unique,
-	password varchar(100) not null,
+	password varchar(500) not null,
 	internal boolean not null default false,
 	primary key (id)
 );
@@ -166,6 +166,12 @@ create trigger trigger_update_copy_status_after_del
 after delete on loan_reservation
 for each row
 execute procedure trigger_function_update_copy_status_after_delete_loan_res();
+
+-- hash of 'password' ;)
+insert into lm_user(name, surname, email, internal, password) values 
+('user1', 'user1', 'user1@example.com', true, 
+'e9a75486736a550af4fea861e2378305c4a555a05094dee1dca2f68afea49cc3a50e8de6ea131ea521311f4d6fb054a146e8282f8e35ff2e6368c1a62e909716'
+);
 
 insert into seat (table_number, seat_number)  values
 (1, 1),

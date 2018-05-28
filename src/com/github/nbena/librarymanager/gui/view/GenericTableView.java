@@ -10,10 +10,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
 import java.awt.GridLayout;
+import java.awt.event.MouseListener;
+
 import javax.swing.JScrollBar;
 import javax.swing.JTable;
 
-public class ReservationTableView extends JDialog {
+@SuppressWarnings("serial")
+public class GenericTableView extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTable table;
@@ -21,13 +24,17 @@ public class ReservationTableView extends JDialog {
 	public void setTableModel(AbstractTableModel model){
 		this.table.setModel(model);
 	}
+	
+	public void setTableMouseListener(MouseListener listener){
+		this.table.addMouseListener(listener);
+	}
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			ReservationTableView dialog = new ReservationTableView();
+			GenericTableView dialog = new GenericTableView();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -38,7 +45,7 @@ public class ReservationTableView extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ReservationTableView() {
+	public GenericTableView() {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

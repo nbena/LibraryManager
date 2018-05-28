@@ -41,11 +41,17 @@ public class UserModel extends AbstractModel {
 	
 	
 	public boolean authenticate(User user){
-		boolean result = super.manager.authenticateUser(user);
-		if (result){
+		User u = super.manager.authenticateUser(user);
+		boolean result = false;
+		if (u!=null){
 			super.setUser(user);
+			result = true;
 		}
 		return result;
+	}
+	
+	public void setUser(User user){
+		super.setUser(user);
 	}
 	
 	public SeatReservation reserveSeat(LocalDate date) throws ReservationException, SQLException{

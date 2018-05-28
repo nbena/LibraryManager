@@ -56,16 +56,15 @@ public class LibraryManager {
 		
 	}
 	
-	public boolean authenticateUser(User user){
+	public User authenticateUser(User user){
 		
-		boolean authenticated = true;
+		User returned = null;
 		try {
-			authenticated = this.dbManager.authenticateUser(user);
+			returned = this.dbManager.authenticateUser(user);
 		} catch (SQLException e) {
-			authenticated = false;
+			e.printStackTrace();
 		}
-		
-		return authenticated;
+		return returned;
 	}
 	
 	

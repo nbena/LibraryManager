@@ -47,7 +47,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
 		StartupLogin startup = new StartupLogin();
 		

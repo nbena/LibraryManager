@@ -1,12 +1,14 @@
 package com.github.nbena.librarymanager.gui.view;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.text.NumberFormatter;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 
@@ -15,9 +17,9 @@ import javax.swing.JFormattedTextField;
 
 public class DatePickerView extends JPanel {
 	
-	private JFormattedTextField formattedTextFieldDay;
-	private JFormattedTextField formattedTextFieldMonth;
-	private JFormattedTextField  formattedTextFieldYear;
+	private JTextField formattedTextFieldDay;
+	private JTextField formattedTextFieldMonth;
+	private JTextField  formattedTextFieldYear;
 	
 	
 	public int getDay(){
@@ -90,21 +92,26 @@ public class DatePickerView extends JPanel {
 //		yearFormatter.setMaximum(2050);
 //		yearFormatter.setAllowsInvalid(false);		
 		
-		formattedTextFieldDay = new JFormattedTextField(/*dayFormatter*/);
+		formattedTextFieldDay = new JTextField(/*dayFormatter*/);
 		formattedTextFieldDay.setBounds(117, 29, 96, 18);
 		add(formattedTextFieldDay);
 		
-		formattedTextFieldMonth = new JFormattedTextField(/*monthFormatter*/);
+		formattedTextFieldMonth = new JTextField(/*monthFormatter*/);
 		formattedTextFieldMonth.setBounds(117, 69, 96, 18);
 		add(formattedTextFieldMonth);
 		
-		formattedTextFieldYear = new JFormattedTextField(/*yearFormatter*/);
+		formattedTextFieldYear = new JTextField(/*yearFormatter*/);
 		formattedTextFieldYear.setBounds(117, 109, 96, 18);
 		add(formattedTextFieldYear);
 		
 		formattedTextFieldDay.setEditable(editable);
 		formattedTextFieldMonth.setEditable(editable);
 		formattedTextFieldYear.setEditable(editable);
+		
+//		formattedTextFieldDay.setBackground(Color.WHITE);
+//		formattedTextFieldMonth.setBackground(Color.WHITE);
+//		formattedTextFieldYear.setBackground(Color.WHITE);
+
 
 	}
 }

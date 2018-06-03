@@ -110,7 +110,7 @@ public abstract class AbstractController {
 			tableView.setAlwaysOnTop(true);
 			tableView.setVisible(true);		
 		}else{
-			this.displayMessage(component, "No items to show");
+			this.displayMessage(component, "Non ci sono elementi da mostrare");
 		}
 		
 		return tableView;

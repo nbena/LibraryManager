@@ -18,12 +18,12 @@ public class LoanTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return this.loans.size();
+		return this.columnCount;
 	}
 
 	@Override
 	public int getRowCount() {
-		return this.columnCount;
+		return this.loans.size();
 	}
 
 	@Override

@@ -2,16 +2,20 @@ package com.github.nbena.librarymanager.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.UserView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
@@ -24,12 +28,16 @@ public class UserController extends AbstractController {
 	private UserView userView;
 	private UserModel userModel;
 	
+	private GenericTableView tableView;
+	
 	// private LocalDate gotDate;
 	
 
 	public UserController(UserModel userModel, UserView userView) {
 		this.userView = userView;
 		this.userModel = userModel;
+		
+		super.genericTableView = new GenericTableView();
 		
 		this.addListeners();
 		
@@ -50,6 +58,9 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				try{
+					
+				
 				LocalDate date = datePicker(userView, null, true);
 				if (date != null){
 //					try {
@@ -59,6 +70,10 @@ public class UserController extends AbstractController {
 //						displayError(userView, e);
 //					}
 					System.out.println(date.toString());
+				}
+				}
+				catch(NumberFormatException e1){
+					displayMessage(userView, "Errore nell'input", "Errore", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			
@@ -80,11 +95,9 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<ConsultationReservation> reservations = userModel.getConsultationReservation();
-//					ReservationTableView tableView = new ReservationTableView();
-//					tableView.setVisible(true);
-//					tableView.setAlwaysOnTop(true);
-//					tableView.setTableModel(new ConsultationReservationTableModel(reservations));
 					displayTableItems(new ConsultationReservationTableModel(reservations), userView);
+					genericTableView.setMenuItemCancelEnabled(true);
+					genericTableView.setMenuItemDetailsEnabled(true);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
@@ -99,7 +112,8 @@ public class UserController extends AbstractController {
 				try {
 					List<Loan> loans = userModel.getActiveLoan();
 					displayTableItems(new LoanTableModel(loans), userView);
-					
+					genericTableView.setMenuItemCancelEnabled(false);
+					genericTableView.setMenuItemDetailsEnabled(false);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
@@ -113,11 +127,9 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<LoanReservation> reservations = userModel.getLoanReservation();
-//					ReservationTableView tableView = new ReservationTableView();
-//					tableView.setVisible(true);
-//					tableView.setAlwaysOnTop(true);					
-//					tableView.setTableModel(new LoanReservationTableModel(reservations));
 					displayTableItems(new LoanReservationTableModel(reservations), userView);
+					genericTableView.setMenuItemCancelEnabled(true);
+					genericTableView.setMenuItemDetailsEnabled(true);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
@@ -130,18 +142,51 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					List<SeatReservation> reservations = userModel.getSeatsReservations();
-//					ReservationTableView tableView = new ReservationTableView();
-//					tableView.setVisible(true);
-//					tableView.setAlwaysOnTop(true);
-//					tableView.setTableModel(new SeatReservationTableModel(reservations));	
+					List<SeatReservation> reservations = userModel.getSeatsReservations();	
 					displayTableItems(new SeatReservationTableModel(reservations), userView);
+					genericTableView.setMenuItemCancelEnabled(true);
+					genericTableView.setMenuItemDetailsEnabled(true);					
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
 			}
 			
 		});
+		
+//		this.genericTableView.addTableMouseListener(new MouseListener(){
+//
+//			@Override
+//			public void mouseClicked(MouseEvent arg0) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//
+//			@Override
+//			public void mouseEntered(MouseEvent arg0) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//
+//			@Override
+//			public void mouseExited(MouseEvent arg0) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//
+//			@Override
+//			public void mousePressed(MouseEvent arg0) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//
+//			@Override
+//			public void mouseReleased(MouseEvent arg0) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//		});
+//		
 	}
 	
 }

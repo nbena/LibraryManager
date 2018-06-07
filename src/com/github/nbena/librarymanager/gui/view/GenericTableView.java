@@ -5,7 +5,9 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
@@ -22,13 +24,34 @@ public class GenericTableView extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTable table;
+	private JPopupMenu menu;
+	private JMenuItem mntmViewDetails;
+	private JMenuItem mntmCancel;
 	
 	public void setTableModel(AbstractTableModel model){
 		this.table.setModel(model);
 	}
 	
-	public void setTableMouseListener(MouseListener listener){
-		this.table.addMouseListener(listener);
+	public void addTableMouseListener(MouseListener mouseListener){
+		this.table.addMouseListener(mouseListener);
+	}
+	
+	public void setPopupEnabled(boolean enabled){
+		this.menu.setEnabled(enabled);
+	}
+	
+	public void setMenuItemDetailsEnabled(boolean enabled){
+		this.mntmViewDetails.setEnabled(enabled);
+		if (enabled){
+			this.menu.setEnabled(true);
+		}
+	}
+	
+	public void setMenuItemCancelEnabled(boolean enabled){
+		this.mntmCancel.setEnabled(enabled);
+		if (enabled){
+			this.menu.setEnabled(true);
+		}
 	}
 
 	/**
@@ -55,6 +78,7 @@ public class GenericTableView extends JDialog {
 		contentPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		
 		table = new JTable();
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		contentPanel.add(scrollPane);
@@ -87,7 +111,17 @@ public class GenericTableView extends JDialog {
 				setVisible(false);
 				dispose();				
 			}
-		});		
+		});
+		
+		this.menu = new JPopupMenu();
+		
+		this.mntmViewDetails = new JMenuItem("Dettagli");
+		this.mntmCancel = new JMenuItem("Cancella");
+		
+		this.menu.add(this.mntmViewDetails);
+		this.menu.add(this.mntmCancel);
+		
+		this.table.setComponentPopupMenu(this.menu);
 		
 	}
 

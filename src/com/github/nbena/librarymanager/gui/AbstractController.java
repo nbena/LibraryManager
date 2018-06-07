@@ -23,9 +23,16 @@ public abstract class AbstractController {
 	protected final String SHOW_SEAT_RESERVATION = "Dettagli prenotazione:";
 	
 	protected LocalDate gotDate;
+	protected GenericTableView genericTableView;
 	
-	protected void displayMessage(Component parent, String message){
-		JOptionPane.showMessageDialog(parent, message);
+	protected void displayMessage(Component parent, String message, String title, int messageType){
+		if (messageType == Integer.MAX_VALUE){
+			messageType = JOptionPane.INFORMATION_MESSAGE;
+		}
+		if (title.equals("")){
+			title = "Info";
+		}
+		JOptionPane.showMessageDialog(parent, message, title, messageType);
 	}
 	
 	protected void displayError(Component parent, Exception exception){
@@ -101,19 +108,15 @@ public abstract class AbstractController {
 		return gotDate;
 	}
 	
-	protected GenericTableView displayTableItems(AbstractTableModel tableModel, Component component){
-		
-		GenericTableView tableView = null;
+	protected void displayTableItems(AbstractTableModel tableModel, Component component){
+	
 		if(tableModel.getRowCount()>0){
-			tableView = new GenericTableView();
-			tableView.setTableModel(tableModel);
-			tableView.setAlwaysOnTop(true);
-			tableView.setVisible(true);		
+			this.genericTableView.setTableModel(tableModel);
+			this.genericTableView.setAlwaysOnTop(true);
+			this.genericTableView.setVisible(true);		
 		}else{
-			this.displayMessage(component, "Non ci sono elementi da mostrare");
+			this.displayMessage(component, "Non ci sono elementi da mostrare", "", Integer.MAX_VALUE);
 		}
-		
-		return tableView;
 	}
 	
 	
@@ -133,15 +136,11 @@ public abstract class AbstractController {
 		Object value = pane.getValue();
 		if (value != null){
 		// if (res == JOptionPane.OK_OPTION){
-			try{
 				int day = pickerPanel.getDay();
 				int month = pickerPanel.getMonth();
 				int year = pickerPanel.getYear();
 				
 				result = LocalDate.of(year, Month.of(month), day);
-			}catch(NumberFormatException e){
-				e.printStackTrace();
-			}
 		}
 		return result;
 	}

@@ -23,7 +23,7 @@ public class Main {
 			uri = "localhost:5434/docker";
 		}
 		this.manager = new LibraryManager(uri, "docker", "docker");
-	}
+		}
 	
 	public void user(User user){
 		UserModel model = new UserModel(this.manager);

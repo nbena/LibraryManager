@@ -1,6 +1,7 @@
 package com.github.nbena.librarymanager.gui.view.table;
 import com.github.nbena.librarymanager.core.Loan;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -34,7 +35,7 @@ public class LoanTableModel extends AbstractTableModel {
 		case 0:
 			value = loan.getCopy().getTitle(); break;
 		case 1:
-			value = loan.getCopy().getAuthors(); break;
+			value = Arrays.toString(loan.getCopy().getAuthors()); break;
 		case 2:
 			value = loan.getStart(); break;
 		case 3:

@@ -197,6 +197,12 @@ select id, false from book where title = 'Title4'
 union
 select id, true from book where title = 'Title4';
 
+insert into loan(userid, copyid)
+select 1, lm_copy.id
+from lm_copy join book on lm_copy.bookid = book.id
+where title='Title1'
+ and for_consultation = false;
+
 insert into seat (table_number, seat_number)  values
 (1, 1),
 (1, 2),

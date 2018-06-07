@@ -9,6 +9,7 @@ import java.util.List;
 public class LoanReservationTableModel extends AbstractTableModel {
 	
 	private List<LoanReservation> items;
+	private final String[] columns = { "Titolo", "Autori" };
 	
 	public LoanReservationTableModel(List<LoanReservation> items){
 		this.items = items;
@@ -22,6 +23,11 @@ public class LoanReservationTableModel extends AbstractTableModel {
 	@Override
 	public int getRowCount() {
 		return this.items.size();
+	}
+	
+	@Override
+	public String getColumnName(int col) {
+		  return this.columns[col];
 	}
 
 	@Override

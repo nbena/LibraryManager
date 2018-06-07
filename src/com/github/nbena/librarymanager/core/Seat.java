@@ -55,6 +55,15 @@ public class Seat {
 				&& s.getTableNumber() == this.tableNumber);
 	}
 	
+	public String toString(){
+		return Integer.toString(this.tableNumber) + ":"
+				+ Integer.toString(this.number);
+	}
+	
+	public String toExtendedString(){
+		return this.toString() + "; free=" + Boolean.toString(this.free);
+	}
+	
 	
 	
 

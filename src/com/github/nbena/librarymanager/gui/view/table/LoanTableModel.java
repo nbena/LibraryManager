@@ -6,12 +6,12 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+@SuppressWarnings("serial")
 public class LoanTableModel extends AbstractTableModel {
-	
-	private static final long serialVersionUID = 5511851526455718521L;
 
 	private List<Loan> loans;
 	private final int columnCount = 4;
+	private final String[] columns = {"Titolo", "Autori", "Data inizio", "Data fine"};
 	
 	public LoanTableModel(List<Loan> loans){
 		this.loans = loans;
@@ -25,6 +25,11 @@ public class LoanTableModel extends AbstractTableModel {
 	@Override
 	public int getRowCount() {
 		return this.loans.size();
+	}
+	
+	@Override
+	public String getColumnName(int col) {
+		  return this.columns[col];
 	}
 
 	@Override

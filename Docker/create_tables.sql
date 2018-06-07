@@ -168,10 +168,34 @@ for each row
 execute procedure trigger_function_update_copy_status_after_delete_loan_res();
 
 -- hash of 'password' ;)
-insert into lm_user(name, surname, email, internal, password) values 
-('user1', 'user1', 'user1@example.com', true, 
+insert into lm_user(name, surname, email, internal, password) values
+('user1', 'user1', 'user1@example.com', true,
 'e9a75486736a550af4fea861e2378305c4a555a05094dee1dca2f68afea49cc3a50e8de6ea131ea521311f4d6fb054a146e8282f8e35ff2e6368c1a62e909716'
 );
+
+insert into book(title, authors, year, phouse, main_topic) values
+('Title1', '{"Author1", "Author2"}', 2010, 'oreilly', 'IT'),
+('Title2', '{"Author1"}', 2001, 'McGraw Hill', 'Networking'),
+('Title3', '{"Author2"}', 2018, 'oxford', 'Programming'),
+('Title4', '{"Author5"}', 1999, 'oreilly', 'DBMS');
+
+
+insert into lm_copy(bookid, for_consultation)
+select id, false from book where title = 'Title1'
+union
+select id, true from book where title = 'Title1'
+union
+select id, false from book where title = 'Title2'
+union
+select id, true from book where title = 'Title2'
+union
+select id, false from book where title = 'Title3'
+union
+select id, true from book where title = 'Title3'
+union
+select id, false from book where title = 'Title4'
+union
+select id, true from book where title = 'Title4';
 
 insert into seat (table_number, seat_number)  values
 (1, 1),

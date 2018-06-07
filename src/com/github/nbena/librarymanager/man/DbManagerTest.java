@@ -58,7 +58,7 @@ public class DbManagerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		this.db = new DbManager("localhost:5434/docker", "docker", "docker");
+		this.db = new DbManager("localhost:5435/docker", "docker", "docker");
 		books = new Book[]{
 				new Book("Title1", new String[]{
 						"Me",
@@ -243,7 +243,7 @@ public class DbManagerTest {
 //		rs.next();
 //		int count = rs.getInt(1);
 		int count = getCountOf("select count(*) from book where ", books);
-		assertTrue(count == books.length);
+		assertTrue(count >= books.length);
 	}
 	
 	
@@ -253,7 +253,7 @@ public class DbManagerTest {
 	  }
 	  usersCreated = true;
 	  int count = getCountOf("select count (*) from lm_user where ", users);
-	  assertTrue(count == users.length);
+	  assertTrue(count >= users.length);
   }
   
 
@@ -264,7 +264,7 @@ public class DbManagerTest {
 		  this.db.addCopy(c, books[0]);
 	  }
 	  int count = getCountOf("select count (*) from lm_copy where ", allCopies);
-	  assertTrue(count == copies.length + copiesForConsultation.length);
+	  assertTrue(count >= copies.length + copiesForConsultation.length);
   }
   
   public void addLoan() throws SQLException{

@@ -12,6 +12,7 @@ import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
+import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.UserView;
@@ -106,8 +107,8 @@ public class UserController extends AbstractController {
 				LocalDate date = datePicker(userView, null);
 				if (date != null){
 //					try {
-//						SeatReservation reservation = userModel.reserveSeat(date);
-//						showSeatReservationDetails(reservation);
+						SeatReservation reservation = userModel.reserveSeat(date);
+						showSeatReservationDetails(reservation);
 //					} catch (ReservationException | SQLException e) {
 //						displayError(userView, e);
 //					}
@@ -116,7 +117,9 @@ public class UserController extends AbstractController {
 				}
 				catch(NumberFormatException e1){
 					displayMessage(userView, "Errore nell'input", "Errore", JOptionPane.ERROR_MESSAGE);
-				}
+				} catch (ReservationException | SQLException e) {
+					displayMessage(userView, "Errore nella prenotazione", "Errore", JOptionPane.ERROR_MESSAGE);
+				} 
 			}
 			
 		});

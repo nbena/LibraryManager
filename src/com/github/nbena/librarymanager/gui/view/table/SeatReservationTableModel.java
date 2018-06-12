@@ -18,7 +18,7 @@ public class SeatReservationTableModel extends AbstractTableModel implements Sel
 
 	@Override
 	public int getColumnCount() {
-		return 3;
+		return 2;
 	}
 
 	@Override

@@ -149,26 +149,8 @@ public abstract class AbstractController {
 //		return result;
 //	}
 	
-	/**
-	 * Asks user for a date,ì. User will be prompted with a JOptionPane
-	 * with a basic input in which he can 'freely' types.
-	 * @param parent	the parent component
-	 * @param message	the message to display, can be null. If so
-	 * 					it's set to "Inserisci la data nel formato
-	 * 					DD-MM-YYYY o DD/MM/YYYY"
-	 * @return the date that the suer inserted, null if the inserted date is ''
-	 * @throws NumberFormatException if the date is not valid
-	 */
-	protected static LocalDate datePicker(Component parent, String message)  throws NumberFormatException{
+	protected static LocalDate parseDate(String date){
 		LocalDate result = null;
-		
-		if (message == null){
-			message = "Inserisci la data nel formato DD-MM-YYYY o DD/MM/YYYY";
-		}
-		
-		String date = JOptionPane.showInputDialog(parent, message, "Info",
-				JOptionPane.QUESTION_MESSAGE);
-		
 		if (date != ""){
 			if (!date.contains("/") && !date.contains("-")){
 				throw new NumberFormatException();
@@ -189,7 +171,35 @@ public abstract class AbstractController {
 			int day = Integer.parseInt(tokens[0]);
 			
 			result = LocalDate.of(year, Month.of(month), day);
+			
+			if (result.isBefore(LocalDate.now())){
+				throw new NumberFormatException("The date must be greater than today");
+			}
+		}	
+		return result;
+	}
+	
+	/**
+	 * Asks user for a date,ì. User will be prompted with a JOptionPane
+	 * with a basic input in which he can 'freely' types.
+	 * @param parent	the parent component
+	 * @param message	the message to display, can be null. If so
+	 * 					it's set to "Inserisci la data nel formato
+	 * 					DD-MM-YYYY o DD/MM/YYYY"
+	 * @return the date that the suer inserted, null if the inserted date is ''
+	 * @throws NumberFormatException if the date is not valid
+	 */
+	protected static LocalDate datePicker(Component parent, String message)  throws NumberFormatException{
+		LocalDate result = null;
+		
+		if (message == null){
+			message = "Inserisci la data nel formato DD-MM-YYYY o DD/MM/YYYY";
 		}
+		
+		String date = JOptionPane.showInputDialog(parent, message, "Info",
+				JOptionPane.QUESTION_MESSAGE);
+		
+		result = parseDate(date);
 		
 		return result;
 		

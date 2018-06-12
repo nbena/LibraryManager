@@ -2,8 +2,6 @@ package com.github.nbena.librarymanager.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +11,6 @@ import javax.swing.JOptionPane;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
-import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.UserView;
@@ -27,8 +24,6 @@ public class UserController extends AbstractController {
 	
 	private UserView userView;
 	private UserModel userModel;
-	
-	private GenericTableView tableView;
 	
 	// private LocalDate gotDate;
 	
@@ -112,8 +107,8 @@ public class UserController extends AbstractController {
 				try {
 					List<Loan> loans = userModel.getActiveLoan();
 					displayTableItems(new LoanTableModel(loans), userView);
-					genericTableView.setMenuItemCancelEnabled(false);
-					genericTableView.setMenuItemDetailsEnabled(false);
+					genericTableView.setMenuItemCancelEnabled(true);
+					genericTableView.setMenuItemDetailsEnabled(true);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}

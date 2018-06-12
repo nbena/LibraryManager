@@ -2,7 +2,7 @@ package com.github.nbena.librarymanager.run;
 
 import java.sql.SQLException;
 
-import javax.swing.UIManager;
+// import javax.swing.UIManager;
 
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
@@ -36,7 +36,7 @@ public class Main {
 	}
 	
 	public void librarian(){
-		LibrarianModel model = new LibrarianModel(this.manager);
+		/* LibrarianModel model = */new LibrarianModel(this.manager);
 	}
 	
 	public void turnstile(){

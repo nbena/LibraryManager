@@ -129,7 +129,8 @@ public abstract class AbstractController {
 		// pickerPanel.setVisible(true);
 //		int res = JOptionPane.showConfirmDialog(parent, pickerPanel, "Inserisci la data",
 //				JOptionPane.OK_CANCEL_OPTION);
-		JOptionPane pane = new JOptionPane(pickerPanel, JOptionPane.OK_CANCEL_OPTION);
+		JOptionPane pane = new JOptionPane(pickerPanel, JOptionPane.QUESTION_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION);
 		JDialog dialog = pane.createDialog(parent, message);
 		dialog.setSize(new Dimension(300, 300));
 		dialog.setVisible(true);

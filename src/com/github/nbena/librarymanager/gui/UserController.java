@@ -63,7 +63,7 @@ public class UserController extends AbstractController {
 			
 		});
 		
-		
+		// ok for seat
 		this.genericTableView.addMenuItemCancelListener(new ActionListener(){
 
 			@Override
@@ -96,6 +96,8 @@ public class UserController extends AbstractController {
 	private void addBasicListeneres(){
 		
 		// new seat reservation
+		
+		// tested and it works
 		this.userView.addActionListenerBtnNewSeatReservation(new ActionListener(){
 
 			@Override
@@ -112,7 +114,7 @@ public class UserController extends AbstractController {
 //					} catch (ReservationException | SQLException e) {
 //						displayError(userView, e);
 //					}
-					System.out.println(date.toString());
+
 				}
 				}
 				catch(NumberFormatException e1){
@@ -182,6 +184,8 @@ public class UserController extends AbstractController {
 			
 		});
 		
+		
+		// tested and works
 		this.userView.addActionListenerBtnViewSeatReservation(new ActionListener(){
 
 			@Override

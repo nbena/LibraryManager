@@ -14,7 +14,7 @@ public class ConsultationReservationTableModel extends AbstractTableModel
 	
 	private List<ConsultationReservation> items;
 	private final String [] columns = {"Titolo", "Autori", "Tavolo:posto",
-			"Data", "Data prenotazione"};
+			"Data"};
 	
 	public ConsultationReservationTableModel(List<ConsultationReservation> items){
 		this.items = items;
@@ -22,7 +22,7 @@ public class ConsultationReservationTableModel extends AbstractTableModel
 
 	@Override
 	public int getColumnCount() {
-		return 5;
+		return 4;
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class ConsultationReservationTableModel extends AbstractTableModel
 			// value = reservation.getSeat().getTableNumber(); break;
 		case 4:
 			value = reservation.getReservationDate(); break;
-		case 5:
-			value = reservation.getTimestamp(); break;
+//		case 5:
+//			value = reservation.getTimestamp(); break;
 		}
 		return value;
 	}

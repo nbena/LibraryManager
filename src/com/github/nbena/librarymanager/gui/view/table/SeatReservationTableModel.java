@@ -10,7 +10,7 @@ import com.github.nbena.librarymanager.core.SeatReservation;
 public class SeatReservationTableModel extends AbstractTableModel implements SelectableItem {
 	
 	private List<SeatReservation> items;
-	private final String[] columns = { "Tavolo", "Posto" };
+	private final String[] columns = { "Tavolo", "Posto", "Data"};
 	
 	public SeatReservationTableModel(List<SeatReservation> items){
 		this.items = items;
@@ -18,7 +18,7 @@ public class SeatReservationTableModel extends AbstractTableModel implements Sel
 
 	@Override
 	public int getColumnCount() {
-		return 2;
+		return 3;
 	}
 
 	@Override

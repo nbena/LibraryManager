@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
@@ -42,6 +43,32 @@ public class UserController extends AbstractController {
 
 	private void addListeners(){
 		this.addBasicListeneres();
+		this.addGenericViewListeners();
+	}
+	
+	
+	private void addGenericViewListeners(){
+		
+		super.addPopupListenerToTable(this.genericTableView);
+		
+		this.genericTableView.addMenuItemDetailsListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Object o = genericTableView.getSelectedItem();
+			}
+			
+		});
+		
+		
+		this.genericTableView.addMenuItemCancelListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AbstractReservation o = (AbstractReservation) genericTableView.getSelectedItem();
+			}
+			
+		});
 	}
 	
 	
@@ -107,7 +134,7 @@ public class UserController extends AbstractController {
 				try {
 					List<Loan> loans = userModel.getActiveLoan();
 					displayTableItems(new LoanTableModel(loans), userView);
-					genericTableView.setMenuItemCancelEnabled(true);
+					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
 				} catch (SQLException e1) {
 					displayError(userView, e1);

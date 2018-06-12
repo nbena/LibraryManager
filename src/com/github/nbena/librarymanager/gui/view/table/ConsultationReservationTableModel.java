@@ -7,7 +7,9 @@ import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 
-public class ConsultationReservationTableModel extends AbstractTableModel {
+@SuppressWarnings("serial")
+public class ConsultationReservationTableModel extends AbstractTableModel
+ implements SelectableItem {
 
 	
 	private List<ConsultationReservation> items;
@@ -51,5 +53,10 @@ public class ConsultationReservationTableModel extends AbstractTableModel {
 			value = reservation.getTimestamp(); break;
 		}
 		return value;
+	}
+
+	@Override
+	public ConsultationReservation getSelectedItem(int row) {
+		return this.items.get(row);
 	}
 }

@@ -9,6 +9,8 @@ import java.time.Month;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.core.Seat;
@@ -16,6 +18,7 @@ import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.gui.view.DatePickerView;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.SeatDateView;
+import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
 public abstract class AbstractController {
 	
@@ -144,6 +147,28 @@ public abstract class AbstractController {
 				result = LocalDate.of(year, Month.of(month), day);
 		}
 		return result;
+	}
+	
+	
+	protected void addPopupListenerToTable(Popupable popuable){
+		popuable.addPopupListener(new PopupMenuListener(){
+
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent arg0) {
+				
+			}
+
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0) {
+				
+			}
+
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
+				popuable.setSelectedRowToPopup();
+			}
+			
+		});
 	}
 	
 

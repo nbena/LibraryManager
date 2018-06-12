@@ -7,7 +7,8 @@ import com.github.nbena.librarymanager.core.LoanReservation;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class LoanReservationTableModel extends AbstractTableModel {
+public class LoanReservationTableModel extends AbstractTableModel
+ implements SelectableItem {
 	
 	private List<LoanReservation> items;
 	private final String[] columns = { "Titolo", "Autori" };
@@ -42,6 +43,11 @@ public class LoanReservationTableModel extends AbstractTableModel {
 			value = reservation.getCopy().getAuthors(); break;
 		}
 		return value;
+	}
+	
+	@Override
+	public LoanReservation getSelectedItem(int row) {
+		return this.items.get(row);
 	}
 
 }

@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 import com.github.nbena.librarymanager.core.SeatReservation;
 
 @SuppressWarnings("serial")
-public class SeatReservationTableModel extends AbstractTableModel {
+public class SeatReservationTableModel extends AbstractTableModel implements SelectableItem {
 	
 	private List<SeatReservation> items;
 	private final String[] columns = { "Tavolo", "Posto" };
@@ -44,6 +44,11 @@ public class SeatReservationTableModel extends AbstractTableModel {
 			value = reservation.getReservationDate(); break;
 		}
 		return value;
+	}
+	
+	@Override
+	public SeatReservation getSelectedItem(int row) {
+		return this.items.get(row);
 	}
 
 }

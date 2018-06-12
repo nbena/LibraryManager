@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 @SuppressWarnings("serial")
-public class LoanTableModel extends AbstractTableModel {
+public class LoanTableModel extends AbstractTableModel implements SelectableItem {
 
 	private List<Loan> loans;
 	private final int columnCount = 4;
@@ -47,6 +47,11 @@ public class LoanTableModel extends AbstractTableModel {
 			value = loan.getEnd(); break;
 		}
 		return value;
+	}
+
+	@Override
+	public Loan getSelectedItem(int row) {
+		return this.loans.get(row);
 	}
 
 }

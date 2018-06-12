@@ -32,7 +32,7 @@ public abstract class AbstractController {
 		if (messageType == Integer.MAX_VALUE){
 			messageType = JOptionPane.INFORMATION_MESSAGE;
 		}
-		if (title.equals("")){
+		if (title == null || title.equals("")){
 			title = "Info";
 		}
 		JOptionPane.showMessageDialog(parent, message, title, messageType);
@@ -123,30 +123,76 @@ public abstract class AbstractController {
 	}
 	
 	
-	protected LocalDate datePicker(Component parent, String message, boolean editable){
+//	protected LocalDate datePicker(Component parent, String message, boolean editable){
+//		LocalDate result = null;
+//		if (message == null){
+//			message = "Inserisci la data";
+//		}
+//		DatePickerView pickerPanel = new DatePickerView(editable);
+//		// pickerPanel.setVisible(true);
+////		int res = JOptionPane.showConfirmDialog(parent, pickerPanel, "Inserisci la data",
+////				JOptionPane.OK_CANCEL_OPTION);
+//		JOptionPane pane = new JOptionPane(pickerPanel, JOptionPane.QUESTION_MESSAGE,
+//				JOptionPane.OK_OPTION);
+//		JDialog dialog = pane.createDialog(parent, message);
+//		dialog.setSize(new Dimension(300, 300));
+//		dialog.setVisible(true);
+//		Object value = pane.getValue();
+//		if (value != null){
+//		// if (res == JOptionPane.OK_OPTION){
+//				int day = pickerPanel.getDay();
+//				int month = pickerPanel.getMonth();
+//				int year = pickerPanel.getYear();
+//				
+//				result = LocalDate.of(year, Month.of(month), day);
+//		}
+//		return result;
+//	}
+	
+	/**
+	 * Asks user for a date,ì. User will be prompted with a JOptionPane
+	 * with a basic input in which he can 'freely' types.
+	 * @param parent	the parent component
+	 * @param message	the message to display, can be null. If so
+	 * 					it's set to "Inserisci la data nel formato
+	 * 					DD-MM-YYYY o DD/MM/YYYY"
+	 * @return the date that the suer inserted, null if the inserted date is ''
+	 * @throws NumberFormatException if the date is not valid
+	 */
+	protected static LocalDate datePicker(Component parent, String message)  throws NumberFormatException{
 		LocalDate result = null;
+		
 		if (message == null){
-			message = "Inserisci la data";
+			message = "Inserisci la data nel formato DD-MM-YYYY o DD/MM/YYYY";
 		}
-		DatePickerView pickerPanel = new DatePickerView(editable);
-		// pickerPanel.setVisible(true);
-//		int res = JOptionPane.showConfirmDialog(parent, pickerPanel, "Inserisci la data",
-//				JOptionPane.OK_CANCEL_OPTION);
-		JOptionPane pane = new JOptionPane(pickerPanel, JOptionPane.QUESTION_MESSAGE,
-				JOptionPane.OK_CANCEL_OPTION);
-		JDialog dialog = pane.createDialog(parent, message);
-		dialog.setSize(new Dimension(300, 300));
-		dialog.setVisible(true);
-		Object value = pane.getValue();
-		if (value != null){
-		// if (res == JOptionPane.OK_OPTION){
-				int day = pickerPanel.getDay();
-				int month = pickerPanel.getMonth();
-				int year = pickerPanel.getYear();
-				
-				result = LocalDate.of(year, Month.of(month), day);
+		
+		String date = JOptionPane.showInputDialog(parent, message, "Info",
+				JOptionPane.QUESTION_MESSAGE);
+		
+		if (date != ""){
+			if (!date.contains("/") && !date.contains("-")){
+				throw new NumberFormatException();
+			}
+			
+			String splitchar = "/";
+			if (date.contains("-")){
+				splitchar = "-";
+			}
+			
+			String [] tokens = date.split(splitchar);
+			if (tokens.length != 3){
+				throw new NumberFormatException();
+			}
+			
+			int year = Integer.parseInt(tokens[2]);
+			int month = Integer.parseInt(tokens[1]);
+			int day = Integer.parseInt(tokens[0]);
+			
+			result = LocalDate.of(year, Month.of(month), day);
 		}
+		
 		return result;
+		
 	}
 	
 	

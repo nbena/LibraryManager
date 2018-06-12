@@ -56,6 +56,8 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Object o = genericTableView.getSelectedItem();
+				// TODO add a detail viewer
+				System.out.println(o);
 			}
 			
 		});
@@ -65,7 +67,25 @@ public class UserController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AbstractReservation o = (AbstractReservation) genericTableView.getSelectedItem();
+				AbstractReservation reservation = (AbstractReservation) genericTableView.getSelectedItem();
+				
+				int res = JOptionPane.showConfirmDialog(userView,
+						"Vuoi cancellare questa prenotazione?",
+						"Conferma",
+						JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE
+						);
+				if (res == JOptionPane.OK_OPTION){
+					try {
+						userModel.cancelReservation(reservation);
+						// TODO remove from the table
+						displayMessage(userView, "Prenotazione eliminata con successo",
+								null, Integer.MAX_VALUE);
+					} catch (SQLException e1) {
+						displayError(userView, e1);
+					}
+				}
+				// else do nothing
 			}
 			
 		});
@@ -83,7 +103,7 @@ public class UserController extends AbstractController {
 				try{
 					
 				
-				LocalDate date = datePicker(userView, null, true);
+				LocalDate date = datePicker(userView, null);
 				if (date != null){
 //					try {
 //						SeatReservation reservation = userModel.reserveSeat(date);

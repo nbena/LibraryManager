@@ -461,6 +461,54 @@ public class DbManagerTest {
 	  }
   
   
+  private void searchEmptyTitle() throws SQLException{
+	  List<Copy> copies = this.db.search("", null, 0, null);
+	  assertTrue(copies.size() > 0);
+  }
+  
+  private void searchTitleExists() throws SQLException {
+	  List<Copy> copies = this.db.search(this.books[0].getTitle(),
+			  null, 0, null);
+	  assertTrue(copies.size() >= 2);
+  }
+  
+  private void searchTitleNotExists() throws SQLException{
+	  List<Copy> copies = this.db.search("junit: the non definitive guide",
+			  null, 0, null);
+	  assertTrue(copies.size() == 0);
+  }
+  
+  private void searchByYearExists() throws SQLException {
+	  List<Copy> copies = this.db.search(null, null, 2018, null);
+	  assertTrue(copies.size() > 0);
+  }
+  
+  private void searchByYearNotExists() throws SQLException{
+	  List<Copy> copies = this.db.search(null, null, 1000, null);
+	  assertTrue(copies.size() == 0);
+  }
+  
+  private void searchByTopicExists() throws SQLException{
+	  List<Copy> copies = this.db.search(null, null, 0, "Info");
+	  assertTrue(copies.size() > 0);
+  }
+  
+  private void searchByTopicNotExists() throws SQLException{
+	  List<Copy> copies = this.db.search(null, null, 0, "Inf0");
+	  assertTrue(copies.size() == 0);
+  }
+  
+  private void searchByAuthorsExists() throws SQLException{
+	  List<Copy> copies = this.db.search(null, new String[]{"Me", "You"}, 0, null);
+	  assertTrue(copies.size() > 0);
+  }
+  
+  private void searchByAuthorsNotExists() throws SQLException{
+	  List<Copy> copies = this.db.search(null, new String[]{"Mee", "Youu"}, 0, null);
+	  assertTrue(copies.size() == 0);
+  }
+  
+  
   
   @Test
   public void testLoans() throws SQLException{
@@ -489,6 +537,20 @@ public class DbManagerTest {
 	  this.deleteUsers = true;
 	  this.deleteConsultationReservations = true;
 	  this.deleteConsultations = true;
+  }
+  
+  @Test
+  public void testSearches() throws SQLException{
+	  this.addCopies();
+	  this.searchEmptyTitle();
+	  this.searchTitleExists();
+	  this.searchTitleNotExists();
+	  this.searchByAuthorsExists();
+	  this.searchByAuthorsNotExists();
+	  this.searchByYearExists();
+	  this.searchByYearNotExists();
+	  this.searchByTopicExists();
+	  this.searchByTopicNotExists();
   }
   
 //  @Test

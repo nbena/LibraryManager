@@ -174,16 +174,16 @@ insert into lm_user(name, surname, email, internal, password) values
 );
 
 insert into book(title, authors, year, phouse, main_topic) values
-('Title1', '{"Author1", "Author2"}', 2010, 'oreilly', 'IT'),
+('Title0', '{"Author1", "Author2"}', 2010, 'oreilly', 'IT'),
 ('Title2', '{"Author1"}', 2001, 'McGraw Hill', 'Networking'),
 ('Title3', '{"Author2"}', 2018, 'oxford', 'Programming'),
 ('Title4', '{"Author5"}', 1999, 'oreilly', 'DBMS');
 
 
 insert into lm_copy(bookid, for_consultation)
-select id, false from book where title = 'Title1'
+select id, false from book where title = 'Title0'
 union
-select id, true from book where title = 'Title1'
+select id, true from book where title = 'Title0'
 union
 select id, false from book where title = 'Title2'
 union
@@ -200,7 +200,7 @@ select id, true from book where title = 'Title4';
 insert into loan(userid, copyid)
 select 1, lm_copy.id
 from lm_copy join book on lm_copy.bookid = book.id
-where title='Title1'
+where title='Title0'
  and for_consultation = false;
 
 insert into seat (table_number, seat_number)  values

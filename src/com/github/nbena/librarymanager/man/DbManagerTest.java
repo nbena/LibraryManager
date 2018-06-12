@@ -469,7 +469,8 @@ public class DbManagerTest {
   private void searchTitleExists() throws SQLException {
 	  List<Copy> copies = this.db.search(this.books[0].getTitle(),
 			  null, 0, null);
-	  assertTrue(copies.size() >= 2);
+	  System.out.println(copies.size());
+	  assertTrue(copies.size() == 4);
   }
   
   private void searchTitleNotExists() throws SQLException{

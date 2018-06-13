@@ -132,6 +132,7 @@ public class UserController extends AbstractController {
 						// TODO remove from the table
 						displayMessage(userView, "Prenotazione eliminata con successo",
 								null, Integer.MAX_VALUE);
+						genericTableView.setVisible(false);
 					} catch (SQLException e1) {
 						displayError(userView, e1);
 					}
@@ -170,7 +171,8 @@ public class UserController extends AbstractController {
 							if (date!=null){
 								ConsultationReservation consultation =
 										userModel.reserveConsultation(item, date);
-								message = String.format("%s%d:%s", "Prenotazione effettuata con successo per te è",
+								message = String.format("%s%d:%s", "Prenotazione effettuata con successo," +
+										"il tavolo:posto per te è ",
 										consultation.getSeat().getTableNumber(),
 										consultation.getSeat().getNumber());
 							}

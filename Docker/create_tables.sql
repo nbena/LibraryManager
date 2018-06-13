@@ -17,6 +17,13 @@ create table lm_user (
 	primary key (id)
 );
 
+create table librarian (
+	id serial,
+	email varchar(100) not null unique,
+	password varchar(500) not null,
+	primary key(id)
+);
+
 create table book (
 	id serial,
 	title varchar(200),
@@ -172,6 +179,11 @@ insert into lm_user(name, surname, email, internal, password) values
 ('user1', 'user1', 'user1@example.com', true,
 'e9a75486736a550af4fea861e2378305c4a555a05094dee1dca2f68afea49cc3a50e8de6ea131ea521311f4d6fb054a146e8282f8e35ff2e6368c1a62e909716'
 );
+
+insert into librarian(email, password) values (
+	'librarian@library.com',
+	'e9a75486736a550af4fea861e2378305c4a555a05094dee1dca2f68afea49cc3a50e8de6ea131ea521311f4d6fb054a146e8282f8e35ff2e6368c1a62e909716'
+	);
 
 insert into book(title, authors, year, phouse, main_topic) values
 ('Title0', '{"Author1", "Author2"}', 2010, 'oreilly', 'IT'),

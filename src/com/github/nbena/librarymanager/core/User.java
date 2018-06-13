@@ -17,26 +17,25 @@
 
 package com.github.nbena.librarymanager.core;
 
-public class User implements IDble{
+public class User extends Librarian implements IDble{
 	
-	private int ID;
-	private String name;
-	private String surname;
-	private String hashedPassword;
-	private String email;
+	protected String name;
+	protected String surname;
+	// private String hashedPassword;
+	// private String email;
 	
 	public User(){}
 	
 
-	public String getEmail() {
-		return email;
-	}
-
-
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
+//	public String getEmail() {
+//		return email;
+//	}
+//
+//
+//
+//	public void setEmail(String email) {
+//		this.email = email;
+//	}
 	
 	
 
@@ -72,14 +71,14 @@ public class User implements IDble{
 
 
 
-	public int getID() {
-		return ID;
-	}
-
-
-	public void setID(int iD) {
-		ID = iD;
-	}
+//	public int getID() {
+//		return ID;
+//	}
+//
+//
+//	public void setID(int iD) {
+//		ID = iD;
+//	}
 
 
 	public String getName() {
@@ -102,14 +101,14 @@ public class User implements IDble{
 	}
 
 
-	public String getHashedPassword() {
-		return hashedPassword;
-	}
-
-
-	public void setHashedPassword(String hashedPassword) {
-		this.hashedPassword = hashedPassword;
-	}
+//	public String getHashedPassword() {
+//		return hashedPassword;
+//	}
+//
+//
+//	public void setHashedPassword(String hashedPassword) {
+//		this.hashedPassword = hashedPassword;
+//	}
 	
 	public void hashPassword(){
 		

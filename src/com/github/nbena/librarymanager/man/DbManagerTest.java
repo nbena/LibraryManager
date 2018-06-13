@@ -21,6 +21,7 @@ import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.Seat;
@@ -28,6 +29,9 @@ import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.core.User;
 
 public class DbManagerTest {
+	
+	private static final String LIBRARIAN_MAIL = "librarian@library.com";
+	private static final String LIBRARIAN_PASSWORD = "e9a75486736a550af4fea861e2378305c4a555a05094dee1dca2f68afea49cc3a50e8de6ea131ea521311f4d6fb054a146e8282f8e35ff2e6368c1a62e909716";
 	
 	private DbManager db;
 	
@@ -44,7 +48,9 @@ public class DbManagerTest {
 	private boolean deleteLoanReservations = false;
 	private boolean deleteConsultationReservations = false;
 	private boolean deleteConsultations = false;
-
+	
+	
+	private Librarian librarian;
 	private User [] users;
 	private Book [] books;
 	private Copy [] copies;
@@ -154,6 +160,11 @@ public class DbManagerTest {
 						  this.consultationReservations[1].getCopy()
 						  )			
 		};
+		
+		Librarian toAuth = new Librarian();
+		toAuth.setEmail(LIBRARIAN_MAIL);
+		toAuth.setHashedPassword(LIBRARIAN_PASSWORD);
+		this.librarian = this.db.authenticateLibrarian(toAuth);
 	}
 
 	@After

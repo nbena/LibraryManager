@@ -37,6 +37,7 @@ import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.CopyStatus;
 import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.Seat;
@@ -649,6 +650,27 @@ public class DbManager {
 		pstmt.setInt(1, consultation.getID());
 
 		pstmt.execute();
+	}
+	
+	public Librarian authenticateLibrarian(Librarian librarian) throws SQLException{
+		String query =  "select id, email from librarian where "+
+						"email=? and password=?";
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		pstmt.setString(1, librarian.getEmail());
+		pstmt.setString(2, librarian.getHashedPassword());
+		
+		Librarian returned = null;
+		
+		ResultSet rs = pstmt.executeQuery();
+		
+		if (rs.next()){
+			librarian.setID(rs.getInt(1));
+			librarian.setEmail(rs.getString(2));
+		}
+		
+		return returned;
 	}
 
 	public User authenticateUser(User user)throws SQLException{

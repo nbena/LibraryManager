@@ -20,20 +20,20 @@ package com.github.nbena.librarymanager.core;
 
 public class InternalUser extends User {
 
-	public InternalUser(int iD, String name, String surname, String email, String hashedPassword) {
-		super(iD, name, surname, email, hashedPassword);
+	public InternalUser(int ID, String name, String surname, String email, String hashedPassword) {
+		super(ID, name, surname, email, hashedPassword);
 	}
 
-	public InternalUser(int iD, String hashedPassword) {
-		super(iD, hashedPassword);
+	public InternalUser(int ID, String hashedPassword) {
+		super(ID, hashedPassword);
 	}
 
 	public InternalUser(String name, String surname, String hashedPassword, String email) {
 		super(name, surname, hashedPassword, email);
 	}
 
-	public InternalUser(int iD) {
-		super(iD);
+	public InternalUser(int ID) {
+		super(ID);
 	}
 	
 

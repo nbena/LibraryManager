@@ -185,7 +185,7 @@ public class UserController extends AbstractController {
 							displayMessage(userView, message, null, Integer.MAX_VALUE);
 						}
 
-					}catch(SQLException | ReservationException e){
+					}catch(SQLException | ReservationException | NumberFormatException e){
 						displayError(userView, e);
 					}				
 				}

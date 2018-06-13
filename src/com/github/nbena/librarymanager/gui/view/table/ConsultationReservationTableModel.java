@@ -44,10 +44,10 @@ public class ConsultationReservationTableModel extends AbstractTableModel
 			value = reservation.getCopy().getTitle(); break;
 		case 1:
 			value = Arrays.toString(reservation.getCopy().getAuthors()); break;
-		case 3:
+		case 2:
 			value = reservation.getSeat().toString(); break;
 			// value = reservation.getSeat().getTableNumber(); break;
-		case 4:
+		case 3:
 			value = reservation.getReservationDate(); break;
 //		case 5:
 //			value = reservation.getTimestamp(); break;

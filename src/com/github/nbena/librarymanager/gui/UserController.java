@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -12,6 +11,7 @@ import javax.swing.JOptionPane;
 import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
+import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
@@ -78,7 +78,6 @@ public class UserController extends AbstractController {
 					displayTableItems(new CopyTableModel(copies), userView);
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(false);
-					genericTableView.setMenuItemReserveEnabled(true);
 				} catch (SQLException e) {
 					displayError(userView, e);
 				}
@@ -138,6 +137,56 @@ public class UserController extends AbstractController {
 					}
 				}
 				// else do nothing
+			}
+			
+		});
+		
+		// eclipse says that 'cancelling' is not correct while 'canceling' it is.
+		// ...
+		
+		// ok for reserving a book, ok canceling it too.
+		// ok for reserving a consultation reservation and canceling it!
+		this.genericTableView.addMenuItemReserveListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				Copy item = (Copy) genericTableView.getSelectedItem();
+				String message = "Vuoi prenotare questo libro?";
+				if (item instanceof CopyForConsultation){
+					message = "Vuoi prenotare una consultazione per questo libro?";
+				}
+				
+				// asking confirm
+				int res = JOptionPane.showConfirmDialog(userView, message, "Info", 
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (res == JOptionPane.OK_OPTION){
+					try{
+						message = null;
+						if (item instanceof CopyForConsultation){
+							// asking user for when he wants to consult
+							LocalDate date = datePicker(userView,
+									"Indica quando vuoi effettuare la consultazione");
+							if (date!=null){
+								ConsultationReservation consultation =
+										userModel.reserveConsultation(item, date);
+								message = String.format("%s%d:%s", "Prenotazione effettuata con successo per te è",
+										consultation.getSeat().getTableNumber(),
+										consultation.getSeat().getNumber());
+							}
+						}else{
+							userModel.reserveLoan(item);
+							message = "Prenotazione effettuata con successo";
+						}
+						
+						if (message != null){
+							displayMessage(userView, message, null, Integer.MAX_VALUE);
+						}
+
+					}catch(SQLException | ReservationException e){
+						displayError(userView, e);
+					}				
+				}
 			}
 			
 		});

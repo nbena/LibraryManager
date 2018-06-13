@@ -1,6 +1,10 @@
 package com.github.nbena.librarymanager.run;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+
+import com.github.nbena.librarymanager.core.Librarian;
+import com.github.nbena.librarymanager.core.Loginable;
 
 // import javax.swing.UIManager;
 
@@ -16,6 +20,7 @@ import com.github.nbena.librarymanager.utils.Hash;
 public class Main {
 	
 	private LibraryManager manager;
+	private StartupLogin login;
 	
 	public Main(boolean test) throws ClassNotFoundException, SQLException{
 		String uri = "localhost:5435/docker";
@@ -23,6 +28,7 @@ public class Main {
 			uri = "localhost:5434/docker";
 		}
 		this.manager = new LibraryManager(uri, "docker", "docker");
+		this.login = new StartupLogin();
 		}
 	
 	public void user(User user){
@@ -35,12 +41,42 @@ public class Main {
 		// }
 	}
 	
-	public void librarian(){
+	public void librarian(Librarian librarian){
 		/* LibrarianModel model = */new LibrarianModel(this.manager);
 	}
 	
 	public void turnstile(){
 		
+	}
+	
+	private Object[] authenticate(boolean librarian) throws NoSuchAlgorithmException{
+		Loginable user = null;
+		boolean loop = true;
+		boolean authenticated = false;
+		String [] credentials;
+		
+		while (loop){
+			credentials = this.login.getCredentials();
+			if (credentials == null){
+				loop = false;
+			}else{
+				user = new Librarian();
+				user.setEmail(credentials[0]);
+				user.setHashedPassword(Hash.hash(credentials[1]));
+				if (librarian){
+					user = this.manager.authenticateLibrarian(user);
+				}else{
+					user = this.manager.authenticateUser(user);
+				}
+		
+				if (user!=null){
+					loop = false;
+					authenticated = true;
+				}
+			}
+			this.login.clear();
+		}
+		return new Object[]{user, authenticated};
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -53,46 +89,28 @@ public class Main {
 		
 		// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
-		StartupLogin startup = new StartupLogin();
-		
-		String [] credentials;
-		User user = null;
-		boolean loop = true;
-		boolean authenticated = false;
-		while (loop){
-			credentials = startup.getCredentials();
-			if (credentials == null){
-				loop = false;
-			}else{
-				user = new User();
-				user.setEmail(credentials[0]);
-				user.setHashedPassword(Hash.hash(credentials[1]));
-				user = main.manager.authenticateUser(user);
-				if (user!=null){
-					loop = false;
-					authenticated = true;
-				}
+		if (args.length == 0 || args[0].equals("user")){
+			Object [] res = main.authenticate(false);
+			User user = (User) res[0];
+			boolean authenticated = (boolean) res[1];
+			if (!authenticated){
+				System.exit(1);
 			}
-			startup.clear();
-		}
-		
-		if (!authenticated){
-			System.exit(1);
-		}
-		
-		if(args.length == 0){
 			main.user(user);
-		}else{
-			if (args[0] == "user"){
-				main.user(user);
-			}else if(args[0] == "librarian"){
-				main.librarian();
-			}else if(args[0] == "turnstile"){
-				main.turnstile();
-			}else{
-				throw new Exception("Unknown arg: "+args[0]);
+		}else if (args.length > 0 && args[0].equals("librarian")){
+			Object [] res = main.authenticate(true);
+			Librarian librarian = (Librarian) res[0];
+			boolean authenticated = (boolean) res[1];
+			if (!authenticated){
+				System.exit(1);
 			}
+			main.librarian(librarian);
+		}else if (args.length > 0 && args[0].equals("turnstile")){
+			main.turnstile();
+		}else{
+			throw new Exception("Unknown arg: "+args[0]);
 		}
+		
 
 	}
 

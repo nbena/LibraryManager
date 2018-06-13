@@ -50,7 +50,7 @@ public class DbManagerTest {
 	private boolean deleteConsultations = false;
 	
 	
-	private Librarian librarian;
+	// private Librarian librarian;
 	private User [] users;
 	private Book [] books;
 	private Copy [] copies;
@@ -164,7 +164,7 @@ public class DbManagerTest {
 		Librarian toAuth = new Librarian();
 		toAuth.setEmail(LIBRARIAN_MAIL);
 		toAuth.setHashedPassword(LIBRARIAN_PASSWORD);
-		this.librarian = this.db.authenticateLibrarian(toAuth);
+		/*this.librarian = */this.db.authenticateLibrarian(toAuth);
 	}
 
 	@After

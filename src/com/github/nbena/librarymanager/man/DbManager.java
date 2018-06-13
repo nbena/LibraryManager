@@ -40,6 +40,7 @@ import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
+import com.github.nbena.librarymanager.core.Loginable;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.core.User;
@@ -652,7 +653,7 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
-	public Librarian authenticateLibrarian(Librarian librarian) throws SQLException{
+	public Librarian authenticateLibrarian(Loginable librarian) throws SQLException{
 		String query =  "select id, email from librarian where "+
 						"email=? and password=?";
 		
@@ -661,19 +662,19 @@ public class DbManager {
 		pstmt.setString(1, librarian.getEmail());
 		pstmt.setString(2, librarian.getHashedPassword());
 		
-		Librarian returned = null;
+		Librarian returned = new Librarian();
 		
 		ResultSet rs = pstmt.executeQuery();
 		
 		if (rs.next()){
-			librarian.setID(rs.getInt(1));
-			librarian.setEmail(rs.getString(2));
+			returned.setID(rs.getInt(1));
+			returned.setEmail(rs.getString(2));
 		}
 		
 		return returned;
 	}
 
-	public User authenticateUser(User user)throws SQLException{
+	public User authenticateUser(Loginable user)throws SQLException{
 		String query = "select id, name, surname, email, internal "+
 						" from lm_user where email=? and password=?";
 

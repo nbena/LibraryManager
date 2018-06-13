@@ -32,8 +32,10 @@ import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.CopyStatus;
 import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
+import com.github.nbena.librarymanager.core.Loginable;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
@@ -56,11 +58,21 @@ public class LibraryManager {
 		
 	}
 	
-	public User authenticateUser(User user){
+	public User authenticateUser(Loginable user){
 		
 		User returned = null;
 		try {
 			returned = this.dbManager.authenticateUser(user);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return returned;
+	}
+	
+	public Librarian authenticateLibrarian(Loginable librarian){
+		Librarian returned = null;
+		try{
+			returned = this.dbManager.authenticateLibrarian(librarian);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

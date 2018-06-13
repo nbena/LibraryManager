@@ -1,6 +1,6 @@
 package com.github.nbena.librarymanager.core;
 
-public class Librarian implements IDble{
+public class Librarian implements IDble, Loginable {
 	
 	protected int ID;
 	protected String email;

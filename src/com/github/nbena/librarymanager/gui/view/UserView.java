@@ -1,21 +1,15 @@
 package com.github.nbena.librarymanager.gui.view;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormSpecs;
-import com.jgoodies.forms.layout.RowSpec;
-import javax.swing.JToolBar;
 
+@SuppressWarnings("serial")
 public class UserView extends JFrame {
 
 	private JPanel contentPane;

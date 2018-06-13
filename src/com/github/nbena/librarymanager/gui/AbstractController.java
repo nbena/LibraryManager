@@ -153,7 +153,7 @@ public abstract class AbstractController {
 	
 	protected static LocalDate parseDate(String date){
 		LocalDate result = null;
-		if (date != ""){
+		if (date != null && date != ""){
 			if (!date.contains("/") && !date.contains("-")){
 				throw new NumberFormatException();
 			}

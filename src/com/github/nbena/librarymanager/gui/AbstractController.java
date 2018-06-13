@@ -1,13 +1,11 @@
 package com.github.nbena.librarymanager.gui;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.Month;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -15,8 +13,8 @@ import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
-import com.github.nbena.librarymanager.gui.view.DatePickerView;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
+import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.SeatDateView;
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
@@ -26,7 +24,11 @@ public abstract class AbstractController {
 	protected final String SHOW_SEAT_RESERVATION = "Dettagli prenotazione:";
 	
 	protected LocalDate gotDate;
+	
+	
 	protected GenericTableView genericTableView;
+	protected SearchableBookView searchableBookView;
+	
 	
 	protected void displayMessage(Component parent, String message, String title, int messageType){
 		if (messageType == Integer.MAX_VALUE){

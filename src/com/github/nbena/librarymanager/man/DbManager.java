@@ -29,8 +29,6 @@ import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.print.attribute.standard.Copies;
-
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
@@ -865,9 +863,9 @@ public class DbManager {
     	}
 
     	ResultSet rs = pstmt.executeQuery();
-    	
+
     	List<Copy> copies = new LinkedList<Copy>();
-    	
+
     	while(rs.next()){
     		Copy copy = this.getCopyFrom(rs, 1);
     		boolean forConsultation = rs.getBoolean(8);

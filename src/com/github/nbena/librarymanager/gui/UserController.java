@@ -15,6 +15,7 @@ import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
+import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.UserView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
@@ -35,6 +36,7 @@ public class UserController extends AbstractController {
 		this.userModel = userModel;
 		
 		super.genericTableView = new GenericTableView();
+		super.searchableBookView = new SearchableBookView();
 		
 		this.addListeners();
 		
@@ -45,6 +47,31 @@ public class UserController extends AbstractController {
 	private void addListeners(){
 		this.addBasicListeneres();
 		this.addGenericViewListeners();
+		this.addSearchableViewListeners();
+	}
+	
+	
+	
+	private void addSearchableViewListeners(){
+		
+		this.searchableBookView.addOkButtonListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+			
+		});
+		
+		this.searchableBookView.addCancelButtonListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				searchableBookView.setVisible(false);
+			}
+			
+			
+		});
 	}
 	
 	
@@ -131,7 +158,8 @@ public class UserController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				searchableBookView.reset();
+				searchableBookView.setVisible(true);				
 			}
 			
 		});

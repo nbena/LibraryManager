@@ -34,6 +34,7 @@ public class GenericTableView extends JDialog implements Popupable {
 	private JPopupMenu menu;
 	private JMenuItem mntmViewDetails;
 	private JMenuItem mntmCancel;
+	private JMenuItem mntmReserve;
 	
 	public void setTableModel(AbstractTableModel model){
 		this.table.setModel(model);
@@ -61,12 +62,23 @@ public class GenericTableView extends JDialog implements Popupable {
 		}
 	}
 	
+	public void setMenuItemReserveEnabled(boolean enabled){
+		this.mntmReserve.setEnabled(enabled);
+		if (enabled){
+			this.menu.setEnabled(true);
+		}
+	}
+	
 	public void addMenuItemDetailsListener(ActionListener listener){
 		this.mntmViewDetails.addActionListener(listener);
 	}
 	
 	public void addMenuItemCancelListener(ActionListener listener){
 		this.mntmCancel.addActionListener(listener);
+	}
+	
+	public void addMenuItemReserveListener(ActionListener listener){
+		this.mntmReserve.addActionListener(listener);
 	}
 	
 	public void addPopupListener(PopupMenuListener listener){
@@ -180,9 +192,11 @@ public class GenericTableView extends JDialog implements Popupable {
 		
 		this.mntmViewDetails = new JMenuItem("Dettagli");
 		this.mntmCancel = new JMenuItem("Cancella");
+		this.mntmReserve = new JMenuItem("Prenota");
 		
 		this.menu.add(this.mntmViewDetails);
 		this.menu.add(this.mntmCancel);
+		this.menu.add(this.mntmReserve);
 		
 		this.table.setComponentPopupMenu(this.menu);
 		

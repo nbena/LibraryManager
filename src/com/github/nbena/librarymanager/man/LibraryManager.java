@@ -259,6 +259,10 @@ public class LibraryManager {
 	public List<Loan> getAllLoansByUser(User user) throws SQLException{
 		return this.dbManager.getLoans(user, false, false);
 	}
+	
+	public List<Copy> search(String title, String [] authors, int year, String mainTopic) throws SQLException{
+		return this.dbManager.search(title, authors, year, mainTopic);
+	}
 
 
 }

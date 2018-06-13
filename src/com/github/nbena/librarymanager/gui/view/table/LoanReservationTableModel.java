@@ -4,6 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.core.LoanReservation;
 
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -40,7 +41,7 @@ public class LoanReservationTableModel extends AbstractTableModel
 		case 0:
 			value = reservation.getCopy().getTitle(); break;
 		case 1:
-			value = reservation.getCopy().getAuthors(); break;
+			value = Arrays.toString(reservation.getCopy().getAuthors()); break;
 		}
 		return value;
 	}

@@ -824,21 +824,23 @@ public class DbManager {
     					"= book.id where ";
 
     	if (title != null){
-    		query += "title like ? and";
+    		query += "title like ? and ";
     	}
     	if (authors != null){
-    		query += "authors @> ? and";
+    		query += "authors @> ? and ";
     	}
     	if (year != 0){
-    		query += "year = ?";
+    		query += "year = ? and ";
     	}
     	if(mainTopic != null){
     		query += "main_topic like ?";
     	}
 
-    	if (query.endsWith("and")){
-    		query = query.substring(0, query.lastIndexOf("and"));
+    	if (query.endsWith("and ")){
+    		query = query.substring(0, query.lastIndexOf("and "));
     	}
+    	
+    	System.out.println(query);
 
     	PreparedStatement pstmt = this.connection.prepareStatement(query);
 

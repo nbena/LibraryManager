@@ -552,6 +552,10 @@ public class DbManagerTest {
 	  this.searchByYearNotExists();
 	  this.searchByTopicExists();
 	  this.searchByTopicNotExists();
+	  this.deleteBooks = true;
+	  this.deleteUsers = true;
+	  this.deleteConsultationReservations = true;
+	  this.deleteConsultations = true;
   }
   
 //  @Test

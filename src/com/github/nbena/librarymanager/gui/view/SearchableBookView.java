@@ -16,8 +16,13 @@ public class SearchableBookView extends BasicBookView {
 		return super.textFieldTopic.getText();
 	}
 	
-	public int year(){
-		return Integer.parseInt(super.textFieldYear.getText());
+	public int getYear(){
+		String year = super.textFieldYear.getText();
+		int returnedYear = 0;
+		if (!year.equals("")){
+			returnedYear = Integer.parseInt(year);
+		}
+		return returnedYear;
 	}
 
 	

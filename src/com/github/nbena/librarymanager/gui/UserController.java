@@ -4,12 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
+import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
@@ -18,6 +20,7 @@ import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.UserView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
+import com.github.nbena.librarymanager.gui.view.table.CopyTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanTableModel;
 import com.github.nbena.librarymanager.gui.view.table.SeatReservationTableModel;
@@ -58,6 +61,27 @@ public class UserController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				String title = (searchableBookView.getTitle().equals("")) ? null : searchableBookView.getTitle();
+				String [] authors = searchableBookView.getAuthors();
+				if (authors.length == 0 || authors[0].equals("")){
+					authors = null;
+				}
+				int year = searchableBookView.getYear();
+				String topic = (searchableBookView.getTopic().equals("")) ? null : searchableBookView.getTopic();
+				
+//				System.out.println(searchableBookView.getAuthors().length);
+//				System.out.println(Arrays.toString(searchableBookView.getAuthors()));
+//				System.out.println(Arrays.toString(authors));
+				
+				try {
+					List<Copy> copies = userModel.search(title, authors, year, topic);
+					displayTableItems(new CopyTableModel(copies), userView);
+					genericTableView.setMenuItemCancelEnabled(false);
+					genericTableView.setMenuItemDetailsEnabled(false);
+					genericTableView.setMenuItemReserveEnabled(true);
+				} catch (SQLException e) {
+					displayError(userView, e);
+				}
 				
 			}
 			
@@ -173,6 +197,7 @@ public class UserController extends AbstractController {
 					displayTableItems(new ConsultationReservationTableModel(reservations), userView);
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
+					genericTableView.setMenuItemReserveEnabled(false);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
@@ -189,6 +214,7 @@ public class UserController extends AbstractController {
 					displayTableItems(new LoanTableModel(loans), userView);
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
+					genericTableView.setMenuItemReserveEnabled(false);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
@@ -205,6 +231,7 @@ public class UserController extends AbstractController {
 					displayTableItems(new LoanReservationTableModel(reservations), userView);
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
+					genericTableView.setMenuItemReserveEnabled(false);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
@@ -222,7 +249,8 @@ public class UserController extends AbstractController {
 					List<SeatReservation> reservations = userModel.getSeatsReservations();	
 					displayTableItems(new SeatReservationTableModel(reservations), userView);
 					genericTableView.setMenuItemCancelEnabled(true);
-					genericTableView.setMenuItemDetailsEnabled(true);					
+					genericTableView.setMenuItemDetailsEnabled(true);
+					genericTableView.setMenuItemReserveEnabled(false);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}

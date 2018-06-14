@@ -104,7 +104,14 @@ public class DbManagerTest {
 					},
 						2018,
 						"Info",
-						"phouse")
+						"phouse"),
+				new Copy("Title1", new String[]{
+						"Me",
+						"You",
+					},
+						2018,
+						"Info",
+						"phouse"),
 				
 		};
 		copiesForConsultation = new CopyForConsultation[]{
@@ -210,7 +217,7 @@ public class DbManagerTest {
 	}
 	
 	private PreparedStatement prepareMulti(String inital, IDble []items) throws SQLException{
-		String query = this.db.queryOnMultipleId(inital, items.length, false);
+		String query = DbManagerHelper.queryOnMultipleId(inital, items.length, false);
 		Connection c= this.db.connection;
 		PreparedStatement pstmt = c.prepareStatement(query);
 		int i=1;
@@ -360,6 +367,17 @@ public class DbManagerTest {
 	  }
 	  // db.addLoanReservation(expected);
 	  assertTrue(thrown);
+	  
+	  
+	  Copy available = this.db.getOneAvailableCopyForLoan("Title1", null, 0, null);
+	  boolean found = false;
+	  for (int i=0;i<this.copies.length;i++){
+		  if (this.copies[i].getID() == available.getID()){
+			  found = true;
+			  i = this.copies.length;
+		  }
+	  }
+	  assertTrue(found);
   }
   
   
@@ -481,7 +499,7 @@ public class DbManagerTest {
 	  List<Copy> copies = this.db.search(this.books[0].getTitle(),
 			  null, 0, null);
 	  System.out.println(copies.size());
-	  assertTrue(copies.size() == 4);
+	  assertTrue(copies.size() == this.copies.length + this.copiesForConsultation.length);
   }
   
   private void searchTitleNotExists() throws SQLException{

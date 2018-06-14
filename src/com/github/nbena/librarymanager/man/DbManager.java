@@ -34,7 +34,6 @@ import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
-import com.github.nbena.librarymanager.core.CopyStatus;
 import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
@@ -60,15 +59,6 @@ public class DbManager {
 		connection.close();
 	}
 
-	String queryOnMultipleId(String initial, int length, boolean and){
-		String logical = and ? "and" : "or";
-		String query = initial;
-		for (int i=0;i<length;i++){
-			query += " id=? "+logical;
-		}
-		query = query.substring(0, query.lastIndexOf(logical));
-		return query;
-	}
 
 	public User addUser(User user) throws SQLException{
 
@@ -179,7 +169,7 @@ public class DbManager {
 		ResultSet rs = stat.executeQuery(query);
 		List<Seat> seats = new LinkedList<Seat>();
 		while(rs.next()){
-			Seat seat = getSeatFrom(rs, 1, true);
+			Seat seat = DbManagerHelper.getSeatFrom(rs, 1, true);
 			seats.add(seat);
 		}
 		return seats;
@@ -375,37 +365,6 @@ public class DbManager {
 	/*
 	@ \requires startingIndex > 0;
 	*/
-	private Copy getCopyFrom(ResultSet rs, int startingIndex) throws SQLException{
-
-		int copyid = rs.getInt(startingIndex);
-		String title = rs.getString(startingIndex + 1);
-		String [] authors = (String[]) rs.getArray(startingIndex + 2).getArray();
-		int year = rs.getInt(startingIndex + 3);
-		String topic = rs.getString(startingIndex + 4);
-		String phouse = rs.getString(startingIndex + 5);
-		String status = rs.getString(startingIndex + 6);
-
-		Copy copy = new Copy(title, authors, year, topic, phouse);
-		copy.setStatus(CopyStatus.from(status));
-		copy.setID(copyid);
-
-		return copy;
-
-	}
-
-	private Seat getSeatFrom(ResultSet rs, int startingIndex, boolean useFree) throws SQLException{
-
-		int seatNumber = rs.getInt(startingIndex );
-		int tableNumber = rs.getInt(startingIndex + 1);
-		boolean free = false;
-		if (useFree){
-			free = rs.getBoolean(startingIndex + 2);
-		}
-
-
-		Seat seat = new Seat(seatNumber, tableNumber, free);
-		return seat;
-	}
 
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
 
@@ -426,7 +385,7 @@ public class DbManager {
 
 			OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(9, OffsetDateTime.class);
 
-			Copy copy = getCopyFrom(rs, 2);
+			Copy copy = DbManagerHelper.getCopyFrom(rs, 2);
 
 			LoanReservation reservation = new LoanReservation(id, user, copy, timestamp);
 
@@ -459,20 +418,6 @@ public class DbManager {
 		return reservation;
 	}
 
-	private Loan getLoanFrom(ResultSet rs, int startingIndex, Copy copy, User user) throws SQLException{
-		int id = rs.getInt(startingIndex);
-		LocalDate start = rs.getObject(startingIndex + 1, LocalDate.class);
-		LocalDate end = rs.getObject(startingIndex + 2, LocalDate.class);
-		// boolean active = rs.getBoolean(startingIndex + 3);
-		LocalDate restitutionDate = rs.getObject(startingIndex + 3, LocalDate.class);
-		boolean renewAvailable = rs.getBoolean(startingIndex + 4);
-
-		boolean active = (restitutionDate == null);
-
-		Loan l = new Loan(id, user, copy, start, end, active, restitutionDate, renewAvailable);
-
-		return l;
-	}
 
 	public Loan getLoanByUserCopy(User user, Copy copy, boolean delivered) throws SQLException{
 		String query = "select id, start_date, end_date, restitution_date, renew_available "+
@@ -493,7 +438,7 @@ public class DbManager {
 		ResultSet rs = pstmt.executeQuery();
 		Loan loan = null;
 		if(rs.next()){
-			loan = this.getLoanFrom(rs, 1, copy, user);
+			loan = DbManagerHelper.getLoanFrom(rs, 1, copy, user);
 		}
 		return loan;
 	}
@@ -512,7 +457,7 @@ public class DbManager {
 		if(rs.next()){
 
 			User user = new User(rs.getInt(6));
-			loan = this.getLoanFrom(rs, 1, copy, user);
+			loan = DbManagerHelper.getLoanFrom(rs, 1, copy, user);
 		}
 
 		return loan;
@@ -575,21 +520,6 @@ public class DbManager {
 		return seat;
 	}
 
-	private ConsultationReservation getConsultationReservationFrom(ResultSet rs, int startingIndex, InternalUser user) throws SQLException{
-		int id = rs.getInt(startingIndex);
-
-		Copy copy = getCopyFrom(rs, startingIndex + 1);
-		CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
-		Seat seat = getSeatFrom(rs, startingIndex + 8, false);
-
-		OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(startingIndex + 10, OffsetDateTime.class);
-		LocalDate reservationDate = (LocalDate) rs.getObject(startingIndex + 11, LocalDate.class);
-
-		ConsultationReservation reservation = new ConsultationReservation(id, user, copyForConsultation,
-				seat, reservationDate, timestamp);
-
-		return reservation;
-	}
 
 	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDate date)throws SQLException{
 		String query = "select cr.id, copyid, title, authors, year, main_topic, phouse, status, seat_number, table_number, time_stamp, reservation_date "+
@@ -619,7 +549,7 @@ public class DbManager {
 //			LocalDate reservationDate = (LocalDate) rs.getObject(12, LocalDate.class);
 //
 //			reservation = new ConsultationReservation(id, user, copyForConsultation, seat, reservationDate, timestamp);
-			reservation = this.getConsultationReservationFrom(rs, 1, user);
+			reservation = DbManagerHelper.getConsultationReservationFrom(rs, 1, user);
 		}
 		return reservation;
 
@@ -651,6 +581,24 @@ public class DbManager {
 		pstmt.setInt(1, consultation.getID());
 
 		pstmt.execute();
+	}
+	
+	public User getUser(Loginable loginable) throws SQLException{
+		
+		String query = "select id, name, surname, email, internal "+
+						"from lm_user where email = ?";
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		User user = null;
+		
+		ResultSet rs = pstmt.executeQuery();
+		
+		if(rs.next()){
+			
+		}
+		
+		return user;
 	}
 	
 	public Librarian authenticateLibrarian(Loginable librarian) throws SQLException{
@@ -688,29 +636,54 @@ public class DbManager {
 		User returned = null;
 
 		if(rs.next()){
-			int id = rs.getInt(rs.getInt(1));
-			String name = rs.getString(2);
-			String surname = rs.getString(3);
-			String email = rs.getString(4);
-			boolean internal = rs.getBoolean(5);
-			if (internal){
-				returned = new InternalUser(id);
-			}else{
-				returned = new User(id);
-			}
-			returned.setName(name);
-			returned.setSurname(surname);
-			returned.setEmail(email);
+//			int id = rs.getInt(rs.getInt(1));
+//			String name = rs.getString(2);
+//			String surname = rs.getString(3);
+//			String email = rs.getString(4);
+//			boolean internal = rs.getBoolean(5);
+//			if (internal){
+//				returned = new InternalUser(id);
+//			}else{
+//				returned = new User(id);
+//			}
+//			returned.setName(name);
+//			returned.setSurname(surname);
+//			returned.setEmail(email);
+			DbManagerHelper.getUserFrom(rs, 1);
 		}
 		return returned;
 	}
+	
+	public Copy getOneAvailableCopyForLoan(String title, String [] authors, int year,
+			String mainTopic) throws SQLException{
+		String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic);
+		
+		query += "and status = \'free\' and for_consultation = false limit 1";
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		pstmt = DbManagerHelper.searchPrepare(query, 1, pstmt, this.connection,
+				title, authors, year, mainTopic);
+		
+		Copy copy = null;
+		
+		ResultSet rs = pstmt.executeQuery();
+		
+		if(rs.next()){
+			copy = DbManagerHelper.getCopyFrom(rs, 1);
+		}
+		
+		return copy;
+	}
 
+	// IMPORTANT: on consultation user cannot decide year and so, just author and title.
 	public CopyForConsultation getOneAvailableCopyForConsultation(Book book, LocalDate date) throws SQLException{
 
 		String query = "select lm_copy.id, title, authors, year, main_topic, phouse, status "+
 						"from book join lm_copy on book.id=lm_copy.bookid where lm_copy.id not in "+
 						"(select copyid from consultation_reservation where reservation_date=?) "+
-						"and title=? and authors=? and for_consultation = true";
+						"and title=? and authors=? and for_consultation = true "+
+						"limit 1";
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		pstmt.setObject(1, date);
@@ -720,7 +693,7 @@ public class DbManager {
 		CopyForConsultation copy = null;
 		ResultSet rs = pstmt.executeQuery();
 		if(rs.next()){
-			Copy from = this.getCopyFrom(rs, 1);
+			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
 			copy = CopyForConsultation.create(from);
 			copy.setID(from.getID());
 		}
@@ -742,7 +715,7 @@ public class DbManager {
 	private SeatReservation getSeatReservationFrom(ResultSet rs, int startingIndex, InternalUser user) throws SQLException{
 
 		int id = rs.getInt( startingIndex );
-		Seat seat = this.getSeatFrom(rs, startingIndex + 1, false);
+		Seat seat = DbManagerHelper.getSeatFrom(rs, startingIndex + 1, false);
 		LocalDate reservationDate = rs.getObject(startingIndex + 3, LocalDate.class);
 		OffsetDateTime timestamp = rs.getObject(startingIndex + 4, OffsetDateTime.class);
 
@@ -786,7 +759,7 @@ public class DbManager {
 		ResultSet rs = pstmt.executeQuery();
 		List<ConsultationReservation> reservations = new LinkedList<ConsultationReservation>();
 		while (rs.next()){
-			reservations.add(this.getConsultationReservationFrom(rs, 1, user));
+			reservations.add(DbManagerHelper.getConsultationReservationFrom(rs, 1, user));
 		}
 		return reservations;
     }
@@ -814,8 +787,8 @@ public class DbManager {
 		ResultSet rs = pstmt.executeQuery();
 		List<Loan> loans = new LinkedList<Loan>();
 		while(rs.next()){
-			Copy copy = this.getCopyFrom(rs, 6);
-			Loan loan = this.getLoanFrom(rs, 1, copy, user);
+			Copy copy = DbManagerHelper.getCopyFrom(rs, 6);
+			Loan loan = DbManagerHelper.getLoanFrom(rs, 1, copy, user);
 
 			loans.add(loan);
 		}
@@ -842,26 +815,28 @@ public class DbManager {
     	}
 
 
-    	String query = "select lm_copy.id, title, authors, year, main_topic, phouse, "+
-    					"status, for_consultation from lm_copy join book on lm_copy.bookid " +
-    					"= book.id where ";
-
-    	if (title != null){
-    		query += "title like ? and ";
-    	}
-    	if (authors != null){
-    		query += "authors @> ? and ";
-    	}
-    	if (year != 0){
-    		query += "year = ? and ";
-    	}
-    	if(mainTopic != null){
-    		query += "main_topic like ?";
-    	}
-
-    	if (query.endsWith("and ")){
-    		query = query.substring(0, query.lastIndexOf("and "));
-    	}
+//    	String query = "select lm_copy.id, title, authors, year, main_topic, phouse, "+
+//    					"status, for_consultation from lm_copy join book on lm_copy.bookid " +
+//    					"= book.id where ";
+//
+//    	if (title != null){
+//    		query += "title like ? and ";
+//    	}
+//    	if (authors != null){
+//    		query += "authors @> ? and ";
+//    	}
+//    	if (year != 0){
+//    		query += "year = ? and ";
+//    	}
+//    	if(mainTopic != null){
+//    		query += "main_topic like ?";
+//    	}
+//
+//    	if (query.endsWith("and ")){
+//    		query = query.substring(0, query.lastIndexOf("and "));
+//    	}
+    	
+    	String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic);
     	
     	System.out.println(query);
 
@@ -869,30 +844,33 @@ public class DbManager {
 
     	int lastUsedIndex = 1;
 
-    	if (title!=null){
-    		pstmt.setString(lastUsedIndex, "%"+title+"%");
-    		lastUsedIndex++;
-    	}
-    	if (authors != null){
-    		pstmt.setArray(lastUsedIndex, this.connection.createArrayOf("varchar", authors));
-    		lastUsedIndex++;
-    	}
-
-    	if (year != 0){
-    		pstmt.setInt(lastUsedIndex, year);
-    		lastUsedIndex++;
-    	}
-    	if(mainTopic != null){
-    		pstmt.setString(lastUsedIndex, "%"+mainTopic+"%");
-    		lastUsedIndex++;
-    	}
+//    	if (title!=null){
+//    		pstmt.setString(lastUsedIndex, "%"+title+"%");
+//    		lastUsedIndex++;
+//    	}
+//    	if (authors != null){
+//    		pstmt.setArray(lastUsedIndex, this.connection.createArrayOf("varchar", authors));
+//    		lastUsedIndex++;
+//    	}
+//
+//    	if (year != 0){
+//    		pstmt.setInt(lastUsedIndex, year);
+//    		lastUsedIndex++;
+//    	}
+//    	if(mainTopic != null){
+//    		pstmt.setString(lastUsedIndex, "%"+mainTopic+"%");
+//    		lastUsedIndex++;
+//    	}
+    	
+    	pstmt = DbManagerHelper.searchPrepare(query, lastUsedIndex, pstmt,
+    			this.connection, title, authors, year, mainTopic);
 
     	ResultSet rs = pstmt.executeQuery();
 
     	List<Copy> copies = new LinkedList<Copy>();
 
     	while(rs.next()){
-    		Copy copy = this.getCopyFrom(rs, 1);
+    		Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
     		boolean forConsultation = rs.getBoolean(8);
     		if (forConsultation){
     			CopyForConsultation otherCopy = CopyForConsultation.create(copy);

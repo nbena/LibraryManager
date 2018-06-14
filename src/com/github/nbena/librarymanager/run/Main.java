@@ -9,10 +9,12 @@ import com.github.nbena.librarymanager.core.Loginable;
 // import javax.swing.UIManager;
 
 import com.github.nbena.librarymanager.core.User;
+import com.github.nbena.librarymanager.gui.LibrarianController;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 import com.github.nbena.librarymanager.gui.StartupLogin;
 import com.github.nbena.librarymanager.gui.UserController;
 import com.github.nbena.librarymanager.gui.UserModel;
+import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.UserView;
 import com.github.nbena.librarymanager.man.LibraryManager;
 import com.github.nbena.librarymanager.utils.Hash;
@@ -42,7 +44,9 @@ public class Main {
 	}
 	
 	public void librarian(Librarian librarian){
-		/* LibrarianModel model = */new LibrarianModel(this.manager);
+		LibrarianModel model = new LibrarianModel(this.manager);
+		LibrarianView view = new LibrarianView();
+		new LibrarianController(model, view);
 	}
 	
 	public void turnstile(){

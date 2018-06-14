@@ -1,7 +1,8 @@
 package com.github.nbena.librarymanager.gui.view;
 
 @SuppressWarnings("serial")
-public class SearchableBookView extends BasicBookView {
+public class SearchableBookView extends BasicBookView
+	implements SearchableBook {
 	
 	
 	public String getTitle(){

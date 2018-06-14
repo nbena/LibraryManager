@@ -29,7 +29,7 @@ public class LibrarianView extends JFrame {
 		this.btnNewNotReservedLoan.addActionListener(listener);
 	}
 	
-	public void addActionListenerNewUser(ActionListener listener){
+	public void addActionListenerAddUser(ActionListener listener){
 		this.btnNewUser.addActionListener(listener);
 	}
 	

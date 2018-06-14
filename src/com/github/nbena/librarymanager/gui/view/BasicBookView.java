@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class BasicBookView extends JDialog {
+public class BasicBookView extends JDialog implements ViewableBook {
 
 	// protected final JPanel contentPanel = new JPanel();
 	protected JPanel contentPanel;
@@ -50,11 +50,11 @@ public class BasicBookView extends JDialog {
 //		this.lblMain.setText(main);
 //	}
 	
-	public void addOkButtonListener(ActionListener listener){
+	public void addListenerOk(ActionListener listener){
 		this.btnOk.addActionListener(listener);
 	}
 	
-	public void addCancelButtonListener(ActionListener listener){
+	public void addListenerCancel(ActionListener listener){
 		this.btnCancel.addActionListener(listener);
 	}
 	

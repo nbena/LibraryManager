@@ -57,21 +57,29 @@ public class UserController extends AbstractController {
 	
 	private void addSearchableViewListeners(){
 		
-		this.searchableBookView.addOkButtonListener(new ActionListener(){
+		this.searchableBookView.addListenerOk(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String title = (searchableBookView.getTitle().equals("")) ? null : searchableBookView.getTitle();
-				String [] authors = searchableBookView.getAuthors();
-				if (authors.length == 0 || authors[0].equals("")){
-					authors = null;
-				}
-				int year = searchableBookView.getYear();
-				String topic = (searchableBookView.getTopic().equals("")) ? null : searchableBookView.getTopic();
+				
+				
+//				String title = (searchableBookView.getTitle().equals("")) ? null : searchableBookView.getTitle();
+//				String [] authors = searchableBookView.getAuthors();
+//				if (authors.length == 0 || authors[0].equals("")){
+//					authors = null;
+//				}
+//				int year = searchableBookView.getYear();
+//				String topic = (searchableBookView.getTopic().equals("")) ? null : searchableBookView.getTopic();
 				
 //				System.out.println(searchableBookView.getAuthors().length);
 //				System.out.println(Arrays.toString(searchableBookView.getAuthors()));
 //				System.out.println(Arrays.toString(authors));
+				
+				Object [] res = searchableBookViewResults();
+				String title = (String) res[0];
+				String [] authors = (String[]) res[1];
+				int year = (int) res[2];
+				String topic = (String) res[3];
 				
 				try {
 					List<Copy> copies = userModel.search(title, authors, year, topic);
@@ -86,7 +94,7 @@ public class UserController extends AbstractController {
 			
 		});
 		
-		this.searchableBookView.addCancelButtonListener(new ActionListener(){
+		this.searchableBookView.addListenerCancel(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {

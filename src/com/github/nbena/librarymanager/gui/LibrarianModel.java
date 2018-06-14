@@ -18,6 +18,7 @@
 package com.github.nbena.librarymanager.gui;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Consultation;
@@ -89,6 +90,10 @@ public class LibrarianModel extends AbstractModel {
 	
 	public void deliveryConsultation(Consultation consultation) throws SQLException{
 		super.manager.deliveryConsultation(consultation);
+	}
+	
+	public List<User> users() throws SQLException{
+		return super.manager.users();
 	}
 
 }

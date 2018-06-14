@@ -68,7 +68,10 @@ public class User extends Librarian implements IDble{
 	public User(int iD) {
 		ID = iD;
 	}
-
+	
+	public String toString(){
+		return this.email;
+	}
 
 
 //	public int getID() {

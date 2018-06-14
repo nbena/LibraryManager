@@ -280,6 +280,10 @@ public class LibraryManager {
 	public User getUserFromMail(Emailable emailable) throws SQLException{
 		return this.dbManager.getUser(emailable);
 	}
+	
+	public List<User> users() throws SQLException{
+		return this.dbManager.users();
+	}
 
 
 }

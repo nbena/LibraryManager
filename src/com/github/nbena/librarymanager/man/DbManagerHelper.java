@@ -23,10 +23,10 @@ public class DbManagerHelper {
 		
 		User returned;
 		int id = rs.getInt(rs.getInt(startingIndex));
-		String name = rs.getString(startingIndex + 2);
-		String surname = rs.getString(startingIndex + 3);
-		String email = rs.getString(startingIndex + 4);
-		boolean internal = rs.getBoolean(startingIndex + 5);
+		String name = rs.getString(startingIndex + 1);
+		String surname = rs.getString(startingIndex + 2);
+		String email = rs.getString(startingIndex + 3);
+		boolean internal = rs.getBoolean(startingIndex + 4);
 		if (internal){
 			returned = new InternalUser(id);
 		}else{

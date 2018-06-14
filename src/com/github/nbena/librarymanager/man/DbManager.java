@@ -885,5 +885,23 @@ public class DbManager {
 
     	return copies;
     }
+    
+    public List<User> users() throws SQLException{
+    	
+    	String query = "select id, name, surname, email, internal from lm_user";
+    	
+    	Statement stat = this.connection.createStatement();
+    	
+    	List<User> users = new LinkedList<User>();
+    	
+    	ResultSet rs = stat.executeQuery(query);
+    	
+    	while (rs.next()){
+    		User u = DbManagerHelper.getUserFrom(rs, 1);
+    		users.add(u);
+    	}
+    	
+    	return users;
+    }
 
 }

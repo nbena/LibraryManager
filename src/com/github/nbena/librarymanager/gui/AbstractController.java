@@ -14,7 +14,7 @@ import javax.swing.table.AbstractTableModel;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
-import com.github.nbena.librarymanager.gui.view.SearchableBookView;
+import com.github.nbena.librarymanager.gui.view.SearchableBook;
 import com.github.nbena.librarymanager.gui.view.SeatDateView;
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
@@ -27,7 +27,7 @@ public abstract class AbstractController {
 	
 	
 	protected GenericTableView genericTableView;
-	protected SearchableBookView searchableBookView;
+	protected SearchableBook searchableBookView;
 	
 	
 	protected void displayMessage(Component parent, String message, String title, int messageType){
@@ -205,6 +205,24 @@ public abstract class AbstractController {
 		
 		return result;
 		
+	}
+	
+	
+	protected Object[] searchableBookViewResults(){
+		String title = (this.searchableBookView.getTitle().equals("")) ? null : searchableBookView.getTitle();
+		String [] authors = this.searchableBookView.getAuthors();
+		if (authors.length == 0 || authors[0].equals("")){
+			authors = null;
+		}
+		int year = this.searchableBookView.getYear();
+		String topic = (this.searchableBookView.getTopic().equals("")) ? null : searchableBookView.getTopic();
+		
+		return new Object[]{
+				title,
+				authors,
+				year,
+				topic
+		};
 	}
 	
 	

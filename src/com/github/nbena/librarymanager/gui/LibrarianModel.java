@@ -35,6 +35,13 @@ public class LibrarianModel extends AbstractModel {
 	public LibrarianModel(LibraryManager manager) {
 		super(manager);
 	}
+	
+	
+	public User getUserFromEmail(String email) throws SQLException{
+		User user = new User();
+		user.setEmail(email);
+		return super.manager.getUserFromMail(user);
+	}
 
 	public void createUser(String name, String surname, String email, String password, boolean internal) throws SQLException{
 		User user;

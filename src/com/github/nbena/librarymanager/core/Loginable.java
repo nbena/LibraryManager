@@ -1,12 +1,12 @@
 package com.github.nbena.librarymanager.core;
 
-public interface Loginable {
+public interface Loginable extends Emailable {
 	
-	public String getEmail();
+	// public String getEmail();
+	
+	// public void setEmail(String email);
 	
 	public String getHashedPassword();
-	
-	public void setEmail(String email);
 	
 	public void setHashedPassword(String hashedPassword);
 

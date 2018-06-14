@@ -34,6 +34,7 @@ import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
+import com.github.nbena.librarymanager.core.Emailable;
 import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
@@ -583,12 +584,14 @@ public class DbManager {
 		pstmt.execute();
 	}
 	
-	public User getUser(Loginable loginable) throws SQLException{
+	public User getUser(Emailable login) throws SQLException{
 		
 		String query = "select id, name, surname, email, internal "+
 						"from lm_user where email = ?";
 		
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		pstmt.setString(1, login.getEmail());
 		
 		User user = null;
 		

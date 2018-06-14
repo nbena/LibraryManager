@@ -31,6 +31,7 @@ import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.CopyStatus;
+import com.github.nbena.librarymanager.core.Emailable;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
@@ -274,6 +275,10 @@ public class LibraryManager {
 	
 	public List<Copy> search(String title, String [] authors, int year, String mainTopic) throws SQLException{
 		return this.dbManager.search(title, authors, year, mainTopic);
+	}
+	
+	public User getUserFromMail(Emailable emailable) throws SQLException{
+		return this.dbManager.getUser(emailable);
 	}
 
 

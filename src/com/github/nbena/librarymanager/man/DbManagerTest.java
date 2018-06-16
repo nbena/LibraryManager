@@ -439,6 +439,17 @@ public class DbManagerTest {
 	  }
 	  assertTrue(thrown);
 	  
+	  expected = this.db.getConsultationReservation(got.getUser(), got.getCopy(), got.getReservationDate());
+	  got = this.db.getConsultationReservationByUserCopy(
+			  expected.getUser(),
+			  expected.getReservationDate(),
+			  expected.getCopy().getTitle(),
+			  expected.getCopy().getAuthors(),
+			  expected.getCopy().getYearOfPublishing(),
+			  expected.getCopy().getMainTopic());
+	  
+	  assertTrue(got.getID() == expected.getID());
+	  
 	  for(Consultation c: this.consultations){
 		  db.startConsultation(c);
 	  }

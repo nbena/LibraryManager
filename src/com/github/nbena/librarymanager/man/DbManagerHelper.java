@@ -67,6 +67,16 @@ public class DbManagerHelper {
 
 	}
 
+	/**
+	 * getSeatFrom builds a Seat object from the ResultSet
+	 * starting at the given offset.
+	 * @param rs the ResultSet
+	 * @param startingIndex	the offset to start with
+	 * @param useFree set to <pre>true</pre> if you want to fetch also
+	 * this field, otherwise it'll be set to false
+	 * @return a new Seat object.
+	 * @throws SQLException
+	 */
 	static Seat getSeatFrom(ResultSet rs, int startingIndex, boolean useFree) throws SQLException{
 
 		int seatNumber = rs.getInt(startingIndex );
@@ -96,19 +106,35 @@ public class DbManagerHelper {
 		return l;
 	}
 	
-	static ConsultationReservation getConsultationReservationFrom(ResultSet rs, int startingIndex, InternalUser user) throws SQLException{
+	static ConsultationReservation getConsultationReservationFrom(
+			ResultSet rs, int startingIndex,
+			Copy copy,
+			Seat seat,
+			InternalUser user) throws SQLException{
+		
 		int id = rs.getInt(startingIndex);
 
-		Copy copy = DbManagerHelper.getCopyFrom(rs, startingIndex + 1);
+		// Copy copy = DbManagerHelper.getCopyFrom(rs, startingIndex + 1);
 		CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
-		Seat seat = DbManagerHelper.getSeatFrom(rs, startingIndex + 8, false);
+		// Seat seat = DbManagerHelper.getSeatFrom(rs, startingIndex, false);
 
-		OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(startingIndex + 10, OffsetDateTime.class);
-		LocalDate reservationDate = (LocalDate) rs.getObject(startingIndex + 11, LocalDate.class);
+		OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(startingIndex + 1, OffsetDateTime.class);
+		LocalDate reservationDate = (LocalDate) rs.getObject(startingIndex + 2, LocalDate.class);
 
 		ConsultationReservation reservation = new ConsultationReservation(id, user, copyForConsultation,
 				seat, reservationDate, timestamp);
 
+		return reservation;
+	}
+	
+	static ConsultationReservation getFullConsultationReservationFrom(
+			ResultSet rs, int startingIndex, InternalUser user) throws SQLException{
+		Copy copy = DbManagerHelper.getCopyFrom(rs, startingIndex);
+		Seat seat = DbManagerHelper.getSeatFrom(rs, startingIndex + 8, false);
+		
+		ConsultationReservation reservation = DbManagerHelper.getConsultationReservationFrom(rs, startingIndex + 10,
+				copy, seat, user);
+		
 		return reservation;
 	}
 	
@@ -128,7 +154,7 @@ public class DbManagerHelper {
     		query += "year = ? and ";
     	}
     	if(mainTopic != null){
-    		query += "main_topic like ?";
+    		query += "main_topic like ? ";
     	}
 
     	if (query.endsWith("and ")){
@@ -138,10 +164,45 @@ public class DbManagerHelper {
     	return query;
 	}
 	
-	static Object[] searchPrepare(String query, int lastUsedIndex, PreparedStatement pstmt,
+	static String getConsultationReservationQuery(String title, String [] authors,
+			int year, String mainTopic){
+		
+		String query = DbManagerHelper.getLoanReservationQuery(
+				title, authors, year, mainTopic)
+				.replaceAll("loan_reservation.id, time_stamp",
+						"seat_number, table_number, "+ // seat
+						"cr.id, time_stamp, reservation_date ")
+				.replaceAll("from loan_reservation join lm_copy on loan_reservation.copyid = lm_copy.id",
+							"from consultation_reservation as cr join lm_copy on cr.copyid = lm_copy.id")
+				.replaceAll("and loan_reservation.userid=\\?",
+						" and cr.userid=\\? ")
+				.concat(" and reservation_date=?");
+		
+		return query;
+	}
+	
+	
+	static String getLoanReservationQuery(String title, String [] authors,
+			int year, String mainTopic){
+		String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic)
+				.replaceAll("select lm_copy.id, title, authors, year, main_topic, phouse, "+
+				"status, for_consultation",
+				"select lm_copy.id, title, authors, year, main_topic, phouse, "+
+				"status, for_consultation, loan_reservation.id, time_stamp "
+				)
+				.replaceAll("from lm_copy join book",
+				"from loan_reservation join lm_copy on loan_reservation.copyid = lm_copy.id join book"
+				)
+				.concat("and loan_reservation.userid=?");
+		
+		return query;
+	}
+	
+	static Object[] searchPrepare(int lastUsedIndex, PreparedStatement pstmt,
 			Connection connection,
 			String title, String [] authors, int year,
 			String mainTopic) throws SQLException{
+
     	if (title!=null){
     		pstmt.setString(lastUsedIndex, "%"+title+"%");
     		lastUsedIndex++;

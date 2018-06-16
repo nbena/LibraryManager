@@ -284,6 +284,13 @@ public class LibraryManager {
 	public List<User> users() throws SQLException{
 		return this.dbManager.users();
 	}
+	
+	
+	public Copy getOneAvailableCopyForLoan(String title, String [] authors,
+			int year, String mainTopic) throws SQLException{
+		return this.dbManager.getOneAvailableCopyForLoan(title, authors,
+				year, mainTopic);
+	}
 
 
 }

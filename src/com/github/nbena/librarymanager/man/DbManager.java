@@ -652,7 +652,7 @@ public class DbManager {
 //			returned.setName(name);
 //			returned.setSurname(surname);
 //			returned.setEmail(email);
-			DbManagerHelper.getUserFrom(rs, 1);
+			returned = DbManagerHelper.getUserFrom(rs, 1);
 		}
 		return returned;
 	}

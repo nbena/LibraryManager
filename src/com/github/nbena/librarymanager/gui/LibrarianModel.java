@@ -68,9 +68,23 @@ public class LibrarianModel extends AbstractModel {
 		super.manager.deliveryBook(user, copy);
 	}
 	
-	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
-		return super.manager.loanNotReserved(user, copy);
+	public Loan loanNotReserved(User user, String title, String [] authors, int year,
+			String mainTopic) throws ReservationException, SQLException{
+		Copy copy = super.manager.getOneAvailableCopyForLoan(title, authors,
+				year, mainTopic);
+		Loan loan = null;
+		if (copy!=null){
+			loan = super.manager.loanNotReserved(user, copy);
+		}else{
+			throw new ReservationException("No copy availables");
+		}
+		return loan;
 	}
+	
+	
+//	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
+//		return super.manager.loanNotReserved(user, copy);
+//	}
 	
 	public Loan loanReserved(InternalUser user, Copy copy) throws ReservationException, SQLException{
 		return super.manager.loanReserved(user, copy);

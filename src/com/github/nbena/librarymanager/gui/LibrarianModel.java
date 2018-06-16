@@ -18,11 +18,12 @@
 package com.github.nbena.librarymanager.gui;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Consultation;
-import com.github.nbena.librarymanager.core.Copy;
+import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
@@ -65,22 +66,35 @@ public class LibrarianModel extends AbstractModel {
 		super.manager.deleteBook(book);
 	}
 	
-	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
-		super.manager.deliveryBook(user, copy);
+//	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
+//		super.manager.deliveryBook(user, copy);
+//	}
+	
+	public void deliveryLoan(User user, String title, String [] authors, int year,
+			String mainTopic) throws SQLException, ReservationException{
+		
+		Loan loan = super.manager.getLoanByUserCopy(user, title, authors, year,
+				mainTopic);
+		if(loan == null){
+			throw new ReservationException(LibraryManager.NO_LOAN);
+		}
+		
+		super.manager.deliveryLoan(loan);
 	}
 	
 	public Loan loanNotReserved(User user, String title, String [] authors, int year,
 			String mainTopic) throws ReservationException, SQLException{
-		Copy copy = super.manager.getOneAvailableCopyForLoan(title, authors,
-				year, mainTopic);
-		Loan loan = null;
-		if (copy!=null){
-			loan = super.manager.loanNotReserved(user, copy);
-		}else{
-			throw new ReservationException("Non sono state trovate copie con questi " +
-					"con questi parametri");
-		}
-		return loan;
+//		Copy copy = super.manager.getOneAvailableCopyForLoan(title, authors,
+//				year, mainTopic);
+//		Loan loan = null;
+//		if (copy!=null){
+//			loan = super.manager.loanNotReserved(user, copy);
+//		}else{
+//			throw new ReservationException("Non sono state trovate copie con questi " +
+//					"con questi parametri");
+//		}
+//		return loan;
+		return super.manager.loanNotReserved(user, title, authors, year, mainTopic);
 	}
 	
 	
@@ -94,14 +108,11 @@ public class LibrarianModel extends AbstractModel {
 		LoanReservation reservation = super.manager.getLoanReservationByUserCopy(
 				user, title, authors, year, mainTopic);
 
-		Loan loan = null;
-		if(reservation!=null){
-			loan = super.manager.loanReserved(reservation);
-		}else{
-			throw new ReservationException("Non sono state trovate prenotazioni "+
-					"con questi parametri");
+		if (reservation == null){
+			throw new ReservationException(LibraryManager.NO_RESERVATION);
 		}
-		return loan;
+
+		return super.manager.loanReserved(reservation);
 	}
 	
 //	public Loan loanReserved(InternalUser user, Copy copy) throws ReservationException, SQLException{
@@ -112,12 +123,24 @@ public class LibrarianModel extends AbstractModel {
 		return super.manager.tryRenewLoan(loan);
 	}
 	
-	public Seat startNotReservedConsultation(User user, Book book) throws SQLException, ReservationException{
-		return super.manager.startNotReservedConsultation(user, book);
+	public Seat startNotReservedConsultation(User user, String title,
+			String [] authors, int year, String mainTopic) throws SQLException, ReservationException{
+		return super.manager.startNotReservedConsultation(user, title,
+				authors, year, mainTopic);
 	}
+
 	
-	public Seat startReservedConsultation(InternalUser user, Book book) throws SQLException, ReservationException{
-		return super.manager.startReservedConsultation(user, book);
+	public Seat startReservedConsultation(InternalUser user, String title, String [] authors,
+			int year, String mainTopic) throws SQLException, ReservationException{
+
+		ConsultationReservation reservation = super.manager.getConsultationReservationByUserCopy(
+				user, LocalDate.now(), title, authors, year, mainTopic);
+		
+		if(reservation == null){
+			throw new ReservationException(LibraryManager.NO_RESERVATION);
+		}
+		
+		return super.manager.startReservedConsultation(reservation);
 	}
 	
 	public void deliveryConsultation(Consultation consultation) throws SQLException{

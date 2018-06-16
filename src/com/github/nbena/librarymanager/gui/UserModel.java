@@ -22,9 +22,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.github.nbena.librarymanager.core.AbstractReservation;
-import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
+import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
@@ -58,8 +58,13 @@ public class UserModel extends AbstractModel {
 		return super.manager.tryReserveSeat((InternalUser) super.user, date);
 	}
 	
-	public ConsultationReservation reserveConsultation(Book book, LocalDate date) throws ReservationException, SQLException{
-		return super.manager.tryReserveConsultation((InternalUser) super.user, book, date);
+//	public ConsultationReservation reserveConsultation(Book book, LocalDate date) throws ReservationException, SQLException{
+//		return super.manager.tryReserveConsultation((InternalUser) super.user, book, date);
+//	}
+//	
+	public ConsultationReservation reserveConsultation(CopyForConsultation copy,
+			LocalDate date) throws ReservationException, SQLException{
+		return super.manager.tryReserveConsultation((InternalUser) super.user, copy, date);
 	}
 	
 	public void cancelReservation(AbstractReservation reservation) throws SQLException{

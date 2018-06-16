@@ -20,7 +20,7 @@ package com.github.nbena.librarymanager.core;
 import java.time.LocalDate;
 
 public class Loan implements IDble {
-	
+
 	private User user;
 	private Copy copy;
 	private LocalDate start;
@@ -29,9 +29,9 @@ public class Loan implements IDble {
 	private LocalDate restitutionDate;
 	private boolean renewAvailable;
 	int ID;
-	
+
 	public static final int MAX_MONTHS_SINGLE_LOAN_DURATION = 2;
-	
+
 	public Loan(User user, Copy copy){
 		this.user = user;
 		this.copy = copy;
@@ -49,8 +49,8 @@ public class Loan implements IDble {
 		this.ID = ID;
 	}
 
-	
-	
+
+
 	public LocalDate getEnd() {
 		return end;
 	}
@@ -68,7 +68,7 @@ public class Loan implements IDble {
 	}
 
 	public LocalDate getRestitutionDate() {
-		return restitutionDate;
+		return this.restitutionDate;
 	}
 
 	public void setRestitutionDate(LocalDate restitutionDate) {
@@ -76,7 +76,7 @@ public class Loan implements IDble {
 	}
 
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
 
 	public void setID(int iD) {
@@ -86,7 +86,7 @@ public class Loan implements IDble {
 //	public Loan(User user, Copy copy, boolean setOthers) {
 //		this.user = user;
 //		this.copy = copy;
-//		
+//
 //		if (setOthers){
 //			this.start = LocalDateTime.now();
 //			this.end = this.start.plusMonths(4);
@@ -119,8 +119,8 @@ public class Loan implements IDble {
 	public void setRenewAvailable(boolean renewAvailable) {
 		this.renewAvailable = renewAvailable;
 	}
-	
-	
+
+
 	public LocalDate getStart() {
 		return start;
 	}
@@ -130,6 +130,6 @@ public class Loan implements IDble {
 	public void setStart(LocalDate start) {
 		this.start = start;
 	}
-	
+
 
 }

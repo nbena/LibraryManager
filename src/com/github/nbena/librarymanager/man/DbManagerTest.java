@@ -308,21 +308,45 @@ public class DbManagerTest {
 	  Loan l = this.loans[0];
 	  l.setRenewAvailable(false);
 	  
-	  Loan gotLoan = this.db.getLoanByUserCopy(l.getUser(), l.getCopy(), false);
+	  // Loan gotLoan = this.db.getLoanByUserCopy(l.getUser(), l.getCopy(), false);
+	  Loan gotLoan = this.db.getLoanByUserCopy(l.getUser(),
+			  l.getCopy().getTitle(),
+			  l.getCopy().getAuthors(),
+			  l.getCopy().getYearOfPublishing(),
+			  l.getCopy().getMainTopic()
+			 );
 	  assertTrue(gotLoan.getID() == l.getID());
 	  
 	  this.db.registerLoanDelivered(gotLoan);
-	  gotLoan = this.db.getLoanByUserCopy(l.getUser(), l.getCopy(), true);
-	  assertTrue(gotLoan != null);
-	  assertTrue(gotLoan.getRestitutionDate().equals(LocalDate.now()));
+//	  gotLoan = this.db.getLoanByUserCopy(l.getUser(),
+//			  l.getCopy().getTitle(),
+//			  l.getCopy().getAuthors(),
+//			  l.getCopy().getYearOfPublishing(),
+//			  l.getCopy().getMainTopic());
+//
+//	  assertTrue(gotLoan != null);
+//	  System.out.println(l.getID());
+//	  System.out.println(gotLoan.getID());
+//	  System.out.println(gotLoan.getRestitutionDate());
+//	  assertTrue(gotLoan.getRestitutionDate().equals(LocalDate.now()));
+	  boolean found = false;
+	  List<Loan> loansByUser = this.db.getLoans(l.getUser(), true, true);
+	  for(Loan loan: loansByUser){
+		  if (loan.getID() == gotLoan.getID()){
+			  found = true;
+			  break;
+		  }
+	  }
+	  assertTrue(found);
+	  assertTrue(loansByUser.size() == 1);
 	  
-	  gotLoan = this.db.getActiveLoanByCopy(this.loans[1].getCopy());
-	  assertTrue(gotLoan.getID() == this.loans[1].getID());
+//	  gotLoan = this.db.getActiveLoanByCopy(this.loans[1].getCopy());
+//	  assertTrue(gotLoan.getID() == this.loans[1].getID());
 	  
-	  List<Loan> allLoans = this.db.getLoans(l.getUser(), true, true);
-	  assertTrue(allLoans.size() == 1);
+	 //  List<Loan> allLoans = this.db.getLoans(l.getUser(), true, true);
+	  // assertTrue(allLoans.size() == 1);
 	  
-	  allLoans = this.db.getLoans(l.getUser(), false, true);
+	  List<Loan> allLoans = this.db.getLoans(l.getUser(), false, true);
 	  assertTrue(allLoans.size() > 0);
 	  
 	  allLoans = this.db.getLoans(l.getUser(),false, false);
@@ -370,7 +394,7 @@ public class DbManagerTest {
 	  
 	  
 	  Copy available = this.db.getOneAvailableCopyForLoan("Title1", null, 0, null);
-	  boolean found = false;
+	  found = false;
 	  for (int i=0;i<this.copies.length;i++){
 		  if (this.copies[i].getID() == available.getID()){
 			  found = true;
@@ -404,11 +428,13 @@ public class DbManagerTest {
 	  assertTrue(count == this.consultationReservations.length);
 	  
 	  ConsultationReservation expected = this.consultationReservations[0];
-	  ConsultationReservation got = this.db.getConsultationReservation(
-			  expected.getUser(),
-			  expected.getCopy(),
-			  expected.getReservationDate()
-			  );
+	  ConsultationReservation got = this.db.getConsultationReservationByUserCopy(
+			  this.consultationReservations[0].getUser(),
+			  this.consultationReservations[0].getReservationDate(),
+			  this.consultationReservations[0].getCopy().getTitle(),
+			  this.consultationReservations[0].getCopy().getAuthors(),
+			  this.consultationReservations[0].getCopy().getYearOfPublishing(),
+			  this.consultationReservations[0].getCopy().getMainTopic());
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  
@@ -438,17 +464,19 @@ public class DbManagerTest {
 		  assertTrue(e.getMessage().contains("violates unique constraint"));
 	  }
 	  assertTrue(thrown);
+
 	  
-	  expected = this.db.getConsultationReservation(got.getUser(), got.getCopy(), got.getReservationDate());
-	  got = this.db.getConsultationReservationByUserCopy(
-			  expected.getUser(),
-			  expected.getReservationDate(),
-			  expected.getCopy().getTitle(),
-			  expected.getCopy().getAuthors(),
-			  expected.getCopy().getYearOfPublishing(),
-			  expected.getCopy().getMainTopic());
-	  
-	  assertTrue(got.getID() == expected.getID());
+	  // expected = this.db.getConsultationReservation(got.getUser(), got.getCopy(), got.getReservationDate());
+//	  got = this.db.getConsultationReservationByUserCopy(
+//			  expected.getUser(),
+//			  expected.getReservationDate(),
+//			  expected.getCopy().getTitle(),
+//			  expected.getCopy().getAuthors(),
+//			  expected.getCopy().getYearOfPublishing(),
+//			  expected.getCopy().getMainTopic());
+//	  System.out.println(expected);
+//	  System.out.println(got);
+//	  assertTrue(got.getID() == oldId);
 	  
 	  for(Consultation c: this.consultations){
 		  db.startConsultation(c);
@@ -467,7 +495,16 @@ public class DbManagerTest {
 	  
 	  assertTrue(count == this.consultations.length);
 	  
-	  CopyForConsultation c = this.db.getOneAvailableCopyForConsultation(this.copiesForConsultation[0], LocalDate.now().plusDays(4));
+	  // CopyForConsultation c = this.db.getOneAvailableCopyForConsultation(this.copiesForConsultation[0], LocalDate.now().plusDays(4));
+	  
+	  CopyForConsultation c = this.db.getIfAvailableForConsultation(this.copiesForConsultation[0], LocalDate.now().plusDays(4));
+	  assertTrue(this.copiesForConsultation[0].getID() == c.getID());
+	  
+	  c = this.db.getOneAvailableCopyForConsultation(LocalDate.now().plusDays(4),
+			  this.copiesForConsultation[0].getTitle(),
+			  this.copiesForConsultation[0].getAuthors(),
+			  this.copiesForConsultation[0].getYearOfPublishing(),
+			  this.copiesForConsultation[0].getMainTopic());
 	  
 	  assertTrue(this.copiesForConsultation[0].getID() == c.getID());
 	  

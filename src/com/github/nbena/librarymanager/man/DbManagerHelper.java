@@ -18,10 +18,10 @@ import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 
 public class DbManagerHelper {
-	
-	
+
+
 	static User getUserFrom(ResultSet rs, int startingIndex) throws SQLException{
-		
+
 		User returned;
 		int id = rs.getInt(rs.getInt(startingIndex));
 		String name = rs.getString(startingIndex + 1);
@@ -36,10 +36,10 @@ public class DbManagerHelper {
 		returned.setName(name);
 		returned.setSurname(surname);
 		returned.setEmail(email);
-		
+
 		return returned;
 	}
-	
+
 	static LoanReservation getLoanReservation(ResultSet rs, int startingIndex, Copy copy, InternalUser user) throws SQLException{
 		LoanReservation  reservation = null;
 		int id = rs.getInt(startingIndex );
@@ -48,7 +48,7 @@ public class DbManagerHelper {
 		return reservation;
 	}
 
-	
+
 	static Copy getCopyFrom(ResultSet rs, int startingIndex) throws SQLException{
 
 		int copyid = rs.getInt(startingIndex);
@@ -90,13 +90,14 @@ public class DbManagerHelper {
 		Seat seat = new Seat(seatNumber, tableNumber, free);
 		return seat;
 	}
-	
+
 	static Loan getLoanFrom(ResultSet rs, int startingIndex, Copy copy, User user) throws SQLException{
 		int id = rs.getInt(startingIndex);
 		LocalDate start = rs.getObject(startingIndex + 1, LocalDate.class);
 		LocalDate end = rs.getObject(startingIndex + 2, LocalDate.class);
 		// boolean active = rs.getBoolean(startingIndex + 3);
 		LocalDate restitutionDate = rs.getObject(startingIndex + 3, LocalDate.class);
+		
 		boolean renewAvailable = rs.getBoolean(startingIndex + 4);
 
 		boolean active = (restitutionDate == null);
@@ -105,13 +106,13 @@ public class DbManagerHelper {
 
 		return l;
 	}
-	
+
 	static ConsultationReservation getConsultationReservationFrom(
 			ResultSet rs, int startingIndex,
 			Copy copy,
 			Seat seat,
 			InternalUser user) throws SQLException{
-		
+
 		int id = rs.getInt(startingIndex);
 
 		// Copy copy = DbManagerHelper.getCopyFrom(rs, startingIndex + 1);
@@ -126,18 +127,18 @@ public class DbManagerHelper {
 
 		return reservation;
 	}
-	
+
 	static ConsultationReservation getFullConsultationReservationFrom(
 			ResultSet rs, int startingIndex, InternalUser user) throws SQLException{
 		Copy copy = DbManagerHelper.getCopyFrom(rs, startingIndex);
 		Seat seat = DbManagerHelper.getSeatFrom(rs, startingIndex + 8, false);
-		
+
 		ConsultationReservation reservation = DbManagerHelper.getConsultationReservationFrom(rs, startingIndex + 10,
 				copy, seat, user);
-		
+
 		return reservation;
 	}
-	
+
 	static String getSearchQuery(String title, String [] authors, int year,
 			String mainTopic){
     	String query = "select lm_copy.id, title, authors, year, main_topic, phouse, "+
@@ -160,13 +161,13 @@ public class DbManagerHelper {
     	if (query.endsWith("and ")){
     		query = query.substring(0, query.lastIndexOf("and "));
     	}
-    	
+
     	return query;
 	}
-	
+
 	static String getConsultationReservationQuery(String title, String [] authors,
 			int year, String mainTopic){
-		
+
 		String query = DbManagerHelper.getLoanReservationQuery(
 				title, authors, year, mainTopic)
 				.replaceAll("loan_reservation.id, time_stamp",
@@ -177,11 +178,11 @@ public class DbManagerHelper {
 				.replaceAll("and loan_reservation.userid=\\?",
 						" and cr.userid=\\? ")
 				.concat(" and reservation_date=?");
-		
+
 		return query;
 	}
-	
-	
+
+
 	static String getLoanReservationQuery(String title, String [] authors,
 			int year, String mainTopic){
 		String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic)
@@ -194,10 +195,47 @@ public class DbManagerHelper {
 				"from loan_reservation join lm_copy on loan_reservation.copyid = lm_copy.id join book"
 				)
 				.concat("and loan_reservation.userid=?");
-		
+
 		return query;
 	}
 	
+	static String getLoanByUserCopyQuery(String title, String [] authors,
+			int year, String mainTopic){
+		
+		String query = DbManagerHelper.getSearchQuery(title, authors,
+				year, mainTopic)
+				.replaceAll("from lm_copy join book",
+						"from loan join lm_copy on copyid=lm_copy.id join book ")
+				.replaceAll("for_consultation",
+						"for_consultation, loan.id, start_date, end_date, "+
+						"restitution_date, renew_available ");
+		
+		return query;
+	}
+
+	static String getOneAvailableCopyForConsultationQuery(String title,
+			String [] authors, int year, String mainTopic){
+
+//				String internalQuery = DbManagerHelper.getSearchQuery(
+//					title, authors, year, mainTopic)
+//					.replaceAll("select lm_copy.id, title, authors, year, main_topic, "+
+//											"phouse, status, for_consultation",
+//											"select lm_copy.id ");
+		String internalQuery = "select lm_copy.id "+
+							   "from lm_copy join consultation_reservation "+
+							   "on lm_copy.id = consultation_reservation.copyid "+
+							   "where reservation_date=?";
+		
+		String query = DbManagerHelper.getSearchQuery(title, authors,
+			year, mainTopic)
+			.concat("and lm_copy.id not in ("+internalQuery+") ")
+			.concat("and for_consultation=true ")
+			.concat("limit 1");
+
+		return query;
+	}
+
+
 	static Object[] searchPrepare(int lastUsedIndex, PreparedStatement pstmt,
 			Connection connection,
 			String title, String [] authors, int year,
@@ -220,10 +258,10 @@ public class DbManagerHelper {
     		pstmt.setString(lastUsedIndex, "%"+mainTopic+"%");
     		lastUsedIndex++;
     	}
-    	
+
     	return new Object[]{pstmt, lastUsedIndex};
 	}
-	
+
 	// used in test
 	static 	String queryOnMultipleId(String initial, int length, boolean and){
 		String logical = and ? "and" : "or";

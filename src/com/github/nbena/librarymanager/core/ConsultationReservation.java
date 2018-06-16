@@ -20,6 +20,7 @@ package com.github.nbena.librarymanager.core;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 
 public class ConsultationReservation extends AbstractReservation {
 	
@@ -75,6 +76,18 @@ public class ConsultationReservation extends AbstractReservation {
 	
 	public boolean isDone(){
 		return this.reservationDate.isAfter(LocalDate.now());
+	}
+	
+	public String toString(){
+		return "Id: "+this.ID+
+				",\nTitle: "+this.getCopy().getTitle()+
+				",\nUser: "+this.user.toString()+
+				"\n,ReservationDate: "+this.reservationDate+
+				"\n,Authors: "+Arrays.toString(this.getCopy().getAuthors())+
+				"\n,Timestamp: "+this.timestamp.toString()+
+				"\n,year: "+Integer.toString(this.getCopy().getYearOfPublishing())+
+				"\n,mainTopic: "+this.getCopy().getMainTopic()+
+				"\n,phouse: "+this.getCopy().getPublishingHouse();
 	}
 
 }

@@ -44,6 +44,14 @@ import com.github.nbena.librarymanager.core.User;
 
 public class LibraryManager {
 	
+	public static final String NO_COPIES = "Non ci sono copie che matchano questi parametri "+
+				"oppure potrebbero essere già occupdate";
+	public static final String NO_SEATS = "Non ci sono posti disponibili per la "+
+				"data specificata";
+	public static final String NO_RESERVATION = "Non ci sono prenotazioni che matchano "+
+				"questi parametri";
+	public static final String NO_LOAN = "Non ci sono prestiti che matchano questi parametri";
+
 	private DbManager dbManager;
 	
 	public LibraryManager(String uri, String username, String password) throws ClassNotFoundException, SQLException{
@@ -85,7 +93,7 @@ public class LibraryManager {
 		
 			List<Seat> seats = this.dbManager.getAvailableSeats(date);
 			if (seats.size() <= 0){
-				throw new ReservationException("No seats available");
+				throw new ReservationException(NO_SEATS);
 			}
 
 			SeatReservation reservation = new SeatReservation(user, date, seats.get(0));
@@ -96,7 +104,7 @@ public class LibraryManager {
 	private Seat getAndSetSeatOccupied(LocalDate date) throws SQLException, ReservationException{
 		List<Seat> seats = this.dbManager.getAvailableSeats(date);
 		if (seats.size() <= 0){
-			throw new ReservationException("No seats available");
+			throw new ReservationException(NO_SEATS);
 		}
 		
 		Seat seat = seats.get(0);
@@ -105,15 +113,17 @@ public class LibraryManager {
 		return seat;
 	}
 	
-	public ConsultationReservation tryReserveConsultation(InternalUser user, Book book, LocalDate date) throws ReservationException, SQLException{
+	public ConsultationReservation tryReserveConsultation(InternalUser user, CopyForConsultation copy,
+			LocalDate date) throws ReservationException, SQLException{
 
-		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, date);
-		if (copy == null){
-			throw new ReservationException("No copies available");
+		// CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, date);
+		CopyForConsultation returned = this.dbManager.getIfAvailableForConsultation(copy, date);
+		if (returned == null){
+			throw new ReservationException(NO_COPIES);
 		}
 		List<Seat> seats = this.dbManager.getAvailableSeats(date);
 		if (seats.size() <= 0){
-			throw new ReservationException("No seats available");
+			throw new ReservationException(NO_SEATS);
 		}
 
 		ConsultationReservation reservation = new ConsultationReservation(
@@ -158,17 +168,30 @@ public class LibraryManager {
 		this.dbManager.deleteItem(reservation);
 	}
 	
-	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
-		Loan loan = this.dbManager.getLoanByUserCopy(user, copy, false);
-		if (loan == null){
-			throw new ReservationException("Loan not found");
-		}
-
+	public void deliveryLoan(Loan loan) throws SQLException{
 		loan.setEnd(LocalDate.now());
-		this.dbManager.registerLoanDelivered(loan);			
+		this.dbManager.registerLoanDelivered(loan);
 	}
 	
-	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
+//	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
+//		Loan loan = this.dbManager.getLoanByUserCopy(user, copy, false);
+//		if (loan == null){
+//			throw new ReservationException("Loan not found");
+//		}
+//
+//		loan.setEnd(LocalDate.now());
+//		this.dbManager.registerLoanDelivered(loan);			
+//	}
+	
+	public Loan loanNotReserved(User user, String title, String [] authors,
+			int year, String mainTopic) throws SQLException, ReservationException{
+
+		Copy copy = this.dbManager.getOneAvailableCopyForLoan(title,
+				authors, year, mainTopic);
+		if (copy == null){
+			throw new ReservationException(NO_COPIES);
+		}
+	
 		Loan loan = new Loan(user, copy);
 		this.dbManager.addLoan(loan);
 		return loan;
@@ -201,14 +224,17 @@ public class LibraryManager {
 		return possible;
 	}
 	
-	public Seat startNotReservedConsultation(User user, Book book) throws SQLException, ReservationException{
-		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, LocalDate.now());
+	public Seat startNotReservedConsultation(User user, String title, String [] authors,
+			int year, String mainTopic) throws SQLException, ReservationException{
+		// CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, LocalDate.now());
+		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(
+				LocalDate.now(), title, authors, year, mainTopic);
 		if (copy == null){
-			throw new ReservationException("No copies available");
+			throw new ReservationException(NO_COPIES);
 		}
 		List<Seat> seats = this.dbManager.getAvailableSeats(LocalDate.now());
 		if (seats.size() <= 0){
-			throw new ReservationException("No seats available");
+			throw new ReservationException(NO_SEATS);
 		}
 		Seat seat = seats.get(0);
 		seat.setFree(false);
@@ -221,13 +247,15 @@ public class LibraryManager {
 		return seat;
 	}
 	
-	public Seat startReservedConsultation(InternalUser user, Book book) throws SQLException, ReservationException{
-		ConsultationReservation reservation = this.dbManager.getConsultationReservation(user, book, LocalDate.now());
+	public Seat startReservedConsultation(ConsultationReservation reservation) throws SQLException, ReservationException{
+		// ConsultationReservation reservation = this.dbManager.getConsultationReservation(user, book, LocalDate.now());
+	
 		if (reservation == null){
-			throw new ReservationException("Reservation not found");
+			throw new ReservationException(NO_RESERVATION);
 		}
 		
-		Consultation consultation = reservation.getCopy().startConsultation(user);
+		Consultation consultation = reservation.getCopy()
+				.startConsultation(reservation.getUser());
 		
 		Seat seat = reservation.getSeat();
 		seat.setFree(false);
@@ -290,17 +318,32 @@ public class LibraryManager {
 	}
 	
 	
-	public Copy getOneAvailableCopyForLoan(String title, String [] authors,
-			int year, String mainTopic) throws SQLException{
-		return this.dbManager.getOneAvailableCopyForLoan(title, authors,
-				year, mainTopic);
-	}
+//	public Copy getOneAvailableCopyForLoan(String title, String [] authors,
+//			int year, String mainTopic) throws SQLException{
+//		return this.dbManager.getOneAvailableCopyForLoan(title, authors,
+//				year, mainTopic);
+//	}
 	
 	public LoanReservation getLoanReservationByUserCopy(InternalUser user,
 			String title, String [] authors,
 			int year, String mainTopic) throws SQLException{
 		
 		return this.dbManager.getLoanReservationByUserCopy(user, title, authors, year, mainTopic);
+	}
+	
+	public Loan getLoanByUserCopy(User user, String title, String [] authors,
+			int year, String mainTopic) throws SQLException{
+		
+		return this.dbManager.getLoanByUserCopy(user, title, authors, year, mainTopic);
+	}
+	
+	public ConsultationReservation getConsultationReservationByUserCopy(InternalUser user,
+			LocalDate date,
+			String title, String [] authors,
+			int year, String mainTopic) throws SQLException{
+		
+		return this.dbManager.getConsultationReservationByUserCopy(user, date,
+				title, authors, year, mainTopic);
 	}
 
 

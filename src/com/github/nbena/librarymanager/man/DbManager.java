@@ -401,11 +401,6 @@ public class DbManager {
 			InternalUser user, LocalDate date, String title, String [] authors,
 			int year, String mainTopic) throws SQLException{
 
-//		String query = DbManagerHelper.getLoanReservationQuery(title,
-//				authors, year, mainTopic)
-//				.replaceAll("loan_reservation", "consultation_reservation")
-//				.concat(" and date=?");
-
 		String query = DbManagerHelper.getConsultationReservationQuery(
 				title, authors, year, mainTopic);
 
@@ -486,8 +481,33 @@ public class DbManager {
 		}
 		return reservation;
 	}
+	
+	public Loan getLoanByUserCopy(User user, String title, String [] authors,
+			int year, String mainTopic) throws SQLException{
+		
+		String query = DbManagerHelper.getLoanByUserCopyQuery(title,
+				authors, year, mainTopic);
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		Object [] res = DbManagerHelper.searchPrepare(1, pstmt,
+				this.connection, title, authors, year, mainTopic);
+		
+		pstmt = (PreparedStatement) res[0];
+		
+		Loan loan = null;
+		
+		ResultSet rs = pstmt.executeQuery();
+		
+		if(rs.next()){
+			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
+			loan = DbManagerHelper.getLoanFrom(rs, 9, copy, user);
+		}
+		return loan;
+	}
 
 
+	@Deprecated
 	public Loan getLoanByUserCopy(User user, Copy copy, boolean delivered) throws SQLException{
 		String query = "select id, start_date, end_date, restitution_date, renew_available "+
 						"from loan where userid=? "+
@@ -590,7 +610,10 @@ public class DbManager {
 	}
 
 
-	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDate date)throws SQLException{
+	@Deprecated
+	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDate date)
+					throws SQLException{
+
 		String query = "select copyid, title, authors, year, main_topic, "+
 						"phouse, status, for_consultation, "+
 						"seat_number, table_number, "+ // seat
@@ -620,7 +643,6 @@ public class DbManager {
 			reservation = DbManagerHelper.getFullConsultationReservationFrom(rs, 1, user);
 		}
 		return reservation;
-
 	}
 
 	public Consultation startConsultation(Consultation consultation)throws SQLException{
@@ -706,19 +728,6 @@ public class DbManager {
 		User returned = null;
 
 		if(rs.next()){
-//			int id = rs.getInt(rs.getInt(1));
-//			String name = rs.getString(2);
-//			String surname = rs.getString(3);
-//			String email = rs.getString(4);
-//			boolean internal = rs.getBoolean(5);
-//			if (internal){
-//				returned = new InternalUser(id);
-//			}else{
-//				returned = new User(id);
-//			}
-//			returned.setName(name);
-//			returned.setSurname(surname);
-//			returned.setEmail(email);
 			returned = DbManagerHelper.getUserFrom(rs, 1);
 		}
 		return returned;
@@ -747,7 +756,64 @@ public class DbManager {
 		return copy;
 	}
 
+	public CopyForConsultation getOneAvailableCopyForConsultation(LocalDate date,
+						String title,
+						String [] authors, int year, String mainTopic) throws SQLException{
+
+		String query = DbManagerHelper.getOneAvailableCopyForConsultationQuery(
+			title, authors, year, mainTopic);
+
+		System.out.println(query);
+
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+
+		Object [] res = DbManagerHelper.searchPrepare(1, pstmt, this.connection,
+				title, authors, year, mainTopic);
+
+		pstmt = (PreparedStatement) res[0];
+		int lastUsedIndex = (int) res[1];
+
+		pstmt.setObject(lastUsedIndex, date);
+
+		CopyForConsultation copy = null;
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next()){
+			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
+			copy = CopyForConsultation.create(from);
+			copy.setID(from.getID());
+		}
+
+		return copy;
+	}
+
+	public CopyForConsultation getIfAvailableForConsultation(CopyForConsultation copy, LocalDate date) throws SQLException{
+
+		String query = "select lm_copy.id, title, authors, year, main_topic, "+
+					   "phouse, status, for_consultation "+
+					   "from lm_copy join book on lm_copy.bookid=book.id "+
+					   "where "+
+					   "lm_copy.id=? and lm_copy.id not in "+
+					   "(select copyid from consultation_reservation "+
+					   "where lm_copy.id=? and reservation_date=?) "+
+					   "and for_consultation = true limit 1";
+
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		pstmt.setInt(1, copy.getID());
+		pstmt.setInt(2, copy.getID());
+		pstmt.setObject(3, date);
+
+		ResultSet rs = pstmt.executeQuery();
+		CopyForConsultation returned = null;
+		if(rs.next()){
+			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
+			returned = CopyForConsultation.create(from);
+			returned.setID(from.getID());
+		}
+		return returned;
+	}
+
 	// IMPORTANT: on consultation user cannot decide year and so, just author and title.
+	@Deprecated
 	public CopyForConsultation getOneAvailableCopyForConsultation(Book book, LocalDate date) throws SQLException{
 
 		String query = "select lm_copy.id, title, authors, year, main_topic, phouse, status "+
@@ -890,52 +956,11 @@ public class DbManager {
     	}
 
 
-//    	String query = "select lm_copy.id, title, authors, year, main_topic, phouse, "+
-//    					"status, for_consultation from lm_copy join book on lm_copy.bookid " +
-//    					"= book.id where ";
-//
-//    	if (title != null){
-//    		query += "title like ? and ";
-//    	}
-//    	if (authors != null){
-//    		query += "authors @> ? and ";
-//    	}
-//    	if (year != 0){
-//    		query += "year = ? and ";
-//    	}
-//    	if(mainTopic != null){
-//    		query += "main_topic like ?";
-//    	}
-//
-//    	if (query.endsWith("and ")){
-//    		query = query.substring(0, query.lastIndexOf("and "));
-//    	}
-
     	String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic);
-
-    	// System.out.println(query);
 
     	PreparedStatement pstmt = this.connection.prepareStatement(query);
 
     	int lastUsedIndex = 1;
-
-//    	if (title!=null){
-//    		pstmt.setString(lastUsedIndex, "%"+title+"%");
-//    		lastUsedIndex++;
-//    	}
-//    	if (authors != null){
-//    		pstmt.setArray(lastUsedIndex, this.connection.createArrayOf("varchar", authors));
-//    		lastUsedIndex++;
-//    	}
-//
-//    	if (year != 0){
-//    		pstmt.setInt(lastUsedIndex, year);
-//    		lastUsedIndex++;
-//    	}
-//    	if(mainTopic != null){
-//    		pstmt.setString(lastUsedIndex, "%"+mainTopic+"%");
-//    		lastUsedIndex++;
-//    	}
 
     	pstmt = (PreparedStatement)(DbManagerHelper.searchPrepare(
     			lastUsedIndex, pstmt,

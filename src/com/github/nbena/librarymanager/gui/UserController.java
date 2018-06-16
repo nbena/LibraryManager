@@ -178,7 +178,7 @@ public class UserController extends AbstractController {
 									"Indica quando vuoi effettuare la consultazione");
 							if (date!=null){
 								ConsultationReservation consultation =
-										userModel.reserveConsultation(item, date);
+										userModel.reserveConsultation((CopyForConsultation) item, date);
 								message = String.format("%s%d:%s", "Prenotazione effettuata con successo," +
 										"il tavolo:posto per te è ",
 										consultation.getSeat().getTableNumber(),

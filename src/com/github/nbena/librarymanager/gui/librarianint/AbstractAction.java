@@ -11,6 +11,10 @@ public abstract class AbstractAction implements Action {
 	protected LibrarianModel model;
 	// protected Function<Object, Object> function;
 	// protected Object [] args;
+	
+	protected AbstractAction(LibrarianModel model){
+		this.model = model;
+	}
 
 	@Override
 	public boolean askConfirmation() {

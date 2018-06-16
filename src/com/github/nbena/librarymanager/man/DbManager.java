@@ -396,6 +396,48 @@ public class DbManager {
 
 		return reservations;
 	}
+	
+	public LoanReservation getLoanReservationByUserCopy(InternalUser user, String title, String [] authors,
+			int year, String mainTopic) throws SQLException{
+		
+		String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic);
+		
+		query = query.replaceAll("select lm_copy.id, title, authors, year, main_topic, phouse, "+
+				"status, for_consultation",
+				"select lm_copy.id, title, authors, year, main_topic, phouse, "+
+				"status, for_consultation, loan_reservation.id, time_stamp "
+				);
+		
+		query = query.replaceAll("from lm_copy join book",
+				"from loan_reservation join lm_copy on loan_reservation.copyid = lm_copy.id join book"
+				);
+		
+		query += "and loan_reservation.userid=?";
+		
+		int lastUsedIndex = 1;
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	Object [] res = DbManagerHelper.searchPrepare(query, lastUsedIndex, pstmt,
+    			this.connection, title, authors, year, mainTopic);
+    	
+    	pstmt = (PreparedStatement) res[0];
+    	lastUsedIndex = (int) res[1];
+    	
+    	// System.out.printf("lastUsedIndex is: %d\n", lastUsedIndex);
+    	
+    	pstmt.setInt(lastUsedIndex, user.getID());
+		
+		ResultSet rs = pstmt.executeQuery();
+		
+		LoanReservation reservation = null;
+		
+		if(rs.next()){
+			
+			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
+			reservation = DbManagerHelper.getLoanReservation(rs, 9, copy, user);
+			
+		}
+		return reservation;
+	}
 
 	public LoanReservation getLoanReservationByUserCopy(InternalUser user, Copy copy) throws SQLException{
 
@@ -411,10 +453,10 @@ public class DbManager {
 		ResultSet rs = pstmt.executeQuery();
 		if(rs.next()){
 
-			int id = rs.getInt(1);
-			OffsetDateTime timestamp = rs.getObject(2, OffsetDateTime.class);
-			reservation = new LoanReservation(id, user, copy, timestamp);
-
+//			int id = rs.getInt(1);
+//			OffsetDateTime timestamp = rs.getObject(2, OffsetDateTime.class);
+//			reservation = new LoanReservation(id, user, copy, timestamp);
+			reservation = DbManagerHelper.getLoanReservation(rs, 1, copy, user);
 		}
 		return reservation;
 	}
@@ -665,8 +707,8 @@ public class DbManager {
 		
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		
-		pstmt = DbManagerHelper.searchPrepare(query, 1, pstmt, this.connection,
-				title, authors, year, mainTopic);
+		pstmt = (PreparedStatement)(DbManagerHelper.searchPrepare(query, 1, pstmt, this.connection,
+				title, authors, year, mainTopic)[0]);
 		
 		Copy copy = null;
 		
@@ -865,8 +907,8 @@ public class DbManager {
 //    		lastUsedIndex++;
 //    	}
     	
-    	pstmt = DbManagerHelper.searchPrepare(query, lastUsedIndex, pstmt,
-    			this.connection, title, authors, year, mainTopic);
+    	pstmt = (PreparedStatement)(DbManagerHelper.searchPrepare(query, lastUsedIndex, pstmt,
+    			this.connection, title, authors, year, mainTopic)[0]);
 
     	ResultSet rs = pstmt.executeQuery();
 

@@ -378,6 +378,13 @@ public class DbManagerTest {
 		  }
 	  }
 	  assertTrue(found);
+	  
+	  expected = this.db.getLoanReservationByUserCopy(got.getUser(), got.getCopy());
+	  got = this.db.getLoanReservationByUserCopy(got.getUser(), got.getCopy().getTitle(),
+			  got.getCopy().getAuthors(), got.getCopy().getYearOfPublishing(),
+			  got.getCopy().getMainTopic());
+	  
+	  assertTrue(expected.getID() == expected.getID());
   }
   
   

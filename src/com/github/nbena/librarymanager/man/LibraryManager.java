@@ -174,11 +174,15 @@ public class LibraryManager {
 		return loan;
 	}
 	
-	public Loan loanReserved(InternalUser user, Copy copy) throws ReservationException, SQLException{
-		LoanReservation reservation = this.dbManager.getLoanReservationByUserCopy(user, copy);
-		if (reservation == null){
-			throw new ReservationException("Reservation not found");
-		}
+	public Loan loanReserved(LoanReservation reservation/*InternalUser user, Copy copy*/) throws /*ReservationException, */
+		SQLException{
+//		LoanReservation reservation = this.dbManager.getLoanReservationByUserCopy(user, copy);
+//		if (reservation == null){
+//			throw new ReservationException("Reservation not found");
+//		}
+//		Loan loan = reservation.createLoan();
+//		this.dbManager.addLoan(loan);
+//		return loan;
 		Loan loan = reservation.createLoan();
 		this.dbManager.addLoan(loan);
 		return loan;
@@ -291,6 +295,14 @@ public class LibraryManager {
 		return this.dbManager.getOneAvailableCopyForLoan(title, authors,
 				year, mainTopic);
 	}
+	
+	public LoanReservation getLoanReservationByUserCopy(InternalUser user,
+			String title, String [] authors,
+			int year, String mainTopic) throws SQLException{
+		
+		return this.dbManager.getLoanReservationByUserCopy(user, title, authors, year, mainTopic);
+	}
+
 
 
 }

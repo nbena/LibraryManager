@@ -13,6 +13,7 @@ import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.CopyStatus;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
+import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 
@@ -37,6 +38,14 @@ public class DbManagerHelper {
 		returned.setEmail(email);
 		
 		return returned;
+	}
+	
+	static LoanReservation getLoanReservation(ResultSet rs, int startingIndex, Copy copy, InternalUser user) throws SQLException{
+		LoanReservation  reservation = null;
+		int id = rs.getInt(startingIndex );
+		OffsetDateTime timestamp = rs.getObject(startingIndex + 1, OffsetDateTime.class);
+		reservation = new LoanReservation(id, user, copy, timestamp);
+		return reservation;
 	}
 
 	
@@ -129,7 +138,7 @@ public class DbManagerHelper {
     	return query;
 	}
 	
-	static PreparedStatement searchPrepare(String query, int lastUsedIndex, PreparedStatement pstmt,
+	static Object[] searchPrepare(String query, int lastUsedIndex, PreparedStatement pstmt,
 			Connection connection,
 			String title, String [] authors, int year,
 			String mainTopic) throws SQLException{
@@ -151,7 +160,7 @@ public class DbManagerHelper {
     		lastUsedIndex++;
     	}
     	
-    	return pstmt;
+    	return new Object[]{pstmt, lastUsedIndex};
 	}
 	
 	// used in test

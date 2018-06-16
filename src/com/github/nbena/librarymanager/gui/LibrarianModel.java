@@ -25,6 +25,7 @@ import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
+import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
@@ -76,7 +77,8 @@ public class LibrarianModel extends AbstractModel {
 		if (copy!=null){
 			loan = super.manager.loanNotReserved(user, copy);
 		}else{
-			throw new ReservationException("No copy availables");
+			throw new ReservationException("Non sono state trovate copie con questi " +
+					"con questi parametri");
 		}
 		return loan;
 	}
@@ -86,9 +88,25 @@ public class LibrarianModel extends AbstractModel {
 //		return super.manager.loanNotReserved(user, copy);
 //	}
 	
-	public Loan loanReserved(InternalUser user, Copy copy) throws ReservationException, SQLException{
-		return super.manager.loanReserved(user, copy);
+	public Loan loanReserved(InternalUser user, String title, String [] authors, int year,
+			String mainTopic) throws SQLException, ReservationException{
+		
+		LoanReservation reservation = super.manager.getLoanReservationByUserCopy(
+				user, title, authors, year, mainTopic);
+
+		Loan loan = null;
+		if(reservation!=null){
+			loan = super.manager.loanReserved(reservation);
+		}else{
+			throw new ReservationException("Non sono state trovate prenotazioni "+
+					"con questi parametri");
+		}
+		return loan;
 	}
+	
+//	public Loan loanReserved(InternalUser user, Copy copy) throws ReservationException, SQLException{
+//		return super.manager.loanReserved(user, copy);
+//	}
 	
 	public boolean renewLoan(Loan loan) throws SQLException{
 		return super.manager.tryRenewLoan(loan);

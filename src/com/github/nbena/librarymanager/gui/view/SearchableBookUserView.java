@@ -22,6 +22,8 @@ public class SearchableBookUserView extends SearchableBookView implements Search
 		for (User u: users){
 			this.comboBoxUser.addItem(u);
 		}
+		// this.showUsers(true);
+		this.setUserPanelEnabled(true);
 	}
 	
 	public void setUserPanelEnabled(boolean enabled){
@@ -30,6 +32,13 @@ public class SearchableBookUserView extends SearchableBookView implements Search
 		
 		this.lblUser.setVisible(enabled);
 	}
+	
+//	public void showUsers(boolean show){
+//		this.comboBoxUser.setVisible(show);
+//		this.lblUser.setVisible(show);
+//		this.comboBoxUser.setEnabled(show);
+//		this.lblUser.setEnabled(show);
+//	}
 	
 	
 	public SearchableBookUserView() {

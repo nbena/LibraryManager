@@ -143,6 +143,10 @@ public class LibrarianModel extends AbstractModel {
 		return super.manager.startReservedConsultation(reservation);
 	}
 	
+	// for this one we can have a list of the consultations in progress
+	// JUST THE CONSULTATIONS IN PROGRESS.
+	// the same is not allowed for loans 'privacy' reason.
+	// it can change
 	public void deliveryConsultation(Consultation consultation) throws SQLException{
 		super.manager.deliveryConsultation(consultation);
 	}

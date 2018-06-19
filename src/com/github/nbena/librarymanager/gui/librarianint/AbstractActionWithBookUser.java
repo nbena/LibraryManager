@@ -15,6 +15,9 @@ public abstract class AbstractActionWithBookUser extends AbstractAction {
 		super(model);
 	}
 	
+	/*@
+	 @ \requires args.length == 5;
+	 */
 	@Override
 	public void setArgs(Object... args) {
 		

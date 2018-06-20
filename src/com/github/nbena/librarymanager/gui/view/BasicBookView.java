@@ -15,7 +15,14 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class BasicBookView extends JDialog implements ViewableBook {
+/**
+ * Basic class to show book's info. Info are not editable.
+ * Classes that want to provide editability should extend this one.
+ * 
+ * @author nicola
+ *
+ */
+public class BasicBookView extends JDialog implements ViewableBook, MainableView {
 
 	// protected final JPanel contentPanel = new JPanel();
 	protected JPanel contentPanel;
@@ -70,6 +77,11 @@ public class BasicBookView extends JDialog implements ViewableBook {
 		this.textFieldAuthors.setText(Arrays.toString(book.getAuthors()));
 		this.textFieldTopic.setText(book.getMainTopic());
 		this.textFieldYear.setText(Integer.toString(book.getYearOfPublishing()));
+	}
+	
+	@Override
+	public void setMainTitle(String main) {
+		this.lblMain.setText(main);
 	}
 
 	/**

@@ -35,6 +35,9 @@ public class InternalUser extends User {
 	public InternalUser(int ID) {
 		super(ID);
 	}
+
+	public InternalUser() {
+	}
 	
 
 	

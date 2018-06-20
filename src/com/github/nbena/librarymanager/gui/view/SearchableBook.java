@@ -1,6 +1,6 @@
 package com.github.nbena.librarymanager.gui.view;
 
-public interface SearchableBook extends ViewableBook {
+public interface SearchableBook extends ViewableBook, ResettableView {
 	
 	public String getTitle();
 	
@@ -9,8 +9,5 @@ public interface SearchableBook extends ViewableBook {
 	public String getTopic();
 	
 	public int getYear();
-	
-	public void reset();
-
 
 }

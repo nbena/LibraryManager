@@ -25,8 +25,13 @@ import org.bouncycastle.util.encoders.Hex;
 
 public class Hash {
 	
-	public static String hash(String input) throws NoSuchAlgorithmException{
-		MessageDigest md = MessageDigest.getInstance("SHA3-512", new BouncyCastleProvider());
+	public static String hash(String input) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("SHA3-512", new BouncyCastleProvider());
+		} catch (NoSuchAlgorithmException e) {
+			System.exit(-1);
+		}
 		md.update(input.getBytes());
 		byte[] digest = md.digest();
 		return Hex.toHexString(digest);

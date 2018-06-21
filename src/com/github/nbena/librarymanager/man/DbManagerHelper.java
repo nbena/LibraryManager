@@ -23,7 +23,7 @@ public class DbManagerHelper {
 	static User getUserFrom(ResultSet rs, int startingIndex) throws SQLException{
 
 		User returned;
-		int id = rs.getInt(rs.getInt(startingIndex));
+		int id = rs.getInt(startingIndex);
 		String name = rs.getString(startingIndex + 1);
 		String surname = rs.getString(startingIndex + 2);
 		String email = rs.getString(startingIndex + 3);

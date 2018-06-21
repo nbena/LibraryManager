@@ -22,7 +22,7 @@ public class RegisterUserView extends BasicUserView {
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 */
-	public User getUser() throws NoSuchAlgorithmException{
+	public User getUser(){
 		String hashedPassword = Hash.hash(new String(super.passwordFieldPassword.getPassword()));
 		User u;
 		if (super.rdbtnInternalUser.isSelected()){

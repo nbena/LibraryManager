@@ -46,16 +46,19 @@ public class LibrarianModel extends AbstractModel {
 		return super.manager.getUserFromMail(user);
 	}
 
-	public void createUser(String name, String surname, String email, String password, boolean internal) throws SQLException{
-		User user;
-		if (internal){
-			user = new InternalUser(name, surname, password, email);
-		}else{
-			user = new User(name, surname, password, email);
-		}
-		user.hashPassword();
-		
-		super.manager.saveUser(user);
+//	public void createUser(String name, String surname, String email, String password, boolean internal) throws SQLException{
+//		User user;
+//		if (internal){
+//			user = new InternalUser(name, surname, password, email);
+//		}else{
+//			user = new User(name, surname, password, email);
+//		}
+//		user.hashPassword();
+//		
+//		super.manager.saveUser(user);
+//	}
+	public void addUser(User u) throws SQLException{
+		super.manager.saveUser(u);
 	}
 	
 	public void addBook(Book book) throws SQLException{

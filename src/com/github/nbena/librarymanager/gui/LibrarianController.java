@@ -16,6 +16,7 @@ import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedLoan;
 import com.github.nbena.librarymanager.gui.view.LibrarianView;
+import com.github.nbena.librarymanager.gui.view.RegisterUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
 import com.github.nbena.librarymanager.core.ReservationException;
@@ -26,6 +27,8 @@ public class LibrarianController extends AbstractController {
 	private LibrarianView view;
 	
 	private Action action;
+	
+	private RegisterUserView userView;
 	
 	private void showWithUsersView(boolean withUsers) throws SQLException{
 		if (withUsers){
@@ -55,6 +58,7 @@ public class LibrarianController extends AbstractController {
 		this.view = view;
 		
 		this.searchableBookView = new SearchableBookUserView();
+		this.userView = new RegisterUserView();
 		
 		this.addListeners();
 		
@@ -65,6 +69,7 @@ public class LibrarianController extends AbstractController {
 	private void addListeners(){
 		this.addListenersToMainView();
 		this.addSearchableViewListeners();
+		this.addUserViewListeners();
 	}
 	
 	
@@ -163,11 +168,7 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				try {
-//					// TODO this is different too.
-//				} catch (SQLException e1) {
-//					displayError(view, e1);
-//				}
+				userView.setVisible(true);
 			}
 			
 		});
@@ -261,6 +262,38 @@ public class LibrarianController extends AbstractController {
 				
 				searchableBookView.setVisible(false);
 				
+			}
+			
+		});
+	}
+	
+	
+	private void addUserViewListeners(){
+		
+		this.userView.addListenerOk(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				User user = userView.getUser();
+				try {
+					model.addUser(user);
+					userView.setVisible(false);
+					userView.reset();
+				} catch (SQLException e) {
+					displayError(view, e);
+				}
+				
+			}
+			
+		});
+		
+		this.userView.addListenerCancel(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				userView.setVisible(false);
+				userView.reset();
 			}
 			
 		});

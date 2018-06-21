@@ -78,6 +78,10 @@ public class LibraryManager {
 		return returned;
 	}
 	
+	public void deregisterUser(User user) throws SQLException{
+		this.dbManager.deleteItem(user);
+	}
+	
 	public Librarian authenticateLibrarian(Loginable librarian){
 		Librarian returned = null;
 		try{
@@ -344,6 +348,14 @@ public class LibraryManager {
 		
 		return this.dbManager.getConsultationReservationByUserCopy(user, date,
 				title, authors, year, mainTopic);
+	}
+	
+	public void close(){
+		try {
+			this.dbManager.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 

@@ -33,6 +33,10 @@ public abstract class AbstractModel {
 		this.user = user;
 	}
 	
+	public void close(){
+		this.manager.close();
+	}
+	
 	
 
 }

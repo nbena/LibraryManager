@@ -36,30 +36,34 @@ public class UserView extends JFrame {
 	private JButton btnViewConsultationReservation;
 	private JButton btnSearch;
 	private JButton btnNewSeatReservation;
+	private JButton btnDeregister;
 	
-	
-	public void addActionListenerBtnViewLoan(ActionListener listener){
+	public void addActionListenerViewLoan(ActionListener listener){
 		this.btnViewLoan.addActionListener(listener);
 	}
 	
-	public void addActionListenerBtnViewSeatReservation(ActionListener listener){
+	public void addActionListenerViewSeatReservation(ActionListener listener){
 		this.btnViewSeatReservation.addActionListener(listener);
 	}
 	
-	public void addActionListenerBtnViewLoanReservation(ActionListener listener){
+	public void addActionListenerViewLoanReservation(ActionListener listener){
 		this.btnViewLoanReservation.addActionListener(listener);
 	}
 	
-	public void addActionListenerBtnViewConsultationReservation(ActionListener listener){
+	public void addActionListenerViewConsultationReservation(ActionListener listener){
 		this.btnViewConsultationReservation.addActionListener(listener);
 	}
 	
-	public void addActionListenerBtnSearch(ActionListener listener){
+	public void addActionListenerSearch(ActionListener listener){
 		this.btnSearch.addActionListener(listener);
 	}
 	
 	public void addActionListenerBtnNewSeatReservation(ActionListener listener){
 		this.btnNewSeatReservation.addActionListener(listener);
+	}
+	
+	public void addActionListenerDeregister(ActionListener listener){
+		this.btnDeregister.addActionListener(listener);
 	}
 
 	/**
@@ -96,5 +100,9 @@ public class UserView extends JFrame {
 		btnNewSeatReservation = new JButton("Prenota posto");
 		btnNewSeatReservation.setBounds(17, 176, 171, 24);
 		contentPane.add(btnNewSeatReservation);
+		
+		btnDeregister = new JButton("Annulla registrazione");
+		btnDeregister.setBounds(290, 176, 221, 24);
+		contentPane.add(btnDeregister);
 	}
 }

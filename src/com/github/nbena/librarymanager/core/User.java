@@ -17,7 +17,7 @@
 
 package com.github.nbena.librarymanager.core;
 
-public class User extends Librarian implements IDble{
+public class User extends Librarian implements IDble {
 	
 	protected String name;
 	protected String surname;

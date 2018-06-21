@@ -48,11 +48,11 @@ public class BasicUserView extends JDialog implements ResettableView, MainableVi
 		return this.rdbtnInternalUser.isSelected();
 	}
 	
-	public void addListenerOk(ActionListener listener){
+	public void addActionListenerOk(ActionListener listener){
 		this.btnOk.addActionListener(listener);
 	}
 	
-	public void addListenerCancel(ActionListener listener){
+	public void addActionListenerCancel(ActionListener listener){
 		this.btnCancel.addActionListener(listener);
 	}
 	

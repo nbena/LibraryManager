@@ -237,7 +237,7 @@ public class UserController extends AbstractController {
 		});
 		
 		
-		this.userView.addActionListenerBtnSearch(new ActionListener(){
+		this.userView.addActionListenerSearch(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -247,7 +247,7 @@ public class UserController extends AbstractController {
 			
 		});
 		
-		this.userView.addActionListenerBtnViewConsultationReservation(new ActionListener(){
+		this.userView.addActionListenerViewConsultationReservation(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -264,7 +264,7 @@ public class UserController extends AbstractController {
 			
 		});
 		
-		this.userView.addActionListenerBtnViewLoan(new ActionListener(){
+		this.userView.addActionListenerViewLoan(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -281,7 +281,7 @@ public class UserController extends AbstractController {
 			
 		});
 		
-		this.userView.addActionListenerBtnViewLoanReservation(new ActionListener(){
+		this.userView.addActionListenerViewLoanReservation(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -300,7 +300,7 @@ public class UserController extends AbstractController {
 		
 		
 		// tested and works
-		this.userView.addActionListenerBtnViewSeatReservation(new ActionListener(){
+		this.userView.addActionListenerViewSeatReservation(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -312,6 +312,27 @@ public class UserController extends AbstractController {
 					genericTableView.setMenuItemReserveEnabled(false);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
+				}
+			}
+			
+		});
+		
+		this.userView.addActionListenerDeregister(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int res = JOptionPane.showConfirmDialog(userView, "Sei sicuro di voler deregistrarti?",
+						"Conferma", JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if(res==JOptionPane.OK_OPTION){
+					try {
+						userModel.deregister();
+						userModel.close();
+						userView.setVisible(false);
+						userView.dispose();
+					} catch (SQLException e) {
+						displayError(userView, e);
+					}
 				}
 			}
 			

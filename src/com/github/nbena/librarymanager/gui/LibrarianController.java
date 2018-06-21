@@ -270,7 +270,7 @@ public class LibrarianController extends AbstractController {
 	
 	private void addUserViewListeners(){
 		
-		this.userView.addListenerOk(new ActionListener(){
+		this.userView.addActionListenerOk(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -288,7 +288,7 @@ public class LibrarianController extends AbstractController {
 			
 		});
 		
-		this.userView.addListenerCancel(new ActionListener(){
+		this.userView.addActionListenerCancel(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {

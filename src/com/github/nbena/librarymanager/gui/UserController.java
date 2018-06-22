@@ -90,7 +90,7 @@ public class UserController extends AbstractController {
 	
 	private void addSearchableViewListeners(){
 		
-		this.searchableBookView.addListenerOk(new ActionListener(){
+		this.searchableBookView.addActionListenerOk(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -432,6 +432,24 @@ public class UserController extends AbstractController {
 						displayError(userView, e);
 				}
 			} 	
+			
+		});
+		
+		this.loanView.addActionListenerOk(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				loanView.setVisible(false);
+			}
+			
+		});
+		
+		this.loanView.addListenerCancel(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				loanView.setVisible(false);
+			}
 			
 		});
 	}

@@ -10,7 +10,7 @@ public interface ViewableBook {
 	
 	public void setVisible(boolean visible);
 	
-	public void addListenerOk(ActionListener listener);
+	public void addActionListenerOk(ActionListener listener);
 	
 	public void addListenerCancel(ActionListener listener);
 

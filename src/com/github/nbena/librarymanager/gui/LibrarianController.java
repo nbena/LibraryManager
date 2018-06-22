@@ -239,7 +239,7 @@ public class LibrarianController extends AbstractController {
 	
 	private void addSearchableViewListeners(){
 		
-		this.searchableBookView.addListenerOk(new ActionListener(){
+		this.searchableBookView.addActionListenerOk(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

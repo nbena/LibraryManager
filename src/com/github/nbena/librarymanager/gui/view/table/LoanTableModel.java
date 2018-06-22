@@ -11,7 +11,7 @@ public class LoanTableModel extends AbstractTableModel implements SelectableItem
 
 	private List<Loan> loans;
 	private final int columnCount = 4;
-	private final String[] columns = {"Titolo", "Autori", "Data inizio", "Data fine"};
+	private final String[] columns = {"Titolo", "Autori", "Data inizio", "Data restituzione"};
 	
 	public LoanTableModel(List<Loan> loans){
 		this.loans = loans;

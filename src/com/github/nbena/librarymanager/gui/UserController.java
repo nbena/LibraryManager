@@ -33,7 +33,10 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.gui.userint.Details;
+import com.github.nbena.librarymanager.gui.userint.LoanDetails;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
+import com.github.nbena.librarymanager.gui.view.LoanView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.UserView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
@@ -48,6 +51,11 @@ public class UserController extends AbstractController {
 	private UserView userView;
 	private UserModel userModel;
 	
+	private LoanView loanView;
+	private Details details;
+	
+	private UserController controller;
+	
 	// private LocalDate gotDate;
 	
 
@@ -57,10 +65,17 @@ public class UserController extends AbstractController {
 		
 		super.genericTableView = new GenericTableView();
 		super.searchableBookView = new SearchableBookView();
+		this.loanView = new LoanView();
 		
 		this.addListeners();
 		
 		this.userView.setVisible(true);
+		
+		this.controller = this;
+	}
+	
+	public LoanView getLoanView(){
+		return this.loanView;
 	}
 
 
@@ -68,6 +83,7 @@ public class UserController extends AbstractController {
 		this.addBasicListeneres();
 		this.addGenericViewListeners();
 		this.addSearchableViewListeners();
+		this.addListenersLoanView();
 	}
 	
 	
@@ -135,6 +151,9 @@ public class UserController extends AbstractController {
 				Object o = genericTableView.getSelectedItem();
 				// TODO add a detail viewer
 				System.out.println(o);
+				
+				details.setItem(o);
+				details.show();
 			}
 			
 		});
@@ -243,7 +262,7 @@ public class UserController extends AbstractController {
 //						displayError(userView, e);
 //					}
 
-				}
+					}
 				}
 				catch(NumberFormatException e1){
 					displayMessage(userView, "Errore nell'input", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -292,6 +311,8 @@ public class UserController extends AbstractController {
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
 					genericTableView.setMenuItemReserveEnabled(false);
+					
+					details = new LoanDetails(controller);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
@@ -390,6 +411,29 @@ public class UserController extends AbstractController {
 //			
 //		});
 //		
+	}
+	
+	private Loan renewLoan(Loan loan) throws SQLException, ReservationException{
+		return this.userModel.renewLoan(loan);
+	}
+	
+	private void addListenersLoanView(){
+		
+		this.loanView.addActionListenerRenew(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0){
+					
+				Loan loan = (Loan) genericTableView.getSelectedItem();
+				try {
+					Loan renewed = renewLoan(loan);
+					loanView.setLoan(renewed);
+				} catch (SQLException | ReservationException e) {
+						displayError(userView, e);
+				}
+			} 	
+			
+		});
 	}
 	
 }

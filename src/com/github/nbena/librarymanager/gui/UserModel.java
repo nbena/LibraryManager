@@ -99,6 +99,14 @@ public class UserModel extends AbstractModel {
 	public void deregister() throws SQLException{
 		super.manager.deregisterUser(this.user);
 	}
+	
+	public Loan renewLoan(Loan loan) throws SQLException, ReservationException{
+		boolean res = super.manager.tryRenewLoan(loan);
+		if (!res){
+			throw new ReservationException("Fail to renew");
+		}
+		return loan;
+	}
 
 
 }

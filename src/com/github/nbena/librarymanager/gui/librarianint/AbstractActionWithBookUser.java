@@ -10,13 +10,14 @@ public abstract class AbstractActionWithBookUser extends AbstractAction {
 	protected String [] authors;
 	protected int year;
 	protected String topic;
+	protected String phouse;
 	
 	protected AbstractActionWithBookUser(LibrarianModel model) {
 		super(model);
 	}
 	
 	/*@
-	 @ \requires args.length == 5;
+	 @ \requires args.length == 6;
 	 */
 	@Override
 	public void setArgs(Object... args) {
@@ -26,6 +27,7 @@ public abstract class AbstractActionWithBookUser extends AbstractAction {
 		this.authors = (String[]) args[2];
 		this.year = (int) args[3];
 		this.topic = (String) args[4];
+		this.phouse  = (String) args[5];
 		
 	}
 

@@ -25,6 +25,10 @@ public class SearchableBookView extends BasicBookView
 		}
 		return returnedYear;
 	}
+	
+	public String getPhouse(){
+		return super.textFieldPhouse.getText();
+	}
 
 	
 	public SearchableBookView(){

@@ -36,38 +36,41 @@ public class Book implements IDble {
 		this.publishingHouse = publishingHouse;
 	}
 	
-	public String getTitle() {
+	public Book() {
+	}
+
+	public /*@ pure @*/ String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String[] getAuthors() {
+	public /*@ pure @*/ String[] getAuthors() {
 		return authors;
 	}
 	public void setAuthors(String[] authors) {
 		this.authors = authors;
 	}
-	public int getYearOfPublishing() {
+	public /*@ pure @*/ int getYearOfPublishing() {
 		return yearOfPublishing;
 	}
 	public void setYearOfPublishing(int yearOfPublishing) {
 		this.yearOfPublishing = yearOfPublishing;
 	}
-	public String getMainTopic() {
+	public /*@ pure @*/ String getMainTopic() {
 		return mainTopic;
 	}
 	public void setMainTopic(String mainTopic) {
 		this.mainTopic = mainTopic;
 	}
-	public String getPublishingHouse() {
+	public /*@ pure @*/ String getPublishingHouse() {
 		return publishingHouse;
 	}
 	public void setPublishingHouse(String publishingHouse) {
 		this.publishingHouse = publishingHouse;
 	}
 
-	public int getID() {
+	public /*@ pure @*/ int getID() {
 		return ID;
 	}
 
@@ -75,7 +78,7 @@ public class Book implements IDble {
 		ID = iD;
 	}
 	
-	public String toString(){
+	public /*@ pure @*/ String toString(){
 		String r = "Book, title: "+title+ ", authors "+
 				Arrays.toString(authors);
 			r += "ID: "+Integer.toString(ID);

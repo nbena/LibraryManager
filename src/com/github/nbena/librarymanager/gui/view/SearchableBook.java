@@ -9,5 +9,7 @@ public interface SearchableBook extends ViewableBook, ResettableView {
 	public String getTopic();
 	
 	public int getYear();
+	
+	public String getPhouse();
 
 }

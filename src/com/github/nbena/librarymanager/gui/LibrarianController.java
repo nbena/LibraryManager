@@ -1,3 +1,20 @@
+/*  LibraryManager
+    Copyright (C) 2018 nbena
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    */
+
 package com.github.nbena.librarymanager.gui;
 
 import java.awt.event.ActionEvent;
@@ -30,12 +47,15 @@ public class LibrarianController extends AbstractController {
 	
 	private RegisterUserView userView;
 	
+	private boolean isWithUser = false;
+	
 	private void showWithUsersView(boolean withUsers) throws SQLException{
 		if (withUsers){
 			((SearchableBookUser)this.searchableBookView).setUsers(this.model.users());
 		}else{
 			((SearchableBookUser)this.searchableBookView).setUserPanelEnabled(false);
 		}
+		this.isWithUser = withUsers;
 		this.searchableBookView.setVisible(true);
 	}
 	
@@ -227,12 +247,16 @@ public class LibrarianController extends AbstractController {
 				searchableBookView.setVisible(false);
 				
 				Object [] res = searchableBookViewResults();
-//				String title = (String) res[0];
-//				String [] authors = (String[]) res[1];
-//				int year = (int) res[2];
-//				String topic = (String) res[3];
+				Object [] args;
 				
-				User user = ((SearchableBookUserView)searchableBookView).getSelectedUser();
+				if (isWithUser){
+					User user = ((SearchableBookUserView)searchableBookView).getSelectedUser();
+					args = ArrayUtils.addAll(new Object[]{user}, res);
+				}else{
+					args = res;
+				}
+				
+				
 				
 				// set default to true so we can avoid a nesting level
 				int userOk = JOptionPane.OK_OPTION;
@@ -242,7 +266,7 @@ public class LibrarianController extends AbstractController {
 				}
 				
 				if (userOk == JOptionPane.OK_OPTION){
-					action.setArgs(ArrayUtils.addAll(new Object[]{user}, res));
+					action.setArgs(args);
 					try{
 						action.execute();
 						displayMessage(view, action.getResultMessage(), null, 0);

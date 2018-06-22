@@ -19,7 +19,7 @@ public class ActionNewNotReservedLoan extends AbstractActionWithBookUser impleme
 	@Override
 	public void execute() throws SQLException, ReservationException {
 		super.model.loanNotReserved(super.user, super.title,
-				super.authors, super.year, super.topic);
+				super.authors, super.year, super.topic, super.phouse);
 	}
 	
 	

@@ -188,10 +188,10 @@ public class LibraryManager {
 //	}
 	
 	public Loan loanNotReserved(User user, String title, String [] authors,
-			int year, String mainTopic) throws SQLException, ReservationException{
+			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
 
 		Copy copy = this.dbManager.getOneAvailableCopyForLoan(title,
-				authors, year, mainTopic);
+				authors, year, mainTopic, phouse);
 		if (copy == null){
 			throw new ReservationException(NO_COPIES);
 		}
@@ -229,10 +229,10 @@ public class LibraryManager {
 	}
 	
 	public Seat startNotReservedConsultation(User user, String title, String [] authors,
-			int year, String mainTopic) throws SQLException, ReservationException{
+			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
 		// CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, LocalDate.now());
 		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(
-				LocalDate.now(), title, authors, year, mainTopic);
+				LocalDate.now(), title, authors, year, mainTopic, phouse);
 		if (copy == null){
 			throw new ReservationException(NO_COPIES);
 		}
@@ -309,8 +309,9 @@ public class LibraryManager {
 		return this.dbManager.getLoans(user, false, false);
 	}
 	
-	public List<Copy> search(String title, String [] authors, int year, String mainTopic) throws SQLException{
-		return this.dbManager.search(title, authors, year, mainTopic);
+	public List<Copy> search(String title, String [] authors, int year, String mainTopic,
+			String phouse) throws SQLException{
+		return this.dbManager.search(title, authors, year, mainTopic, phouse);
 	}
 	
 	public User getUserFromMail(Emailable emailable) throws SQLException{
@@ -330,24 +331,28 @@ public class LibraryManager {
 	
 	public LoanReservation getLoanReservationByUserCopy(InternalUser user,
 			String title, String [] authors,
-			int year, String mainTopic) throws SQLException{
+			int year, String mainTopic, String phouse) throws SQLException{
 		
-		return this.dbManager.getLoanReservationByUserCopy(user, title, authors, year, mainTopic);
+		return this.dbManager.getLoanReservationByUserCopy(user,
+				title, authors, year, mainTopic, phouse);
 	}
 	
 	public Loan getLoanByUserCopy(User user, String title, String [] authors,
-			int year, String mainTopic) throws SQLException{
+			int year, String mainTopic, String phouse) throws SQLException{
 		
-		return this.dbManager.getLoanByUserCopy(user, title, authors, year, mainTopic);
+		return this.dbManager.getLoanByUserCopy(user,
+				title, authors, year, mainTopic, phouse);
 	}
 	
 	public ConsultationReservation getConsultationReservationByUserCopy(InternalUser user,
 			LocalDate date,
 			String title, String [] authors,
-			int year, String mainTopic) throws SQLException{
+			int year, String mainTopic,
+			String phouse
+			) throws SQLException{
 		
 		return this.dbManager.getConsultationReservationByUserCopy(user, date,
-				title, authors, year, mainTopic);
+				title, authors, year, mainTopic, phouse);
 	}
 	
 	public void close(){

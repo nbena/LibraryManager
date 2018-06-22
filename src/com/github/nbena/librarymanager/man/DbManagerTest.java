@@ -313,7 +313,8 @@ public class DbManagerTest {
 			  l.getCopy().getTitle(),
 			  l.getCopy().getAuthors(),
 			  l.getCopy().getYearOfPublishing(),
-			  l.getCopy().getMainTopic()
+			  l.getCopy().getMainTopic(),
+			  l.getCopy().getPublishingHouse()
 			 );
 	  assertTrue(gotLoan.getID() == l.getID());
 	  
@@ -393,7 +394,7 @@ public class DbManagerTest {
 	  assertTrue(thrown);
 	  
 	  
-	  Copy available = this.db.getOneAvailableCopyForLoan("Title1", null, 0, null);
+	  Copy available = this.db.getOneAvailableCopyForLoan("Title1", null, 0, null, null);
 	  found = false;
 	  for (int i=0;i<this.copies.length;i++){
 		  if (this.copies[i].getID() == available.getID()){
@@ -406,7 +407,7 @@ public class DbManagerTest {
 	  expected = this.db.getLoanReservationByUserCopy(got.getUser(), got.getCopy());
 	  got = this.db.getLoanReservationByUserCopy(got.getUser(), got.getCopy().getTitle(),
 			  got.getCopy().getAuthors(), got.getCopy().getYearOfPublishing(),
-			  got.getCopy().getMainTopic());
+			  got.getCopy().getMainTopic(), got.getCopy().getPublishingHouse());
 	  
 	  assertTrue(expected.getID() == expected.getID());
   }
@@ -434,7 +435,9 @@ public class DbManagerTest {
 			  this.consultationReservations[0].getCopy().getTitle(),
 			  this.consultationReservations[0].getCopy().getAuthors(),
 			  this.consultationReservations[0].getCopy().getYearOfPublishing(),
-			  this.consultationReservations[0].getCopy().getMainTopic());
+			  this.consultationReservations[0].getCopy().getMainTopic(),
+			  this.consultationReservations[0].getCopy().getPublishingHouse()
+			  );
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  
@@ -504,7 +507,9 @@ public class DbManagerTest {
 			  this.copiesForConsultation[0].getTitle(),
 			  this.copiesForConsultation[0].getAuthors(),
 			  this.copiesForConsultation[0].getYearOfPublishing(),
-			  this.copiesForConsultation[0].getMainTopic());
+			  this.copiesForConsultation[0].getMainTopic(),
+			  this.copiesForConsultation[0].getPublishingHouse()
+			  );
 	  
 	  assertTrue(this.copiesForConsultation[0].getID() == c.getID());
 	  
@@ -546,52 +551,62 @@ public class DbManagerTest {
   
   
   private void searchEmptyTitle() throws SQLException{
-	  List<Copy> copies = this.db.search("", null, 0, null);
+	  List<Copy> copies = this.db.search("", null, 0, null, null);
 	  assertTrue(copies.size() > 0);
   }
   
   private void searchTitleExists() throws SQLException {
 	  List<Copy> copies = this.db.search(this.books[0].getTitle(),
-			  null, 0, null);
+			  null, 0, null, null);
 	  System.out.println(copies.size());
 	  assertTrue(copies.size() == this.copies.length + this.copiesForConsultation.length);
   }
   
   private void searchTitleNotExists() throws SQLException{
 	  List<Copy> copies = this.db.search("junit: the non definitive guide",
-			  null, 0, null);
+			  null, 0, null, null);
 	  assertTrue(copies.size() == 0);
   }
   
   private void searchByYearExists() throws SQLException {
-	  List<Copy> copies = this.db.search(null, null, 2018, null);
+	  List<Copy> copies = this.db.search(null, null, 2018, null, null);
 	  assertTrue(copies.size() > 0);
   }
   
   private void searchByYearNotExists() throws SQLException{
-	  List<Copy> copies = this.db.search(null, null, 1000, null);
+	  List<Copy> copies = this.db.search(null, null, 1000, null, null);
 	  assertTrue(copies.size() == 0);
   }
   
   private void searchByTopicExists() throws SQLException{
-	  List<Copy> copies = this.db.search(null, null, 0, "Info");
+	  List<Copy> copies = this.db.search(null, null, 0, "Info", null);
 	  assertTrue(copies.size() > 0);
   }
   
   private void searchByTopicNotExists() throws SQLException{
-	  List<Copy> copies = this.db.search(null, null, 0, "Inf0");
+	  List<Copy> copies = this.db.search(null, null, 0, "Inf0", null);
 	  assertTrue(copies.size() == 0);
   }
   
   private void searchByAuthorsExists() throws SQLException{
-	  List<Copy> copies = this.db.search(null, new String[]{"Me", "You"}, 0, null);
+	  List<Copy> copies = this.db.search(null, new String[]{"Me", "You"}, 0, null, null);
 	  assertTrue(copies.size() > 0);
   }
   
   private void searchByAuthorsNotExists() throws SQLException{
-	  List<Copy> copies = this.db.search(null, new String[]{"Mee", "Youu"}, 0, null);
+	  List<Copy> copies = this.db.search(null, new String[]{"Mee", "Youu"}, 0, null, null);
 	  assertTrue(copies.size() == 0);
   }
+  
+  private void searchByPHouseExists() throws SQLException{
+	  List<Copy> copies = this.db.search(null, null, 0, null, "oreilly");
+	  assertTrue(copies.size() > 0);
+  }
+  
+  private void searchByPHouseNotExists() throws SQLException{
+	  List<Copy> copies = this.db.search(null, null, 0, null, "oreillyyyyy");
+	  assertTrue(copies.size() == 0);
+  }  
   
   
   
@@ -636,6 +651,8 @@ public class DbManagerTest {
 	  this.searchByYearNotExists();
 	  this.searchByTopicExists();
 	  this.searchByTopicNotExists();
+	  this.searchByPHouseExists();
+	  this.searchByPHouseNotExists();
 	  this.deleteBooks = true;
 	  this.deleteUsers = true;
 	  this.deleteConsultationReservations = true;

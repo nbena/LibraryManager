@@ -91,8 +91,9 @@ public class UserModel extends AbstractModel {
 		return super.manager.getLoanByUser(super.user, false);
 	}
 	
-	public List<Copy> search(String title, String [] authors, int year, String mainTopic) throws SQLException{
-		return super.manager.search(title, authors, year, mainTopic);
+	public List<Copy> search(String title, String [] authors, int year, String mainTopic,
+			String phouse) throws SQLException{
+		return super.manager.search(title, authors, year, mainTopic, phouse);
 	}
 	
 	public void deregister() throws SQLException{

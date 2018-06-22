@@ -399,16 +399,16 @@ public class DbManager {
 
 	public ConsultationReservation getConsultationReservationByUserCopy(
 			InternalUser user, LocalDate date, String title, String [] authors,
-			int year, String mainTopic) throws SQLException{
+			int year, String mainTopic, String phouse) throws SQLException{
 
 		String query = DbManagerHelper.getConsultationReservationQuery(
-				title, authors, year, mainTopic);
+				title, authors, year, mainTopic, phouse);
 
 		int lastUsedIndex = 1;
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 
 		Object [] res = DbManagerHelper.searchPrepare(lastUsedIndex, pstmt,
-				this.connection, title, authors, year, mainTopic);
+				this.connection, title, authors, year, mainTopic, phouse);
 
 		// System.out.println(query);
 
@@ -431,16 +431,16 @@ public class DbManager {
 	}
 
 	public LoanReservation getLoanReservationByUserCopy(InternalUser user, String title, String [] authors,
-			int year, String mainTopic) throws SQLException{
+			int year, String mainTopic, String phouse) throws SQLException{
 
 
 		String query = DbManagerHelper.getLoanReservationQuery(title,
-				authors, year, mainTopic);
+				authors, year, mainTopic, phouse);
 
 		int lastUsedIndex = 1;
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
     	Object [] res = DbManagerHelper.searchPrepare(lastUsedIndex, pstmt,
-    			this.connection, title, authors, year, mainTopic);
+    			this.connection, title, authors, year, mainTopic, phouse);
 
     	pstmt = (PreparedStatement) res[0];
     	lastUsedIndex = (int) res[1];
@@ -483,15 +483,15 @@ public class DbManager {
 	}
 	
 	public Loan getLoanByUserCopy(User user, String title, String [] authors,
-			int year, String mainTopic) throws SQLException{
+			int year, String mainTopic, String phouse) throws SQLException{
 		
 		String query = DbManagerHelper.getLoanByUserCopyQuery(title,
-				authors, year, mainTopic);
+				authors, year, mainTopic, phouse);
 		
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		
 		Object [] res = DbManagerHelper.searchPrepare(1, pstmt,
-				this.connection, title, authors, year, mainTopic);
+				this.connection, title, authors, year, mainTopic, phouse);
 		
 		pstmt = (PreparedStatement) res[0];
 		
@@ -734,8 +734,10 @@ public class DbManager {
 	}
 
 	public Copy getOneAvailableCopyForLoan(String title, String [] authors, int year,
-			String mainTopic) throws SQLException{
-		String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic);
+			String mainTopic, String phouse) throws SQLException{
+
+		String query = DbManagerHelper.getSearchQuery(
+				title, authors, year, mainTopic, phouse);
 
 		query += "and status = \'free\' and for_consultation = false limit 1";
 
@@ -743,7 +745,7 @@ public class DbManager {
 
 		pstmt = (PreparedStatement)(DbManagerHelper.searchPrepare(
 				1, pstmt, this.connection,
-				title, authors, year, mainTopic)[0]);
+				title, authors, year, mainTopic, phouse)[0]);
 
 		Copy copy = null;
 
@@ -758,17 +760,18 @@ public class DbManager {
 
 	public CopyForConsultation getOneAvailableCopyForConsultation(LocalDate date,
 						String title,
-						String [] authors, int year, String mainTopic) throws SQLException{
+						String [] authors, int year, String mainTopic,
+						String phouse) throws SQLException{
 
 		String query = DbManagerHelper.getOneAvailableCopyForConsultationQuery(
-			title, authors, year, mainTopic);
+			title, authors, year, mainTopic, phouse);
 
 		System.out.println(query);
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 
 		Object [] res = DbManagerHelper.searchPrepare(1, pstmt, this.connection,
-				title, authors, year, mainTopic);
+				title, authors, year, mainTopic, phouse);
 
 		pstmt = (PreparedStatement) res[0];
 		int lastUsedIndex = (int) res[1];
@@ -948,15 +951,17 @@ public class DbManager {
      @ \requires !(title == null && author == null && year == 0 && mainTopic == null) &&
      @  (authors != null) ==> authors.length > 0);
      */
-    public List<Copy> search(String title, String [] authors, int year, String mainTopic) throws SQLException{
+    public List<Copy> search(String title, String [] authors, int year,
+    		String mainTopic, String phouse) throws SQLException{
 
-    	if (title == null && authors == null && year == 0 && mainTopic == null || (
+    	if (title == null && authors == null && year == 0 && mainTopic == null && phouse == null || (
     			authors != null && authors.length == 0)){
     		throw new InvalidParameterException("Wrong combination of parameters");
     	}
 
 
-    	String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic);
+    	String query = DbManagerHelper.getSearchQuery(
+    			title, authors, year, mainTopic, phouse);
 
     	PreparedStatement pstmt = this.connection.prepareStatement(query);
 
@@ -964,7 +969,7 @@ public class DbManager {
 
     	pstmt = (PreparedStatement)(DbManagerHelper.searchPrepare(
     			lastUsedIndex, pstmt,
-    			this.connection, title, authors, year, mainTopic)[0]);
+    			this.connection, title, authors, year, mainTopic, phouse)[0]);
 
     	ResultSet rs = pstmt.executeQuery();
 

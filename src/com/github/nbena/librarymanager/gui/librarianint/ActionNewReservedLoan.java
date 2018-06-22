@@ -24,7 +24,7 @@ public class ActionNewReservedLoan extends AbstractActionWithBookUser implements
 	@Override
 	public void execute () throws SQLException, ReservationException{
 		super.model.loanReserved((InternalUser) super.user, super.title,
-				super.authors, super.year, super.topic);
+				super.authors, super.year, super.topic, super.phouse);
 	}
 
 

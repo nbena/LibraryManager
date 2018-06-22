@@ -1,6 +1,5 @@
 package com.github.nbena.librarymanager.gui.view;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
@@ -31,6 +30,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 	protected JTextField textFieldYear;
 	protected JTextField textFieldAuthors;
 	protected JTextField textFieldTitle;
+	protected JTextField textFieldPhouse;
 	
 	protected JButton btnOk;
 	protected JButton btnCancel;
@@ -70,6 +70,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.textFieldAuthors.setText("");
 		this.textFieldTopic.setText("");
 		this.textFieldYear.setText("");
+		this.textFieldPhouse.setText("");
 	}
 	
 	public void setBook(Book book){
@@ -77,6 +78,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.textFieldAuthors.setText(Arrays.toString(book.getAuthors()));
 		this.textFieldTopic.setText(book.getMainTopic());
 		this.textFieldYear.setText(Integer.toString(book.getYearOfPublishing()));
+		this.textFieldPhouse.setText(book.getPublishingHouse());
 	}
 	
 	@Override
@@ -105,27 +107,33 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.contentPanel = new JPanel();
 		
 		super.setBounds(100, 100, 450, 241);
-		super.getContentPane().setLayout(new BorderLayout());
+		// super.getContentPane().setLayout(null);
 		this.contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		super.getContentPane().add(contentPanel, BorderLayout.CENTER);
-		this.contentPanel.setLayout(null);
+		super.getContentPane().add(contentPanel);
+		contentPanel.setLayout(null);
+		// this.contentPanel.setLayout(null);
 		
 		this.buttonPane = new JPanel();
-		this.buttonPane.setBounds(0, 157, 450, 45);
+		this.buttonPane.setBounds(0, 197, 450, 45);
 		this.contentPanel.add(this.buttonPane);
 		this.buttonPane.setLayout(null);
 			
 		this.btnOk = new JButton("OK");
 		this.btnOk.setBounds(163, 12, 51, 24);
 		this.buttonPane.add(this.btnOk);
-		this.btnOk.setActionCommand("OK");
-		super.getRootPane().setDefaultButton(btnOk);
-			
+		// this.btnOk.setActionCommand("OK");
+		
+		// JRootPane rootPane = super.getRootPane();
+		// rootPane.setLayout(null);
+		// rootPane.setDefaultButton(btnOk);
+		// rootPane.getContentPane().setLayout(null);
+		
+		// getContentPane().setLayout(null);		
 			
 		this.btnCancel = new JButton("Cancel");
 		this.btnCancel.setBounds(226, 12, 73, 24);
 		this.buttonPane.add(this.btnCancel);
-		this.btnCancel.setActionCommand("Cancel");
+		// this.btnCancel.setActionCommand("Cancel");
 			
 		
 		
@@ -141,9 +149,19 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		lblYear.setBounds(12, 98, 55, 14);
 		this.contentPanel.add(lblYear);
 		
-		JLabel lblNewLabel = new JLabel("Argomento");
-		lblNewLabel.setBounds(12, 123, 97, 14);
-		this.contentPanel.add(lblNewLabel);
+		JLabel lblTopic = new JLabel("Argomento");
+		lblTopic.setBounds(12, 123, 97, 14);
+		this.contentPanel.add(lblTopic);
+		
+		JLabel lblPHouse = new JLabel("C. editrice");
+		lblPHouse.setBounds(12, 153, 97, 14);
+		this.contentPanel.add(lblPHouse);
+		
+		textFieldPhouse = new JTextField();
+		textFieldPhouse.setBounds(136, 141, 292 , 18);
+		contentPanel.add(this.textFieldPhouse);
+		textFieldPhouse.setColumns(10);
+		
 		
 		textFieldTopic = new JTextField();
 		textFieldTopic.setBounds(136, 121, 292, 18);
@@ -173,5 +191,6 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.textFieldTitle.setEditable(false);
 		this.textFieldTopic.setEditable(false);
 		this.textFieldYear.setEditable(false);
+		this.textFieldPhouse.setEditable(false);
 	}
 }

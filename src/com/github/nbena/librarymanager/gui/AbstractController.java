@@ -216,12 +216,14 @@ public abstract class AbstractController {
 		}
 		int year = this.searchableBookView.getYear();
 		String topic = (this.searchableBookView.getTopic().equals("")) ? null : searchableBookView.getTopic();
+		String phouse = (this.searchableBookView.getPhouse().equals("") ? null : searchableBookView.getPhouse());
 		
 		return new Object[]{
 				title,
 				authors,
 				year,
-				topic
+				topic,
+				phouse
 		};
 	}
 	

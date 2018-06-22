@@ -140,7 +140,7 @@ public class DbManagerHelper {
 	}
 
 	static String getSearchQuery(String title, String [] authors, int year,
-			String mainTopic){
+			String mainTopic, String phouse){
     	String query = "select lm_copy.id, title, authors, year, main_topic, phouse, "+
 				"status, for_consultation from lm_copy join book on lm_copy.bookid " +
 				"= book.id where ";
@@ -155,7 +155,10 @@ public class DbManagerHelper {
     		query += "year = ? and ";
     	}
     	if(mainTopic != null){
-    		query += "main_topic like ? ";
+    		query += "main_topic like ? and ";
+    	}
+    	if(phouse != null){
+    		query += "phouse like ? ";
     	}
 
     	if (query.endsWith("and ")){
@@ -166,10 +169,10 @@ public class DbManagerHelper {
 	}
 
 	static String getConsultationReservationQuery(String title, String [] authors,
-			int year, String mainTopic){
+			int year, String mainTopic, String phouse){
 
 		String query = DbManagerHelper.getLoanReservationQuery(
-				title, authors, year, mainTopic)
+				title, authors, year, mainTopic, phouse)
 				.replaceAll("loan_reservation.id, time_stamp",
 						"seat_number, table_number, "+ // seat
 						"cr.id, time_stamp, reservation_date ")
@@ -184,8 +187,10 @@ public class DbManagerHelper {
 
 
 	static String getLoanReservationQuery(String title, String [] authors,
-			int year, String mainTopic){
-		String query = DbManagerHelper.getSearchQuery(title, authors, year, mainTopic)
+			int year, String mainTopic, String phouse){
+		
+		String query = DbManagerHelper.getSearchQuery(
+				title, authors, year, mainTopic, phouse)
 				.replaceAll("select lm_copy.id, title, authors, year, main_topic, phouse, "+
 				"status, for_consultation",
 				"select lm_copy.id, title, authors, year, main_topic, phouse, "+
@@ -200,10 +205,10 @@ public class DbManagerHelper {
 	}
 	
 	static String getLoanByUserCopyQuery(String title, String [] authors,
-			int year, String mainTopic){
+			int year, String mainTopic, String phouse){
 		
 		String query = DbManagerHelper.getSearchQuery(title, authors,
-				year, mainTopic)
+				year, mainTopic, phouse)
 				.replaceAll("from lm_copy join book",
 						"from loan join lm_copy on copyid=lm_copy.id join book ")
 				.replaceAll("for_consultation",
@@ -214,7 +219,9 @@ public class DbManagerHelper {
 	}
 
 	static String getOneAvailableCopyForConsultationQuery(String title,
-			String [] authors, int year, String mainTopic){
+			String [] authors, int year, String mainTopic,
+			String phouse
+			){
 
 //				String internalQuery = DbManagerHelper.getSearchQuery(
 //					title, authors, year, mainTopic)
@@ -227,7 +234,7 @@ public class DbManagerHelper {
 							   "where reservation_date=?";
 		
 		String query = DbManagerHelper.getSearchQuery(title, authors,
-			year, mainTopic)
+			year, mainTopic, phouse)
 			.concat("and lm_copy.id not in ("+internalQuery+") ")
 			.concat("and for_consultation=true ")
 			.concat("limit 1");
@@ -239,7 +246,7 @@ public class DbManagerHelper {
 	static Object[] searchPrepare(int lastUsedIndex, PreparedStatement pstmt,
 			Connection connection,
 			String title, String [] authors, int year,
-			String mainTopic) throws SQLException{
+			String mainTopic, String phouse) throws SQLException{
 
     	if (title!=null){
     		pstmt.setString(lastUsedIndex, "%"+title+"%");
@@ -249,13 +256,16 @@ public class DbManagerHelper {
     		pstmt.setArray(lastUsedIndex, connection.createArrayOf("varchar", authors));
     		lastUsedIndex++;
     	}
-
     	if (year != 0){
     		pstmt.setInt(lastUsedIndex, year);
     		lastUsedIndex++;
     	}
     	if(mainTopic != null){
     		pstmt.setString(lastUsedIndex, "%"+mainTopic+"%");
+    		lastUsedIndex++;
+    	}
+    	if(phouse != null){
+    		pstmt.setString(lastUsedIndex, "%"+phouse+"%");
     		lastUsedIndex++;
     	}
 

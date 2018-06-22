@@ -74,10 +74,10 @@ public class LibrarianModel extends AbstractModel {
 //	}
 	
 	public void deliveryLoan(User user, String title, String [] authors, int year,
-			String mainTopic) throws SQLException, ReservationException{
+			String mainTopic, String phouse) throws SQLException, ReservationException{
 		
 		Loan loan = super.manager.getLoanByUserCopy(user, title, authors, year,
-				mainTopic);
+				mainTopic, phouse);
 		if(loan == null){
 			throw new ReservationException(LibraryManager.NO_LOAN);
 		}
@@ -86,7 +86,7 @@ public class LibrarianModel extends AbstractModel {
 	}
 	
 	public Loan loanNotReserved(User user, String title, String [] authors, int year,
-			String mainTopic) throws ReservationException, SQLException{
+			String mainTopic, String phouse) throws ReservationException, SQLException{
 //		Copy copy = super.manager.getOneAvailableCopyForLoan(title, authors,
 //				year, mainTopic);
 //		Loan loan = null;
@@ -97,7 +97,7 @@ public class LibrarianModel extends AbstractModel {
 //					"con questi parametri");
 //		}
 //		return loan;
-		return super.manager.loanNotReserved(user, title, authors, year, mainTopic);
+		return super.manager.loanNotReserved(user, title, authors, year, mainTopic, phouse);
 	}
 	
 	
@@ -106,10 +106,10 @@ public class LibrarianModel extends AbstractModel {
 //	}
 	
 	public Loan loanReserved(InternalUser user, String title, String [] authors, int year,
-			String mainTopic) throws SQLException, ReservationException{
+			String mainTopic, String phouse) throws SQLException, ReservationException{
 		
 		LoanReservation reservation = super.manager.getLoanReservationByUserCopy(
-				user, title, authors, year, mainTopic);
+				user, title, authors, year, mainTopic, phouse);
 
 		if (reservation == null){
 			throw new ReservationException(LibraryManager.NO_RESERVATION);
@@ -127,17 +127,17 @@ public class LibrarianModel extends AbstractModel {
 	}
 	
 	public Seat startNotReservedConsultation(User user, String title,
-			String [] authors, int year, String mainTopic) throws SQLException, ReservationException{
+			String [] authors, int year, String mainTopic, String phouse) throws SQLException, ReservationException{
 		return super.manager.startNotReservedConsultation(user, title,
-				authors, year, mainTopic);
+				authors, year, mainTopic, phouse);
 	}
 
 	
 	public Seat startReservedConsultation(InternalUser user, String title, String [] authors,
-			int year, String mainTopic) throws SQLException, ReservationException{
+			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
 
 		ConsultationReservation reservation = super.manager.getConsultationReservationByUserCopy(
-				user, LocalDate.now(), title, authors, year, mainTopic);
+				user, LocalDate.now(), title, authors, year, mainTopic, phouse);
 		
 		if(reservation == null){
 			throw new ReservationException(LibraryManager.NO_RESERVATION);

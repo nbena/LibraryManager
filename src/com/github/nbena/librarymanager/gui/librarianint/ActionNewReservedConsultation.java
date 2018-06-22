@@ -19,7 +19,7 @@ public class ActionNewReservedConsultation extends AbstractActionWithBookUser {
 	@Override
 	public void execute() throws SQLException, ReservationException{
 		super.model.startReservedConsultation((InternalUser) super.user, super.title,
-				super.authors, super.year, super.topic);
+				super.authors, super.year, super.topic, super.phouse);
 	}
 
 }

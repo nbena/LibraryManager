@@ -112,8 +112,10 @@ create table consultation_reservation (
 
 create or replace function trigger_function_set_end_loans () returns trigger as $$
 begin
-	update loan set end_date = start_date + interval '2 month'
-    where id=new.id;
+	if new.start_date is null then
+		new.start_date := current_date;
+	end if;
+	new.end_date := new.start_date + interval '2 month';
 	return new;
 end
 $$ language plpgsql;

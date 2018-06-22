@@ -45,14 +45,14 @@ public class SearchableBookUserView extends SearchableBookView implements Search
 		
 		super.setBounds(100, 100, 450, 261);
 		
-		buttonPane.setLocation(0, 186);
+		buttonPane.setLocation(0, 196);
 		
 		lblUser = new JLabel("Utente");
-		lblUser.setBounds(12, 150, 55, 14);
+		lblUser.setBounds(12, 173, 55, 14);
 		contentPanel.add(lblUser);
 		
 		comboBoxUser = new JComboBox<User>();
-		comboBoxUser.setBounds(136, 151, 292, 23);
+		comboBoxUser.setBounds(136, 173, 292, 23);
 		contentPanel.add(comboBoxUser);
 	}
 }

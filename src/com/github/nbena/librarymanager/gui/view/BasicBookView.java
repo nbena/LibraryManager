@@ -158,7 +158,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.contentPanel.add(lblPHouse);
 		
 		textFieldPhouse = new JTextField();
-		textFieldPhouse.setBounds(136, 141, 292 , 18);
+		textFieldPhouse.setBounds(136, 153, 292 , 18);
 		contentPanel.add(this.textFieldPhouse);
 		textFieldPhouse.setColumns(10);
 		

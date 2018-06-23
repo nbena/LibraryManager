@@ -12,11 +12,6 @@ public class ConsultationReservationView extends AbstractReservationWithBookView
 	protected JTextField textFieldSeatNumber;
 	protected JTextField textFieldTableNumber;
 	
-	@Override
-	public void reset(){
-		super.reset();
-		this.textFieldReservationDate.setText("");
-	}
 	
 	public void setConsultationReservation(ConsultationReservation reservation){
 		super.setAbstractReservation(reservation);
@@ -37,7 +32,7 @@ public class ConsultationReservationView extends AbstractReservationWithBookView
 		lblSeatNumber.setBounds(12, 195, 97, 14);
 		super.contentPanel.add(lblSeatNumber);
 		
-		JLabel lblTableNumber = new JLabel("Posto");
+		JLabel lblTableNumber = new JLabel("Tavolo");
 		lblTableNumber.setBounds(12, 195, 97, 14);
 		super.contentPanel.add(lblTableNumber);		
 		

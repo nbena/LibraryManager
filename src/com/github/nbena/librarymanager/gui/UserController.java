@@ -37,6 +37,7 @@ import com.github.nbena.librarymanager.gui.userint.ConsultationReservationDetail
 import com.github.nbena.librarymanager.gui.userint.Details;
 import com.github.nbena.librarymanager.gui.userint.LoanDetails;
 import com.github.nbena.librarymanager.gui.userint.LoanReservationDetails;
+import com.github.nbena.librarymanager.gui.userint.SeatReservationDetails;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.LoanView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
@@ -359,6 +360,9 @@ public class UserController extends AbstractController {
 				try {
 					List<SeatReservation> reservations = userModel.getSeatsReservations();	
 					displayTableItems(new SeatReservationTableModel(reservations), userView);
+					
+					details = new SeatReservationDetails();
+					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
 					genericTableView.setMenuItemReserveEnabled(false);

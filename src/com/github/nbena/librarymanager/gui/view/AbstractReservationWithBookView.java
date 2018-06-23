@@ -9,7 +9,7 @@ import javax.swing.JTextField;
 import com.github.nbena.librarymanager.core.AbstractReservationWithBook;
 
 @SuppressWarnings("serial")
-public class AbstractReservationWithBookView extends BasicBookView implements MainableView, ResettableView {
+public class AbstractReservationWithBookView extends BasicBookView implements MainableView {
 	
 	protected JTextField textFieldTimestamp;
 	
@@ -18,11 +18,6 @@ public class AbstractReservationWithBookView extends BasicBookView implements Ma
 		this.textFieldTimestamp.setText(reservation.getTimestamp().toString());
 	}
 	
-	@Override
-	public void reset(){
-		super.reset();
-		this.textFieldTimestamp.setText("");
-	}
 	
 	public AbstractReservationWithBookView(){
 		super();

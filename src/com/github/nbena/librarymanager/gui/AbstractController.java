@@ -1,8 +1,6 @@
 package com.github.nbena.librarymanager.gui;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -11,10 +9,8 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 
-import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.SearchableBook;
-import com.github.nbena.librarymanager.gui.view.SeatDateView;
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
 public abstract class AbstractController {
@@ -79,45 +75,45 @@ public abstract class AbstractController {
 //		});
 //	}
 	
-	protected LocalDate askOrShowDateForReservation(LocalDate date, Seat seat){
-		SeatDateView seatDateView;
-		this.gotDate = null;
-//		if(reservation != null){
+//	protected LocalDate askOrShowDateForReservation(LocalDate date, Seat seat){
+//		SeatDateView seatDateView;
+//		this.gotDate = null;
+////		if(reservation != null){
+////			
+////		}else{
+////			
+////		}
+//		seatDateView = new SeatDateView(this.ASK_DATE_FOR_SEAT, date, seat);
+//		seatDateView.addActionListenerOkButton(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				int day = seatDateView.getDay();
+//				int month = seatDateView.getMonth();
+//				int year = seatDateView.getYear();
+//				gotDate = LocalDate.of(year, Month.of(month), day);
+//				
+//				seatDateView.setVisible(false);
+//				seatDateView.dispose();
+//				
+//			}
 //			
-//		}else{
-//			
-//		}
-		seatDateView = new SeatDateView(this.ASK_DATE_FOR_SEAT, date, seat);
-		seatDateView.addActionListenerOkButton(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int day = seatDateView.getDay();
-				int month = seatDateView.getMonth();
-				int year = seatDateView.getYear();
-				gotDate = LocalDate.of(year, Month.of(month), day);
-				
-				seatDateView.setVisible(false);
-				seatDateView.dispose();
-				
-			}
-			
-		});
+//		});
 		
-		seatDateView.addActionListenerCancelButton(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				seatDateView.setVisible(false);
-				seatDateView.dispose();
-			}
-			
-		});
-		seatDateView.setAlwaysOnTop(true);
-		seatDateView.setVisible(true);
-		return gotDate;
-	}
+//		seatDateView.addActionListenerCancelButton(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				
+//				seatDateView.setVisible(false);
+//				seatDateView.dispose();
+//			}
+//			
+//		});
+//		seatDateView.setAlwaysOnTop(true);
+//		seatDateView.setVisible(true);
+//		return gotDate;
+//	}
 	
 	protected void displayTableItems(AbstractTableModel tableModel, Component component){
 	

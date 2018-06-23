@@ -363,9 +363,9 @@ public class DbManager {
 //		pstmt.execute();
 //	}
 
-	/*
+	/*@
 	@ \requires startingIndex > 0;
-	*/
+	@*/
 
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
 

@@ -33,6 +33,7 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.gui.userint.BookDetails;
 import com.github.nbena.librarymanager.gui.userint.ConsultationReservationDetails;
 import com.github.nbena.librarymanager.gui.userint.Details;
 import com.github.nbena.librarymanager.gui.userint.LoanDetails;
@@ -120,9 +121,12 @@ public class UserController extends AbstractController {
 				
 				try {
 					List<Copy> copies = userModel.search(title, authors, year, topic, phouse);
+			
+					details = new BookDetails();
+					
 					displayTableItems(new CopyTableModel(copies), userView);
 					genericTableView.setMenuItemCancelEnabled(false);
-					genericTableView.setMenuItemDetailsEnabled(false);
+					genericTableView.setMenuItemDetailsEnabled(true);
 				} catch (SQLException e) {
 					displayError(userView, e);
 				}

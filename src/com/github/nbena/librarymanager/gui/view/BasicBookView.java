@@ -106,7 +106,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		
 		this.contentPanel = new JPanel();
 		
-		super.setBounds(100, 100, 450, 241);
+		super.setBounds(100, 100, 450, 291);
 		// super.getContentPane().setLayout(null);
 		this.contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		super.getContentPane().add(contentPanel);

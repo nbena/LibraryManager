@@ -20,12 +20,12 @@ package com.github.nbena.librarymanager.core;
 
 import java.time.OffsetDateTime;
 
-public class LoanReservation extends AbstractReservation {
+public class LoanReservation extends AbstractReservationWithBook {
 	
 	// private int ID;
 	// private OffsetDateTime timestamp;
 	// private InternalUser user;
-	private Copy copy;
+	// private Copy copy;
 	private boolean done;
 	
 	
@@ -34,8 +34,9 @@ public class LoanReservation extends AbstractReservation {
 		// super.ID = iD;
 		// super.timestamp = timestamp;
 		// super.user = user;
-		super(ID, user, timestamp);
-		this.copy = copy;
+//		super(ID, user, timestamp);
+//		this.copy = copy;
+		super(ID, user, copy, timestamp);
 	}
 
 	public LoanReservation(InternalUser user, Copy copy) {

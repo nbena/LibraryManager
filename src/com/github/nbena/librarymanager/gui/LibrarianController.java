@@ -279,7 +279,7 @@ public class LibrarianController extends AbstractController {
 			
 		});
 		
-		this.searchableBookView.addListenerCancel(new ActionListener(){
+		this.searchableBookView.addActionListenerCancel(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

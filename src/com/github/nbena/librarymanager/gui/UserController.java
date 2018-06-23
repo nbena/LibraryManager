@@ -33,8 +33,10 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.gui.userint.ConsultationReservationDetails;
 import com.github.nbena.librarymanager.gui.userint.Details;
 import com.github.nbena.librarymanager.gui.userint.LoanDetails;
+import com.github.nbena.librarymanager.gui.userint.LoanReservationDetails;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.LoanView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
@@ -128,7 +130,7 @@ public class UserController extends AbstractController {
 			
 		});
 		
-		this.searchableBookView.addListenerCancel(new ActionListener(){
+		this.searchableBookView.addActionListenerCancel(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -256,8 +258,12 @@ public class UserController extends AbstractController {
 				LocalDate date = datePicker(userView, null);
 				if (date != null){
 //					try {
-						SeatReservation reservation = userModel.reserveSeat(date);
-						showSeatReservationDetails(reservation);
+						/*SeatReservation reservation = */userModel.reserveSeat(date);
+						
+						
+						// showSeatReservationDetails(reservation);
+						displayReservationOk(userView);
+						
 //					} catch (ReservationException | SQLException e) {
 //						displayError(userView, e);
 //					}
@@ -291,6 +297,9 @@ public class UserController extends AbstractController {
 				try {
 					List<ConsultationReservation> reservations = userModel.getConsultationReservation();
 					displayTableItems(new ConsultationReservationTableModel(reservations), userView);
+					
+					details = new ConsultationReservationDetails();
+					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
 					genericTableView.setMenuItemReserveEnabled(false);
@@ -308,11 +317,12 @@ public class UserController extends AbstractController {
 				try {
 					List<Loan> loans = userModel.getActiveLoan();
 					displayTableItems(new LoanTableModel(loans), userView);
+					
+					details = new LoanDetails(controller);
+					
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
 					genericTableView.setMenuItemReserveEnabled(false);
-					
-					details = new LoanDetails(controller);
 				} catch (SQLException e1) {
 					displayError(userView, e1);
 				}
@@ -327,6 +337,9 @@ public class UserController extends AbstractController {
 				try {
 					List<LoanReservation> reservations = userModel.getLoanReservation();
 					displayTableItems(new LoanReservationTableModel(reservations), userView);
+					
+					details = new LoanReservationDetails();
+					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
 					genericTableView.setMenuItemReserveEnabled(false);
@@ -444,7 +457,7 @@ public class UserController extends AbstractController {
 			
 		});
 		
-		this.loanView.addListenerCancel(new ActionListener(){
+		this.loanView.addActionListenerCancel(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {

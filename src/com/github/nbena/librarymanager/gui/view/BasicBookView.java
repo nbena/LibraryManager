@@ -61,7 +61,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.btnOk.addActionListener(listener);
 	}
 	
-	public void addListenerCancel(ActionListener listener){
+	public void addActionListenerCancel(ActionListener listener){
 		this.btnCancel.addActionListener(listener);
 	}
 	

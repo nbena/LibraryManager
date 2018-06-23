@@ -12,7 +12,6 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.core.Seat;
-import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.SearchableBook;
 import com.github.nbena.librarymanager.gui.view.SeatDateView;
@@ -40,38 +39,45 @@ public abstract class AbstractController {
 		JOptionPane.showMessageDialog(parent, message, title, messageType);
 	}
 	
+	protected void displayReservationOk(Component parent){
+		String message = "Prenotazione confermata";
+		String title = "Info";
+		
+		this.displayMessage(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+	}
+	
 	protected void displayError(Component parent, Exception exception){
 		exception.printStackTrace();
 		JOptionPane.showMessageDialog(parent, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
-	protected void showSeatReservationDetails(SeatReservation reservation){
-		SeatDateView seatDateView = new SeatDateView(
-				this.SHOW_SEAT_RESERVATION,
-				reservation.getReservationDate(),
-				reservation.getSeat()
-				);
-		
-		seatDateView.addActionListenerOkButton(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				seatDateView.setVisible(false);
-				seatDateView.dispose();
-			}
-			
-		});
-		
-		seatDateView.addActionListenerCancelButton(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				seatDateView.setVisible(false);
-				seatDateView.dispose();
-			}
-			
-		});
-	}
+//	protected void showSeatReservationDetails(SeatReservation reservation){
+//		SeatDateView seatDateView = new SeatDateView(
+//				this.SHOW_SEAT_RESERVATION,
+//				reservation.getReservationDate(),
+//				reservation.getSeat()
+//				);
+//		
+//		seatDateView.addActionListenerOkButton(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				seatDateView.setVisible(false);
+//				seatDateView.dispose();
+//			}
+//			
+//		});
+//		
+//		seatDateView.addActionListenerCancelButton(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				seatDateView.setVisible(false);
+//				seatDateView.dispose();
+//			}
+//			
+//		});
+//	}
 	
 	protected LocalDate askOrShowDateForReservation(LocalDate date, Seat seat){
 		SeatDateView seatDateView;

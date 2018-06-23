@@ -22,12 +22,12 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 
-public class ConsultationReservation extends AbstractReservation {
+public class ConsultationReservation extends AbstractReservationWithBook {
 	
 	// private int ID;
 	
 	// private InternalUser user;
-	private CopyForConsultation copy;
+	// private CopyForConsultation copy;
 	private Seat seat;
 	
 	private LocalDate reservationDate;
@@ -38,8 +38,8 @@ public class ConsultationReservation extends AbstractReservation {
 			LocalDate reservationDate, OffsetDateTime timestamp) {
 		// super.ID = iD;
 		// super.user = user;
-		super(ID, user, timestamp);
-		this.copy = copy;
+		super(ID, user, copy, timestamp);
+		// this.copy = copy;
 		this.seat = seat;
 		this.reservationDate = reservationDate;
 		// super.timestamp = timestamp;
@@ -55,12 +55,11 @@ public class ConsultationReservation extends AbstractReservation {
 		// super.timestamp = OffsetDateTime.now();
 	}
 
+	@Override
 	public CopyForConsultation getCopy() {
-		return copy;
+		return (CopyForConsultation) copy;
 	}
-	public void setCopy(CopyForConsultation copy) {
-		this.copy = copy;
-	}
+	
 	public Seat getSeat() {
 		return seat;
 	}

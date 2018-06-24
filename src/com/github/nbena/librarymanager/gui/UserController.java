@@ -87,7 +87,7 @@ public class UserController extends AbstractController {
 		this.addBasicListeneres();
 		this.addGenericViewListeners();
 		this.addSearchableViewListeners();
-		this.addListenersLoanView();
+		// this.addListenersLoanView();
 	}
 	
 	
@@ -122,9 +122,10 @@ public class UserController extends AbstractController {
 				try {
 					List<Copy> copies = userModel.search(title, authors, year, topic, phouse);
 			
-					details = new BookDetails();
+					details = new BookDetails(controller);
 					
 					displayTableItems(new CopyTableModel(copies), userView);
+					genericTableView.setMenuItemReserveEnabled(true);
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
 				} catch (SQLException e) {
@@ -204,43 +205,44 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				Copy item = (Copy) genericTableView.getSelectedItem();
-				String message = "Vuoi prenotare questo libro?";
-				if (item instanceof CopyForConsultation){
-					message = "Vuoi prenotare una consultazione per questo libro?";
-				}
-				
-				// asking confirm
-				int res = JOptionPane.showConfirmDialog(userView, message, "Info", 
-						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if (res == JOptionPane.OK_OPTION){
-					try{
-						message = null;
-						if (item instanceof CopyForConsultation){
-							// asking user for when he wants to consult
-							LocalDate date = datePicker(userView,
-									"Indica quando vuoi effettuare la consultazione");
-							if (date!=null){
-								ConsultationReservation consultation =
-										userModel.reserveConsultation((CopyForConsultation) item, date);
-								message = String.format("%s%d:%s", "Prenotazione effettuata con successo," +
-										"il tavolo:posto per te è ",
-										consultation.getSeat().getTableNumber(),
-										consultation.getSeat().getNumber());
-							}
-						}else{
-							userModel.reserveLoan(item);
-							message = "Prenotazione effettuata con successo";
-						}
-						
-						if (message != null){
-							displayMessage(userView, message, null, Integer.MAX_VALUE);
-						}
-
-					}catch(SQLException | ReservationException | NumberFormatException e){
-						displayError(userView, e);
-					}				
-				}
+//				Copy item = (Copy) genericTableView.getSelectedItem();
+//				String message = "Vuoi prenotare questo libro?";
+//				if (item instanceof CopyForConsultation){
+//					message = "Vuoi prenotare una consultazione per questo libro?";
+//				}
+//				
+//				// asking confirm
+//				int res = JOptionPane.showConfirmDialog(userView, message, "Info", 
+//						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+//				if (res == JOptionPane.OK_OPTION){
+//					try{
+//						message = null;
+//						if (item instanceof CopyForConsultation){
+//							// asking user for when he wants to consult
+//							LocalDate date = datePicker(userView,
+//									"Indica quando vuoi effettuare la consultazione");
+//							if (date!=null){
+//								ConsultationReservation consultation =
+//										userModel.reserveConsultation((CopyForConsultation) item, date);
+//								message = String.format("%s%d:%s", "Prenotazione effettuata con successo," +
+//										"il tavolo:posto per te è ",
+//										consultation.getSeat().getTableNumber(),
+//										consultation.getSeat().getNumber());
+//							}
+//						}else{
+//							userModel.reserveLoan(item);
+//							message = "Prenotazione effettuata con successo";
+//						}
+//						
+//						if (message != null){
+//							displayMessage(userView, message, null, Integer.MAX_VALUE);
+//						}
+//
+//					}catch(SQLException | ReservationException | NumberFormatException e){
+//						displayError(userView, e);
+//					}				
+//				}
+				reserve((Copy) genericTableView.getSelectedItem());
 			}
 			
 		});
@@ -323,7 +325,7 @@ public class UserController extends AbstractController {
 					List<Loan> loans = userModel.getActiveLoan();
 					displayTableItems(new LoanTableModel(loans), userView);
 					
-					details = new LoanDetails(controller);
+					details = new LoanDetails(userModel);
 					
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -434,45 +436,84 @@ public class UserController extends AbstractController {
 //		
 	}
 	
-	private Loan renewLoan(Loan loan) throws SQLException, ReservationException{
-		return this.userModel.renewLoan(loan);
-	}
+//	private Loan renewLoan(Loan loan) throws SQLException, ReservationException{
+//		return this.userModel.renewLoan(loan);
+//	}
 	
-	private void addListenersLoanView(){
+//	private void addListenersLoanView(){
+//		
+//		this.loanView.addActionListenerRenew(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0){
+//					
+//				Loan loan = (Loan) genericTableView.getSelectedItem();
+//				try {
+//					Loan renewed = renewLoan(loan);
+//					loanView.setLoan(renewed);
+//				} catch (SQLException | ReservationException e) {
+//						displayError(userView, e);
+//				}
+//			} 	
+//			
+//		});
+//		
+//		this.loanView.addActionListenerOk(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				loanView.setVisible(false);
+//			}
+//			
+//		});
+//		
+//		this.loanView.addActionListenerCancel(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				loanView.setVisible(false);
+//			}
+//			
+//		});
+//	}
+	
+	public void reserve(Copy item){
+		String message = "Vuoi prenotare questo libro?";
+		if (item instanceof CopyForConsultation){
+			message = "Vuoi prenotare una consultazione per questo libro?";
+		}
 		
-		this.loanView.addActionListenerRenew(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0){
-					
-				Loan loan = (Loan) genericTableView.getSelectedItem();
-				try {
-					Loan renewed = renewLoan(loan);
-					loanView.setLoan(renewed);
-				} catch (SQLException | ReservationException e) {
-						displayError(userView, e);
+		// asking confirm
+		int res = JOptionPane.showConfirmDialog(userView, message, "Info", 
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (res == JOptionPane.OK_OPTION){
+			try{
+				message = null;
+				if (item instanceof CopyForConsultation){
+					// asking user for when he wants to consult
+					LocalDate date = datePicker(userView,
+							"Indica quando vuoi effettuare la consultazione");
+					if (date!=null){
+						ConsultationReservation consultation =
+								userModel.reserveConsultation((CopyForConsultation) item, date);
+						message = String.format("%s%d:%s", "Prenotazione effettuata con successo," +
+								"il tavolo:posto per te è ",
+								consultation.getSeat().getTableNumber(),
+								consultation.getSeat().getNumber());
+					}
+				}else{
+					userModel.reserveLoan(item);
+					message = "Prenotazione effettuata con successo";
 				}
-			} 	
-			
-		});
-		
-		this.loanView.addActionListenerOk(new ActionListener(){
+				
+				if (message != null){
+					displayMessage(userView, message, null, Integer.MAX_VALUE);
+				}
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				loanView.setVisible(false);
-			}
-			
-		});
-		
-		this.loanView.addActionListenerCancel(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				loanView.setVisible(false);
-			}
-			
-		});
+			}catch(SQLException | ReservationException | NumberFormatException e){
+				displayError(userView, e);
+			}				
+		}
 	}
 	
 }

@@ -51,7 +51,7 @@ public class Loan implements IDble {
 
 
 
-	public LocalDate getEnd() {
+	public /*@ pure @*/ LocalDate getEnd() {
 		return end;
 	}
 
@@ -59,7 +59,7 @@ public class Loan implements IDble {
 		this.end = end;
 	}
 
-	public boolean isActive() {
+	public /*@ pure @*/ boolean isActive() {
 		return active;
 	}
 
@@ -67,7 +67,7 @@ public class Loan implements IDble {
 		this.active = active;
 	}
 
-	public LocalDate getRestitutionDate() {
+	public /*@ pure @*/ LocalDate getRestitutionDate() {
 		return this.restitutionDate;
 	}
 
@@ -75,7 +75,7 @@ public class Loan implements IDble {
 		this.restitutionDate = restitutionDate;
 	}
 
-	public int getID() {
+	public /*@ pure @*/ int getID() {
 		return this.ID;
 	}
 
@@ -95,7 +95,7 @@ public class Loan implements IDble {
 //		}
 //	}
 
-	public User getUser() {
+	public/*@ pure @*/ User getUser() {
 		return user;
 	}
 
@@ -103,7 +103,7 @@ public class Loan implements IDble {
 		this.user = user;
 	}
 
-	public Copy getCopy() {
+	public /*@ pure @*/ Copy getCopy() {
 		return copy;
 	}
 
@@ -112,7 +112,7 @@ public class Loan implements IDble {
 	}
 
 
-	public boolean isRenewAvailable() {
+	public /*@ pure @*/ boolean isRenewAvailable() {
 		return renewAvailable;
 	}
 
@@ -121,7 +121,7 @@ public class Loan implements IDble {
 	}
 
 
-	public LocalDate getStart() {
+	public /*@ pure @*/ LocalDate getStart() {
 		return start;
 	}
 
@@ -129,6 +129,12 @@ public class Loan implements IDble {
 
 	public void setStart(LocalDate start) {
 		this.start = start;
+	}
+
+	@Override
+	public /*@ pure @*/ String toString() {
+		return "Loan [user=" + user + ", copy=" + copy + ", start=" + start + ", end=" + end + ", active=" + active
+				+ ", restitutionDate=" + restitutionDate + ", renewAvailable=" + renewAvailable + "]";
 	}
 
 

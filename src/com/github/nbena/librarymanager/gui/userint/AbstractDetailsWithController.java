@@ -1,13 +1,16 @@
 package com.github.nbena.librarymanager.gui.userint;
 
-import com.github.nbena.librarymanager.gui.AbstractController;
+import com.github.nbena.librarymanager.gui.UserController;
 
 public abstract class AbstractDetailsWithController extends AbstractDetails {
 	
-	protected AbstractController controller;
+	protected UserController controller;
 	
-	public AbstractDetailsWithController(AbstractController controller){
+	public AbstractDetailsWithController(UserController controller){
 		this.controller = controller;
 	}
+
+	
+	
 
 }

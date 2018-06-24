@@ -25,7 +25,7 @@ public abstract class AbstractController {
 	protected SearchableBook searchableBookView;
 	
 	
-	protected void displayMessage(Component parent, String message, String title, int messageType){
+	public static void displayMessage(Component parent, String message, String title, int messageType){
 		if (messageType == Integer.MAX_VALUE){
 			messageType = JOptionPane.INFORMATION_MESSAGE;
 		}
@@ -39,10 +39,10 @@ public abstract class AbstractController {
 		String message = "Prenotazione confermata";
 		String title = "Info";
 		
-		this.displayMessage(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+		displayMessage(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	protected void displayError(Component parent, Exception exception){
+	public static void displayError(Component parent, Exception exception){
 		exception.printStackTrace();
 		JOptionPane.showMessageDialog(parent, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	}
@@ -122,7 +122,7 @@ public abstract class AbstractController {
 			this.genericTableView.setAlwaysOnTop(true);
 			this.genericTableView.setVisible(true);		
 		}else{
-			this.displayMessage(component, "Non ci sono elementi da mostrare", "", Integer.MAX_VALUE);
+			displayMessage(component, "Non ci sono elementi da mostrare", "", Integer.MAX_VALUE);
 		}
 	}
 	

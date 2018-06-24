@@ -1,15 +1,34 @@
 package com.github.nbena.librarymanager.gui.userint;
 
-import com.github.nbena.librarymanager.core.Book;
-import com.github.nbena.librarymanager.gui.view.BasicBookView;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class BookDetails extends AbstractDetails implements Details {
+import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.Copy;
+import com.github.nbena.librarymanager.gui.UserController;
+import com.github.nbena.librarymanager.gui.view.BookReserveView;
+
+public class BookDetails extends AbstractDetailsWithController implements Details {
+
+	protected BookReserveView view;
+	
+	public BookDetails(UserController controller) {
+		super(controller);
+		
+		this.view = new BookReserveView();
+		this.view.addActionListenerReserveButton(new ActionListener(){
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				controller.reserve((Copy) item);
+			}
+		});
+	}
 
 	@Override
 	public void show() {
-		BasicBookView view = new BasicBookView();
-		view.setBook((Book) super.item);
-		view.setVisible(true);
+		this.view.setVisible(true);
+		this.view.setBook((Book) super.item);
 	}
 
 }

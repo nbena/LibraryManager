@@ -149,14 +149,16 @@ public class DbManager {
 
 	public void updateLoan(Loan loan) throws SQLException{
 
-		String query = "update loan set start_date=?, end_date=?, renew_available=?, restitution_date=?";
+		String query = "update loan set start_date=?, end_date=?, renew_available=?, restitution_date=? "+
+						"where id = ?";
 
 		PreparedStatement pstmt = connection.prepareStatement(query);
 
-		pstmt.setString(1, loan.getStart().toString());
-		pstmt.setString(2, loan.getEnd().toString());
+		pstmt.setObject(1, loan.getStart());
+		pstmt.setObject(2, loan.getEnd());
 		pstmt.setBoolean(3, loan.isRenewAvailable());
-		pstmt.setString(4, loan.getRestitutionDate().toString());
+		pstmt.setObject(4, loan.getRestitutionDate());
+		pstmt.setInt(5, loan.getID());
 
 		pstmt.execute();
 
@@ -789,6 +791,7 @@ public class DbManager {
 		return copy;
 	}
 
+	// TODO see this
 	public CopyForConsultation getIfAvailableForConsultation(CopyForConsultation copy, LocalDate date) throws SQLException{
 
 		String query = "select lm_copy.id, title, authors, year, main_topic, "+

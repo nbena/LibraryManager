@@ -1,12 +1,14 @@
 package com.github.nbena.librarymanager.gui.view;
 
+import java.awt.event.ActionListener;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 
 @SuppressWarnings("serial")
-public class ConsultationReservationView extends AbstractReservationWithBookView {
+public class ConsultationReservationView extends AbstractReservationWithBookView implements ReservationView {
 
 	protected JTextField textFieldReservationDate;
 	protected JTextField textFieldSeatNumber;
@@ -58,4 +60,11 @@ public class ConsultationReservationView extends AbstractReservationWithBookView
 		
 		super.setBounds(100, 100, 450, 331);
 	}
+
+	@Override
+	public void addActionListenerCancelReservation(ActionListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

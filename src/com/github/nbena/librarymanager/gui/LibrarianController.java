@@ -279,16 +279,16 @@ public class LibrarianController extends AbstractController {
 			
 		});
 		
-		this.searchableBookView.addActionListenerCancel(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				searchableBookView.setVisible(false);
-				
-			}
-			
-		});
+//		this.searchableBookView.addActionListenerCancel(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				
+//				searchableBookView.setVisible(false);
+//				
+//			}
+//			
+//		});
 	}
 	
 	

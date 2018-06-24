@@ -37,6 +37,7 @@ public class SearchableBookView extends BasicBookView
 		super.textFieldAuthors.setEditable(true);
 		super.textFieldTopic.setEditable(true);
 		super.textFieldYear.setEditable(true);
+		super.textFieldPhouse.setEditable(true);
 	}
 
 }

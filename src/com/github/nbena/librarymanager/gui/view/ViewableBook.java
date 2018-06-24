@@ -12,6 +12,6 @@ public interface ViewableBook {
 	
 	public void addActionListenerOk(ActionListener listener);
 	
-	public void addActionListenerCancel(ActionListener listener);
+	// public void addActionListenerCancel(ActionListener listener);
 
 }

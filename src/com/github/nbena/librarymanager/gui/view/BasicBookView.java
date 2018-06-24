@@ -61,9 +61,9 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.btnOk.addActionListener(listener);
 	}
 	
-	public void addActionListenerCancel(ActionListener listener){
-		this.btnCancel.addActionListener(listener);
-	}
+//	public void addActionListenerCancel(ActionListener listener){
+//		this.btnCancel.addActionListener(listener);
+//	}
 	
 	public void reset(){
 		this.textFieldTitle.setText("");
@@ -118,7 +118,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.contentPanel.add(this.buttonPane);
 		this.buttonPane.setLayout(null);
 			
-		this.btnOk = new JButton("OK");
+		this.btnOk = new JButton("Ok");
 		this.btnOk.setBounds(163, 12, 51, 24);
 		this.buttonPane.add(this.btnOk);
 		// this.btnOk.setActionCommand("OK");
@@ -130,9 +130,9 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		
 		// getContentPane().setLayout(null);		
 			
-		this.btnCancel = new JButton("Cancel");
-		this.btnCancel.setBounds(226, 12, 73, 24);
-		this.buttonPane.add(this.btnCancel);
+		// this.btnCancel = new JButton("Cancel");
+		// this.btnCancel.setBounds(226, 12, 73, 24);
+		// this.buttonPane.add(this.btnCancel);
 		// this.btnCancel.setActionCommand("Cancel");
 			
 		

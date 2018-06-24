@@ -105,15 +105,15 @@ public class LoanView extends BasicBookView implements MainableView, ResettableV
 			
 		});
 		
-		super.addActionListenerCancel(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				dispose();
-			}
-			
-		});		
+//		super.addActionListenerCancel(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				setVisible(false);
+//				dispose();
+//			}
+//			
+//		});		
 		
 	}
 	

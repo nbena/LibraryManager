@@ -136,15 +136,15 @@ public class UserController extends AbstractController {
 			
 		});
 		
-		this.searchableBookView.addActionListenerCancel(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchableBookView.setVisible(false);
-			}
-			
-			
-		});
+//		this.searchableBookView.addActionListenerCancel(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				searchableBookView.setVisible(false);
+//			}
+//			
+//			
+//		});
 	}
 	
 	

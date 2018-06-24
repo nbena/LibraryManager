@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class SeatReservationView extends JDialog implements MainableView {
+public class SeatReservationView extends JDialog implements MainableView, ReservationView {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldTimestamp;
@@ -124,4 +124,11 @@ public class SeatReservationView extends JDialog implements MainableView {
 	public void setMainTitle(String main) {
 		this.lblMain.setText(main);
 	}
+	
+	@Override
+	public void addActionListenerCancelReservation(ActionListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

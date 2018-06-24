@@ -9,7 +9,7 @@ import javax.swing.JTextField;
 import com.github.nbena.librarymanager.core.AbstractReservationWithBook;
 
 @SuppressWarnings("serial")
-public class AbstractReservationWithBookView extends BasicBookView implements MainableView {
+public class AbstractReservationWithBookView extends BasicBookView implements MainableView, ReservationView {
 	
 	protected JTextField textFieldTimestamp;
 	
@@ -44,15 +44,22 @@ public class AbstractReservationWithBookView extends BasicBookView implements Ma
 			}
 		});
 		
-		super.addActionListenerCancel(new ActionListener(){
+//		super.addActionListenerCancel(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				setVisible(false);
+//				dispose();
+//			}
+//			
+//		});		
+	}
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				dispose();
-			}
-			
-		});		
+
+	@Override
+	public void addActionListenerCancelReservation(ActionListener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

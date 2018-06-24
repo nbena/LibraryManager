@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
-public class GenericTableView extends JDialog implements Popupable {
+public class GenericTableView extends JDialog implements Popupable, VisibleView {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTable table;
@@ -146,7 +146,7 @@ public class GenericTableView extends JDialog implements Popupable {
 	 * Create the dialog.
 	 */
 	public GenericTableView() {
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 334);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -162,29 +162,19 @@ public class GenericTableView extends JDialog implements Popupable {
 		
 		
 		JPanel buttonPane = new JPanel();
-		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
+		buttonPane.setBounds(0, 177, 370, 43);
+		//buttonPane.setLayout(null);
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			
-		JButton okButton = new JButton("OK");
-		okButton.setActionCommand("OK");
+		JButton okButton = new JButton("Ok");
+		// okButton.setBounds(87, 12, 51, 24);
 		buttonPane.add(okButton);
-		getRootPane().setDefaultButton(okButton);
-
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setActionCommand("Cancel");
-		buttonPane.add(cancelButton);
 		
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				setVisible(false);
 				dispose();
-			}
-		});
-		
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				dispose();				
 			}
 		});
 		

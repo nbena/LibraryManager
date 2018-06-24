@@ -15,13 +15,15 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class SeatReservationView extends JDialog implements MainableView, ReservationView {
+public class SeatReservationView extends JDialog implements MainableView,
+	ReservationView, VisibleView {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldTimestamp;
 	private JTextField textFieldReservationDate;
 	private JTextField textFieldSeatNumber;
 	private JTextField textFieldTableNumber;
+	private JButton btnCancelReservation;
 	private JLabel lblMain;
 	
 	public void setSeatReservation(SeatReservation reservation){
@@ -48,7 +50,7 @@ public class SeatReservationView extends JDialog implements MainableView, Reserv
 	 * Create the dialog.
 	 */
 	public SeatReservationView() {
-		setBounds(100, 100, 370, 249);
+		setBounds(100, 100, 356, 249);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -60,8 +62,12 @@ public class SeatReservationView extends JDialog implements MainableView, Reserv
 		buttonPane.setLayout(null);
 		
 		JButton okButton = new JButton("OK");
-		okButton.setBounds(150, 12, 51, 24);
+		okButton.setBounds(87, 12, 51, 24);
 		buttonPane.add(okButton);
+		
+		btnCancelReservation = new JButton("Annulla prenotazione");
+		btnCancelReservation.setBounds(150, 12, 172, 24);
+		buttonPane.add(btnCancelReservation);
 		
 		okButton.addActionListener(new ActionListener(){
 
@@ -127,8 +133,6 @@ public class SeatReservationView extends JDialog implements MainableView, Reserv
 	
 	@Override
 	public void addActionListenerCancelReservation(ActionListener listener) {
-		// TODO Auto-generated method stub
-		
+		this.btnCancelReservation.addActionListener(listener);
 	}
-
 }

@@ -1,7 +1,5 @@
 package com.github.nbena.librarymanager.gui.view;
 
-import java.awt.event.ActionListener;
-
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
@@ -61,10 +59,5 @@ public class ConsultationReservationView extends AbstractReservationWithBookView
 		super.setBounds(100, 100, 450, 331);
 	}
 
-	@Override
-	public void addActionListenerCancelReservation(ActionListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

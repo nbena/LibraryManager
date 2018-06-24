@@ -4,11 +4,9 @@ import java.awt.event.ActionListener;
 
 import com.github.nbena.librarymanager.core.Book;
 
-public interface ViewableBook {
+public interface ViewableBook extends VisibleView {
 	
 	public void setBook(Book book);
-	
-	public void setVisible(boolean visible);
 	
 	public void addActionListenerOk(ActionListener listener);
 	

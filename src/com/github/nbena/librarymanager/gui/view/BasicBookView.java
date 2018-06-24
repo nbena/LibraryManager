@@ -33,7 +33,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 	protected JTextField textFieldPhouse;
 	
 	protected JButton btnOk;
-	protected JButton btnCancel;
+	// protected JButton btnCancel;
 	
 	protected JLabel lblMain;
 	

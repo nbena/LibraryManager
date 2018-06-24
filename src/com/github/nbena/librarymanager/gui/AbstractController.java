@@ -35,12 +35,20 @@ public abstract class AbstractController {
 		JOptionPane.showMessageDialog(parent, message, title, messageType);
 	}
 	
-	protected void displayReservationOk(Component parent){
+	public static void displayReservationOk(Component parent){
 		String message = "Prenotazione confermata";
 		String title = "Info";
 		
 		displayMessage(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
 	}
+	
+	public static void displayCancellationOk(Component parent){
+		String message = "Cancellazione confermata";
+		String title = "Info";
+		
+		displayMessage(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+	}
+	
 	
 	public static void displayError(Component parent, Exception exception){
 		exception.printStackTrace();

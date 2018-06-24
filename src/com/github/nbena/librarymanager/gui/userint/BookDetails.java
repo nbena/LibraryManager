@@ -20,7 +20,11 @@ public class BookDetails extends AbstractDetailsWithController implements Detail
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				controller.reserve((Copy) item);
+				boolean ok = controller.reserve((Copy) item);
+				if (ok){
+					view.setVisible(false);
+					view.dispose();	
+				}
 			}
 		});
 	}

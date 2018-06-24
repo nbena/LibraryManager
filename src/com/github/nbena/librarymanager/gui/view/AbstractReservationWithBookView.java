@@ -3,19 +3,27 @@ package com.github.nbena.librarymanager.gui.view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import com.github.nbena.librarymanager.core.AbstractReservationWithBook;
 
 @SuppressWarnings("serial")
-public class AbstractReservationWithBookView extends BasicBookView implements MainableView, ReservationView {
+public class AbstractReservationWithBookView extends BasicBookView
+	implements MainableView, ReservationView, VisibleView {
 	
+	protected JButton btnCancelReservation;
 	protected JTextField textFieldTimestamp;
 	
 	public void setAbstractReservation(AbstractReservationWithBook reservation){
 		super.setBook(reservation.getCopy());
 		this.textFieldTimestamp.setText(reservation.getTimestamp().toString());
+	}
+	
+	@Override
+	public void addActionListenerCancelReservation(ActionListener listener) {
+		this.btnCancelReservation.addActionListener(listener);
 	}
 	
 	
@@ -32,6 +40,10 @@ public class AbstractReservationWithBookView extends BasicBookView implements Ma
 		this.textFieldTimestamp.setColumns(10);
 		
 		this.textFieldTimestamp.setEditable(false);
+		
+		this.btnCancelReservation = new JButton("Annulla prenotazione");
+		this.btnCancelReservation.setBounds(226, 12, 73, 24);
+		super.buttonPane.add(this.btnCancelReservation);
 		
 		super.setBounds(100, 100, 450, 301);
 		
@@ -53,15 +65,6 @@ public class AbstractReservationWithBookView extends BasicBookView implements Ma
 //			}
 //			
 //		});		
-	}
-
-
-	@Override
-	public void addActionListenerCancelReservation(ActionListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
+	}	
 
 }

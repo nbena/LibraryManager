@@ -19,6 +19,7 @@ package com.github.nbena.librarymanager.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.InvalidParameterException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,6 +44,7 @@ import com.github.nbena.librarymanager.gui.view.GenericTableView;
 import com.github.nbena.librarymanager.gui.view.LoanView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.UserView;
+import com.github.nbena.librarymanager.gui.view.VisibleView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.CopyTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
@@ -100,18 +102,6 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				
-//				String title = (searchableBookView.getTitle().equals("")) ? null : searchableBookView.getTitle();
-//				String [] authors = searchableBookView.getAuthors();
-//				if (authors.length == 0 || authors[0].equals("")){
-//					authors = null;
-//				}
-//				int year = searchableBookView.getYear();
-//				String topic = (searchableBookView.getTopic().equals("")) ? null : searchableBookView.getTopic();
-				
-//				System.out.println(searchableBookView.getAuthors().length);
-//				System.out.println(Arrays.toString(searchableBookView.getAuthors()));
-//				System.out.println(Arrays.toString(authors));
-				
 				Object [] res = searchableBookViewResults();
 				String title = (String) res[0];
 				String [] authors = (String[]) res[1];
@@ -130,21 +120,14 @@ public class UserController extends AbstractController {
 					genericTableView.setMenuItemDetailsEnabled(true);
 				} catch (SQLException e) {
 					displayError(userView, e);
+				} catch(InvalidParameterException e){
+					
 				}
 				
 			}
 			
 		});
 		
-//		this.searchableBookView.addActionListenerCancel(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				searchableBookView.setVisible(false);
-//			}
-//			
-//			
-//		});
 	}
 	
 	
@@ -171,25 +154,9 @@ public class UserController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AbstractReservation reservation = (AbstractReservation) genericTableView.getSelectedItem();
-				
-				int res = JOptionPane.showConfirmDialog(userView,
-						"Vuoi cancellare questa prenotazione?",
-						"Conferma",
-						JOptionPane.OK_CANCEL_OPTION,
-						JOptionPane.QUESTION_MESSAGE
-						);
-				if (res == JOptionPane.OK_OPTION){
-					try {
-						userModel.cancelReservation(reservation);
-						// TODO remove from the table
-						displayMessage(userView, "Prenotazione eliminata con successo",
-								null, Integer.MAX_VALUE);
-						genericTableView.setVisible(false);
-					} catch (SQLException e1) {
-						displayError(userView, e1);
-					}
-				}
+
+				unreserve((AbstractReservation) genericTableView.getSelectedItem(),
+						genericTableView, true);
 				// else do nothing
 			}
 			
@@ -205,43 +172,6 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-//				Copy item = (Copy) genericTableView.getSelectedItem();
-//				String message = "Vuoi prenotare questo libro?";
-//				if (item instanceof CopyForConsultation){
-//					message = "Vuoi prenotare una consultazione per questo libro?";
-//				}
-//				
-//				// asking confirm
-//				int res = JOptionPane.showConfirmDialog(userView, message, "Info", 
-//						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-//				if (res == JOptionPane.OK_OPTION){
-//					try{
-//						message = null;
-//						if (item instanceof CopyForConsultation){
-//							// asking user for when he wants to consult
-//							LocalDate date = datePicker(userView,
-//									"Indica quando vuoi effettuare la consultazione");
-//							if (date!=null){
-//								ConsultationReservation consultation =
-//										userModel.reserveConsultation((CopyForConsultation) item, date);
-//								message = String.format("%s%d:%s", "Prenotazione effettuata con successo," +
-//										"il tavolo:posto per te è ",
-//										consultation.getSeat().getTableNumber(),
-//										consultation.getSeat().getNumber());
-//							}
-//						}else{
-//							userModel.reserveLoan(item);
-//							message = "Prenotazione effettuata con successo";
-//						}
-//						
-//						if (message != null){
-//							displayMessage(userView, message, null, Integer.MAX_VALUE);
-//						}
-//
-//					}catch(SQLException | ReservationException | NumberFormatException e){
-//						displayError(userView, e);
-//					}				
-//				}
 				reserve((Copy) genericTableView.getSelectedItem());
 			}
 			
@@ -305,7 +235,7 @@ public class UserController extends AbstractController {
 					List<ConsultationReservation> reservations = userModel.getConsultationReservation();
 					displayTableItems(new ConsultationReservationTableModel(reservations), userView);
 					
-					details = new ConsultationReservationDetails();
+					details = new ConsultationReservationDetails(controller);
 					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -325,7 +255,7 @@ public class UserController extends AbstractController {
 					List<Loan> loans = userModel.getActiveLoan();
 					displayTableItems(new LoanTableModel(loans), userView);
 					
-					details = new LoanDetails(userModel);
+					details = new LoanDetails(controller);
 					
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -345,7 +275,7 @@ public class UserController extends AbstractController {
 					List<LoanReservation> reservations = userModel.getLoanReservation();
 					displayTableItems(new LoanReservationTableModel(reservations), userView);
 					
-					details = new LoanReservationDetails();
+					details = new LoanReservationDetails(controller);
 					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -367,7 +297,7 @@ public class UserController extends AbstractController {
 					List<SeatReservation> reservations = userModel.getSeatsReservations();	
 					displayTableItems(new SeatReservationTableModel(reservations), userView);
 					
-					details = new SeatReservationDetails();
+					details = new SeatReservationDetails(controller);
 					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -384,9 +314,9 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int res = JOptionPane.showConfirmDialog(userView, "Sei sicuro di voler deregistrarti?",
-						"Conferma", JOptionPane.OK_CANCEL_OPTION,
+						"Conferma", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
-				if(res==JOptionPane.OK_OPTION){
+				if(res==JOptionPane.YES_OPTION){
 					try {
 						userModel.deregister();
 						userModel.close();
@@ -436,48 +366,36 @@ public class UserController extends AbstractController {
 //		
 	}
 	
-//	private Loan renewLoan(Loan loan) throws SQLException, ReservationException{
-//		return this.userModel.renewLoan(loan);
-//	}
+	public boolean unreserve(AbstractReservation reservation, VisibleView view, boolean dispose){
+		boolean ok = true;
+		int res = JOptionPane.showConfirmDialog(userView,
+				"Vuoi cancellare questa prenotazione?",
+				"Conferma",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+				);
+		if (res == JOptionPane.YES_OPTION){
+			try {
+				userModel.cancelReservation(reservation);
+				// TODO remove from the table
+				
+				AbstractController.displayCancellationOk(userView);
+				
+				// genericTableView.setVisible(false);
+				view.setVisible(false);
+				if (dispose){
+					view.dispose();
+				}
+			} catch (SQLException e1) {
+				displayError(userView, e1);
+				ok = false;
+			}
+		}
+		return ok;
+	}
 	
-//	private void addListenersLoanView(){
-//		
-//		this.loanView.addActionListenerRenew(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0){
-//					
-//				Loan loan = (Loan) genericTableView.getSelectedItem();
-//				try {
-//					Loan renewed = renewLoan(loan);
-//					loanView.setLoan(renewed);
-//				} catch (SQLException | ReservationException e) {
-//						displayError(userView, e);
-//				}
-//			} 	
-//			
-//		});
-//		
-//		this.loanView.addActionListenerOk(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				loanView.setVisible(false);
-//			}
-//			
-//		});
-//		
-//		this.loanView.addActionListenerCancel(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				loanView.setVisible(false);
-//			}
-//			
-//		});
-//	}
-	
-	public void reserve(Copy item){
+	public boolean reserve(Copy item){
+		boolean ok = true;
 		String message = "Vuoi prenotare questo libro?";
 		if (item instanceof CopyForConsultation){
 			message = "Vuoi prenotare una consultazione per questo libro?";
@@ -485,8 +403,8 @@ public class UserController extends AbstractController {
 		
 		// asking confirm
 		int res = JOptionPane.showConfirmDialog(userView, message, "Info", 
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (res == JOptionPane.OK_OPTION){
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (res == JOptionPane.YES_OPTION){
 			try{
 				message = null;
 				if (item instanceof CopyForConsultation){
@@ -513,8 +431,32 @@ public class UserController extends AbstractController {
 
 			}catch(SQLException | ReservationException | NumberFormatException e){
 				displayError(userView, e);
+				ok = false;
 			}				
 		}
+		return ok;
+	}
+	
+	public Loan renewLoan(Loan loan){
+		
+		Loan renewed = null;
+		
+		int res = JOptionPane.showConfirmDialog(userView, "Confermi di voler rinnovare?",
+				"Conferma", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		
+		if (res == JOptionPane.YES_OPTION){
+			try {
+				renewed = this.userModel.renewLoan(loan);
+
+				AbstractController.displayMessage(this.userView, "Confermi di voler rinnovare?", "Info",
+						JOptionPane.INFORMATION_MESSAGE);
+			} catch (SQLException | ReservationException e) {
+				AbstractController.displayError(this.userView, e);
+			}
+			
+		}
+		return renewed;
+
 	}
 	
 }

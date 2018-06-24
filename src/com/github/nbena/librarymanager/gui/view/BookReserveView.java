@@ -58,7 +58,7 @@ public class BookReserveView extends BasicBookView {
 //	}
 		super.btnOk.setBounds(106, 12, 81, 24);
 		
-		super.btnCancel.setBounds(190, 12, 81, 24);
+		// super.btnCancel.setBounds(190, 12, 81, 24);
 		
 		this.btnReserve = new JButton("Prenota");
 		this.btnReserve.setBounds(275, 12, 81, 24);
@@ -73,16 +73,7 @@ public class BookReserveView extends BasicBookView {
 			}
 			
 		});
-		
-		super.btnCancel.addActionListener(new ActionListener(){
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
-				dispose();
-			}
-			
-		});
+
 	}
 
 }

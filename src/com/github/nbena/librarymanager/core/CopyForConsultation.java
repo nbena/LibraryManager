@@ -45,6 +45,7 @@ public class CopyForConsultation extends Copy {
 				c.getMainTopic(),
 				c.getPublishingHouse()
 				);
+		copy.setID(c.getID());
 		return copy;
 	}
 	

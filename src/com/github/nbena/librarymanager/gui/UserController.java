@@ -491,12 +491,13 @@ public class UserController extends AbstractController {
 				message = null;
 				if (item instanceof CopyForConsultation){
 					// asking user for when he wants to consult
-					LocalDate date = datePicker(userView,
-							"Indica quando vuoi effettuare la consultazione");
+					LocalDate date = super.datePicker(userView,
+							"Inserisci quando vuoi effettuare la consultazione "+
+							"nel formato DD-MM-YYYY o DD/MM/YYYY");
 					if (date!=null){
 						ConsultationReservation consultation =
 								userModel.reserveConsultation((CopyForConsultation) item, date);
-						message = String.format("%s%d:%s", "Prenotazione effettuata con successo," +
+						message = String.format("%s%d:%s", "Prenotazione effettuata con successo, " +
 								"il tavolo:posto per te è ",
 								consultation.getSeat().getTableNumber(),
 								consultation.getSeat().getNumber());

@@ -802,6 +802,9 @@ public class DbManager {
 					   "(select copyid from consultation_reservation "+
 					   "where lm_copy.id=? and reservation_date=?) "+
 					   "and for_consultation = true limit 1";
+		
+		System.out.println(copy.getID());
+		System.out.println(date);
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		pstmt.setInt(1, copy.getID());
@@ -984,7 +987,9 @@ public class DbManager {
     		if (forConsultation){
     			CopyForConsultation otherCopy = CopyForConsultation.create(copy);
     			copies.add(otherCopy);
+    			// System.out.println(otherCopy.getID());
     		}else{
+    			// System.out.println(copy.getID());
     			copies.add(copy);
     		}
     	}

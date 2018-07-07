@@ -12,7 +12,7 @@ public class ActionNewReservedConsultation extends AbstractActionWithBookUser {
 		super(model);
 		super.ask = true;
 		super.confirmationMessage = "Confermi l'inizio della consultazione?";
-		super.resultMessage = "Confermato";
+		super.resultMessage = "Consultazione confermata";
 	}
 	
 	

@@ -1,4 +1,4 @@
-/*  LibraryManager
+/*  LibraryManager a toy library manager
     Copyright (C) 2018 nbena
 
     This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ package com.github.nbena.librarymanager.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -27,18 +28,38 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.librarianint.Action;
+import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedLoan;
+import com.github.nbena.librarymanager.gui.view.ConsultationInProgressView;
 import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.RegisterUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
+import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
+import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ReservationException;
 
 public class LibrarianController extends AbstractController {
+	
+	/*
+	 * How the ACTION PATTERN WORKS:
+	 * -	a main controller (this)
+	 * -	a 'sub view' that appears the same but it does different actions
+	 * 		basing on the clicked button that have triggered that view opening.
+	 * -	we have an 'Action' interface that offers the following: setParams, execute
+	 * 		-	internally each implementation register a different function to be executed
+	 * 			when a call to implementation.execute() happens
+	 * -	the onclick button of the sub view triggers the action.execute
+	 * -	the onclick buttons of the main view (the ones that onclick make the sub view to open)
+	 * 		instances the concrete implementation of the action.
+	 * 
+	 * This pattern is only followed when there is a view with more possible actions,
+	 * otherwise it is a unnecessary complication.
+	 */
 	
 	private LibrarianModel model;
 	private LibrarianView view;
@@ -46,6 +67,7 @@ public class LibrarianController extends AbstractController {
 	private Action action;
 	
 	private RegisterUserView userView;
+	private ConsultationInProgressView consultationsView;
 	
 	private boolean isWithUser = false;
 	
@@ -79,6 +101,7 @@ public class LibrarianController extends AbstractController {
 		
 		this.searchableBookView = new SearchableBookUserView();
 		this.userView = new RegisterUserView();
+		this.consultationsView = new ConsultationInProgressView();
 		
 		this.addListeners();
 		
@@ -90,6 +113,7 @@ public class LibrarianController extends AbstractController {
 		this.addListenersToMainView();
 		this.addSearchableViewListeners();
 		this.addUserViewListeners();
+		this.addConsultationsListListeners();
 	}
 	
 	
@@ -175,9 +199,13 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					showWithUsersView(true);
-					// TODO this is different
+
+					action = new ActionDeliveryConsultation(model);
+					showConsultationsPerUser();
+					
 				} catch (SQLException e1) {
+					displayError(view, e1);
+				} catch (ReservationException e1) {
 					displayError(view, e1);
 				}
 			}
@@ -231,6 +259,67 @@ public class LibrarianController extends AbstractController {
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
+			}
+			
+		});
+	}
+
+	private User askUser() throws SQLException, ReservationException{
+		User user = null;
+		String email = JOptionPane.showInputDialog(view,
+				"Inserisci la mail dell'uente", "Info", JOptionPane.QUESTION_MESSAGE);
+		
+		if (email != null && !email.equals("")){
+			user = this.model.fillUser(email);
+		}
+		return user;
+	}
+
+	private void showConsultationsPerUser() throws SQLException, ReservationException{
+		User user = askUser();
+
+		if (user!=null){
+			// now showing all the in progress consultation
+			// for this user.
+
+			List<Consultation> consultations = model.consultations(user);
+			
+			consultationsView.setTableModel(new ConsultationInProgressTableModel(consultations));
+			consultationsView.setVisible(true);
+		}
+	}
+	
+	private void addConsultationsListListeners(){
+		
+		super.addPopupListenerToTable(this.consultationsView);
+		
+		this.consultationsView.setPopupEnabled(true);
+		
+		this.consultationsView.addMenuItemDeliveryListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				Consultation arg = (Consultation) consultationsView.getSelectedItem();
+				
+				// initialize now to avoid warning.
+				int ok = JOptionPane.OK_OPTION;
+				if(action.askConfirmation()){
+					ok = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Info",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+				}
+				
+				if (ok == JOptionPane.OK_OPTION){
+					action.setArgs(arg);
+					try {
+						action.execute();
+						displayMessage(view, action.getResultMessage(), null, 0);
+						consultationsView.setVisible(false);
+					} catch (SQLException | ReservationException e) {
+						displayError(view, e);
+					}
+				}
+				
 			}
 			
 		});

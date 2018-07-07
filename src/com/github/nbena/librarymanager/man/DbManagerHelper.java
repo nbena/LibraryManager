@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
@@ -46,6 +47,24 @@ public class DbManagerHelper {
 		OffsetDateTime timestamp = rs.getObject(startingIndex + 1, OffsetDateTime.class);
 		reservation = new LoanReservation(id, user, copy, timestamp);
 		return reservation;
+	}
+	
+	
+	static Consultation getConsultationFrom(ResultSet rs, int startingIndex, CopyForConsultation copy, User user) throws SQLException{
+		
+		Consultation consultation = new Consultation();
+		consultation.setCopy(copy);
+		consultation.setUser(user);
+		
+		int id = rs.getInt(startingIndex);
+		OffsetDateTime start = rs.getObject(startingIndex+1, OffsetDateTime.class);
+		OffsetDateTime end = rs.getObject(startingIndex+2, OffsetDateTime.class);
+		
+		consultation.setID(id);
+		consultation.setStart(start);
+		consultation.setEnd(end);
+		
+		return consultation;
 	}
 
 

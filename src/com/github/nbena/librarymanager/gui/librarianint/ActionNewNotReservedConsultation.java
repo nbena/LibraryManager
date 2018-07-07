@@ -11,7 +11,7 @@ public class ActionNewNotReservedConsultation extends AbstractActionWithBookUser
 		super(model);
 		super.ask = true;
 		super.confirmationMessage = "Confermi l'inizio della consultazione?";
-		super.resultMessage = "Prestito confermato";		
+		super.resultMessage = "Consultazione confermata";		
 	}
 	
 	@Override

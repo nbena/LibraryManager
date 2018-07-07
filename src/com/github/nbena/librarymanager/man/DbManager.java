@@ -1014,5 +1014,61 @@ public class DbManager {
 
     	return users;
     }
+    
+    /**
+     * 
+     * @param user
+     * @return
+     * @throws SQLException
+     */
+    // TODO add tests for this
+    public List<Consultation> consultationInProgressByUser(User user) throws SQLException {
+    	
+    	String query = "select consultation.id, start_date, end_date, copyid, title, authors, "+
+    					"year, main_topic, phouse, status "+
+    					"from consultation join lm_copy on consultation.copyid = lm_copy.id "+
+    					"join book on lm_copy.bookid = book.id "+
+    					"where end_date is null and consultation.userid = ?";
+    	
+    	PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	
+    	pstmt.setInt(1, user.getID());
+    	
+    	
+    	List<Consultation> consultations = new LinkedList<Consultation>();
+    	
+    	ResultSet rs = pstmt.executeQuery();
+    	
+    	while(rs.next()){
+    		
+    		Copy copy = DbManagerHelper.getCopyFrom(rs, 4);
+    		CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
+    		
+    		Consultation consultation = DbManagerHelper.getConsultationFrom(rs, 1, copyForConsultation, user);
+    		
+    		consultations.add(consultation);
+    		
+    	}
+    	
+    	return consultations;
+    }
+    
+    public User fillUser(String email) throws SQLException{
+    	
+    	String query = "select id, name, surname, email, internal from lm_user "+
+    					"where email = ?";
+    	
+    	PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	pstmt.setString(1, email);
+    	
+    	User user = null;
+    	ResultSet rs = pstmt.executeQuery();
+    	
+    	if(rs.next()){
+    		
+    		user = DbManagerHelper.getUserFrom(rs, 1);
+    	}
+    	return user;
+    }
 
 }

@@ -377,6 +377,14 @@ public class LibraryManager {
 			e.printStackTrace();
 		}
 	}
+	
+	public List<Consultation> getConsultationInProgressByUser(User user) throws SQLException{
+		return this.dbManager.consultationInProgressByUser(user);
+	}
+	
+	public User searchUser(String email) throws SQLException{
+		return this.dbManager.fillUser(email);
+	}
 
 
 

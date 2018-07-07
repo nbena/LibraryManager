@@ -9,44 +9,27 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.PopupMenuListener;
-import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
-import com.github.nbena.librarymanager.gui.view.table.SelectableItem;
 
 import java.awt.GridLayout;
-import java.awt.MouseInfo;
-import java.awt.event.MouseListener;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
-public class GenericTableView extends JDialog implements Popupable, VisibleView {
+public class GenericTableView extends AbstractTableView implements Popupable, VisibleView {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTable table;
-	private JPopupMenu menu;
+	// private JTable table;
+	// private JPopupMenu menu;
 	private JMenuItem mntmViewDetails;
 	private JMenuItem mntmCancel;
 	private JMenuItem mntmReserve;
 	
-	public void setTableModel(AbstractTableModel model){
-		this.table.setModel(model);
-	}
-	
-	public void addTableMouseListener(MouseListener mouseListener){
-		this.table.addMouseListener(mouseListener);
-	}
-	
-	public void setPopupEnabled(boolean enabled){
-		this.menu.setEnabled(enabled);
-	}
 	
 	public void setMenuItemDetailsEnabled(boolean enabled){
 		this.mntmViewDetails.setEnabled(enabled);
@@ -80,54 +63,7 @@ public class GenericTableView extends JDialog implements Popupable, VisibleView 
 	public void addMenuItemReserveListener(ActionListener listener){
 		this.mntmReserve.addActionListener(listener);
 	}
-	
-	public void addPopupListener(PopupMenuListener listener){
-		this.menu.addPopupMenuListener(listener);
-	}
-	
-	/**
-	 * This method set the selection on the table to the row
-	 * in which the popup has been called. You need to call
-	 * this function inside the popupListener.
-	 * <code>
-	  		popuable.addPopupListener(new PopupMenuListener(){
-     
-			@Override
-			public void popupMenuCanceled(PopupMenuEvent arg0) {
-				
-			}
 
-			@Override
-			public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0) {
-				
-			}
-
-			@Override
-			public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
-				popuable.setSelectedRowToPopup();
-			}
-			
-		});
-	 * <code>
-	 */
-	public void setSelectedRowToPopup(){
-		int rowAtPoint = this.table.rowAtPoint(SwingUtilities.convertPoint(
-				this.menu, MouseInfo.getPointerInfo().getLocation(), this.table));
-		
-		if (rowAtPoint > -1){
-			this.table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
-		}
-	}
-	
-	/**
-	 * 
-	 * @return the current selected item in the table, in the form
-	 * of the real object that it's stored inside the table model.
-	 */
-	public Object getSelectedItem(){
-		SelectableItem model = (SelectableItem) this.table.getModel();
-		return model.getSelectedItem(this.table.getSelectedRow());
-	}
 
 	/**
 	 * Launch the application.
@@ -164,11 +100,9 @@ public class GenericTableView extends JDialog implements Popupable, VisibleView 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
 		buttonPane.setBounds(0, 177, 370, 43);
-		//buttonPane.setLayout(null);
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			
 		JButton okButton = new JButton("Ok");
-		// okButton.setBounds(87, 12, 51, 24);
 		buttonPane.add(okButton);
 		
 		okButton.addActionListener(new ActionListener() {

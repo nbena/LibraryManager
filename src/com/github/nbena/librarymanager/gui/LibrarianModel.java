@@ -157,6 +157,18 @@ public class LibrarianModel extends AbstractModel {
 	public List<User> users() throws SQLException{
 		return super.manager.users();
 	}
+	
+	public List<Consultation> consultations(User user) throws SQLException{
+		return super.manager.getConsultationInProgressByUser(user);
+	}
+	
+	public User fillUser(String email) throws SQLException, ReservationException{
+		User user = super.manager.searchUser(email);
+		if (user==null){
+			throw new ReservationException("User not found");
+		}
+		return user;
+	}
 
 
 }

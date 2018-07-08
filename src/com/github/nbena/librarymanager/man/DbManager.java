@@ -1124,5 +1124,31 @@ public class DbManager {
     	}
     	return loans;
     }
+    
+    /**
+     * <pre>getDeletableBooks()</pre> returns the list
+     * of the Book objects that are not linked with a copy.
+     * @return
+     * @throws SQLException
+     */
+    public List<Book> getDeletableBooks () throws SQLException{
+    	 
+    	String query = "select id, title, authors, year, main_topic, phouse, \"\""+
+    					"from book where id not in ("+
+    					"select bookid from lm_copy)";
+    	
+    	Statement stat = this.connection.createStatement();
+    	
+    	List<Book> books = new LinkedList<Book>();
+    	
+    	ResultSet rs = stat.executeQuery(query);
+    	
+    	while(rs.next()){
+    		Book book = DbManagerHelper.getCopyFrom(rs, 1);
+    		books.add(book);
+    	}
+    	
+    	return books;
+    }
 
 }

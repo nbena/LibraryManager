@@ -123,6 +123,10 @@ public abstract class AbstractController {
 //		return gotDate;
 //	}
 	
+	protected void displayNoItemsToShow(Component component){
+		displayMessage(component, "Non ci sono elementi da mostrare", "", Integer.MAX_VALUE);
+	}
+	
 	protected void displayTableItems(AbstractTableModel tableModel, Component component){
 	
 		if(tableModel.getRowCount()>0){
@@ -130,7 +134,7 @@ public abstract class AbstractController {
 			this.genericTableView.setAlwaysOnTop(true);
 			this.genericTableView.setVisible(true);		
 		}else{
-			displayMessage(component, "Non ci sono elementi da mostrare", "", Integer.MAX_VALUE);
+			this.displayNoItemsToShow(component);
 		}
 	}
 	

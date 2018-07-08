@@ -284,8 +284,12 @@ public class LibrarianController extends AbstractController {
 
 			List<Consultation> consultations = model.consultations(user);
 			
-			consultationsView.setTableModel(new ConsultationInProgressTableModel(consultations));
-			consultationsView.setVisible(true);
+			if (consultations.size()>0){
+				consultationsView.setTableModel(new ConsultationInProgressTableModel(consultations));
+				consultationsView.setVisible(true);
+			}else{
+				super.displayNoItemsToShow(view);
+			}
 		}
 	}
 	

@@ -385,6 +385,10 @@ public class LibraryManager {
 	public User searchUser(String email) throws SQLException{
 		return this.dbManager.fillUser(email);
 	}
+	
+	public List<Loan> getLoansInLate() throws SQLException{
+		return this.dbManager.getLoansInLate();
+	}
 
 
 

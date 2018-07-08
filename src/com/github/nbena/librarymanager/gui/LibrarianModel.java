@@ -169,6 +169,10 @@ public class LibrarianModel extends AbstractModel {
 		}
 		return user;
 	}
+	
+	public List<Loan> getLoansInLate() throws SQLException{
+		return super.manager.getLoansInLate();
+	}
 
 
 }

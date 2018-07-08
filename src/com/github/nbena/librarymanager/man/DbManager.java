@@ -1070,5 +1070,38 @@ public class DbManager {
     	}
     	return user;
     }
+    
+    /**
+     * getLoanInLate returns a List that contains all the loans in late,
+     * the ones that: end_date < today and restitution_date is null.
+     * @return List<Loan>
+     * @throws SQLException
+     */
+    public List<Loan> getLoansInLate() throws SQLException{
+    	
+    	String query = "select lm_user.id, name, surname, email, internal, "+
+    					"loan.id, start_date, end_date, null, renew_available, "+
+    					"lm_copy.id, title, authors, year, main_topic, phouse, status "+
+    					"from lm_user join loan on lm_user.id = loan.userid "+
+    					"join lm_copy on loan.copyid = lm_copy.id "+
+    					"join book on lm_copy.bookid = book.id "+
+    					"where end_date < current_date and restitution_date is null "+
+    					"order by loan.userid";
+    	
+    	Statement stat = this.connection.createStatement();
+    	
+    	List<Loan> loans = new LinkedList<Loan>();
+    	
+    	ResultSet rs = stat.executeQuery(query);
+    	
+    	while(rs.next()){
+    		
+    		User user = DbManagerHelper.getUserFrom(rs, 1);
+    		Copy copy = DbManagerHelper.getCopyFrom(rs, 11);
+    		Loan loan = DbManagerHelper.getLoanFrom(rs, 6, copy, user);
+    		loans.add(loan);
+    	}
+    	return loans;
+    }
 
 }

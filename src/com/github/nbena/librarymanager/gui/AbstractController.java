@@ -9,7 +9,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 
-import com.github.nbena.librarymanager.gui.view.GenericTableView;
+import com.github.nbena.librarymanager.gui.view.AbstractTableView;
 import com.github.nbena.librarymanager.gui.view.SearchableBook;
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
@@ -21,7 +21,7 @@ public abstract class AbstractController {
 	protected LocalDate gotDate;
 	
 	
-	protected GenericTableView genericTableView;
+	// protected GenericTableView genericTableView;
 	protected SearchableBook searchableBookView;
 	
 	
@@ -127,12 +127,12 @@ public abstract class AbstractController {
 		displayMessage(component, "Non ci sono elementi da mostrare", "", Integer.MAX_VALUE);
 	}
 	
-	protected void displayTableItems(AbstractTableModel tableModel, Component component){
+	protected void displayTableItems(AbstractTableModel tableModel, AbstractTableView view, Component component){
 	
 		if(tableModel.getRowCount()>0){
-			this.genericTableView.setTableModel(tableModel);
-			this.genericTableView.setAlwaysOnTop(true);
-			this.genericTableView.setVisible(true);		
+			view.setTableModel(tableModel);
+			view.setAlwaysOnTop(true);
+			view.setVisible(true);		
 		}else{
 			this.displayNoItemsToShow(component);
 		}

@@ -1,29 +1,17 @@
 package com.github.nbena.librarymanager.gui.view;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.border.EmptyBorder;
 
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
-import java.awt.GridLayout;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-
 import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
-public class GenericTableView extends AbstractTableView implements Popupable, VisibleView {
+public class GenericUserTableView extends AbstractTableView implements Popupable, VisibleView {
 
-	private final JPanel contentPanel = new JPanel();
+	// private final JPanel contentPanel = new JPanel();
 	// private JTable table;
 	// private JPopupMenu menu;
 	private JMenuItem mntmViewDetails;
@@ -70,7 +58,7 @@ public class GenericTableView extends AbstractTableView implements Popupable, Vi
 	 */
 	public static void main(String[] args) {
 		try {
-			GenericTableView dialog = new GenericTableView();
+			GenericUserTableView dialog = new GenericUserTableView();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -81,36 +69,36 @@ public class GenericTableView extends AbstractTableView implements Popupable, Vi
 	/**
 	 * Create the dialog.
 	 */
-	public GenericTableView() {
-		setBounds(100, 100, 450, 334);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		
-		table = new JTable();
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		contentPanel.add(scrollPane);
-		
-		scrollPane.setViewportView(this.table);
-		
-		
-		JPanel buttonPane = new JPanel();
-		buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
-		buttonPane.setBounds(0, 177, 370, 43);
-		getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			
-		JButton okButton = new JButton("Ok");
-		buttonPane.add(okButton);
-		
-		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
-				dispose();
-			}
-		});
+	public GenericUserTableView() {
+//		setBounds(100, 100, 450, 334);
+//		getContentPane().setLayout(new BorderLayout());
+//		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+//		getContentPane().add(contentPanel, BorderLayout.CENTER);
+//		contentPanel.setLayout(new GridLayout(1, 0, 0, 0));
+//		
+//		table = new JTable();
+//		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+//		
+//		JScrollPane scrollPane = new JScrollPane();
+//		contentPanel.add(scrollPane);
+//		
+//		scrollPane.setViewportView(this.table);
+//		
+//		
+//		JPanel buttonPane = new JPanel();
+//		buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
+//		buttonPane.setBounds(0, 177, 370, 43);
+//		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+//			
+//		JButton okButton = new JButton("Ok");
+//		buttonPane.add(okButton);
+//		
+//		okButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				setVisible(false);
+//				dispose();
+//			}
+//		});
 		
 		this.menu = new JPopupMenu();
 		

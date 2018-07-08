@@ -40,7 +40,7 @@ import com.github.nbena.librarymanager.gui.userint.Details;
 import com.github.nbena.librarymanager.gui.userint.LoanDetails;
 import com.github.nbena.librarymanager.gui.userint.LoanReservationDetails;
 import com.github.nbena.librarymanager.gui.userint.SeatReservationDetails;
-import com.github.nbena.librarymanager.gui.view.GenericTableView;
+import com.github.nbena.librarymanager.gui.view.GenericUserTableView;
 import com.github.nbena.librarymanager.gui.view.LoanView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.UserView;
@@ -61,6 +61,7 @@ public class UserController extends AbstractController {
 	private Details details;
 	
 	private UserController controller;
+	private GenericUserTableView genericTableView;
 	
 	// private LocalDate gotDate;
 	
@@ -69,7 +70,7 @@ public class UserController extends AbstractController {
 		this.userView = userView;
 		this.userModel = userModel;
 		
-		super.genericTableView = new GenericTableView();
+		this.genericTableView = new GenericUserTableView();
 		super.searchableBookView = new SearchableBookView();
 		this.loanView = new LoanView();
 		
@@ -114,7 +115,7 @@ public class UserController extends AbstractController {
 			
 					details = new BookDetails(controller);
 					
-					displayTableItems(new CopyTableModel(copies), userView);
+					displayTableItems(new CopyTableModel(copies), genericTableView, userView);
 					genericTableView.setMenuItemReserveEnabled(true);
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -233,7 +234,9 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<ConsultationReservation> reservations = userModel.getConsultationReservation();
-					displayTableItems(new ConsultationReservationTableModel(reservations), userView);
+					displayTableItems(new ConsultationReservationTableModel(reservations),
+							genericTableView,
+							userView);
 					
 					details = new ConsultationReservationDetails(controller);
 					
@@ -253,7 +256,7 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<Loan> loans = userModel.getActiveLoan();
-					displayTableItems(new LoanTableModel(loans), userView);
+					displayTableItems(new LoanTableModel(loans), genericTableView, userView);
 					
 					details = new LoanDetails(controller);
 					
@@ -273,7 +276,7 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<LoanReservation> reservations = userModel.getLoanReservation();
-					displayTableItems(new LoanReservationTableModel(reservations), userView);
+					displayTableItems(new LoanReservationTableModel(reservations), genericTableView, userView);
 					
 					details = new LoanReservationDetails(controller);
 					
@@ -295,7 +298,7 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<SeatReservation> reservations = userModel.getSeatsReservations();	
-					displayTableItems(new SeatReservationTableModel(reservations), userView);
+					displayTableItems(new SeatReservationTableModel(reservations), genericTableView, userView);
 					
 					details = new SeatReservationDetails(controller);
 					

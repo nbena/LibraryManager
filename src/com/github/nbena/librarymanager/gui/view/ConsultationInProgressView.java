@@ -17,28 +17,19 @@
 
 package com.github.nbena.librarymanager.gui.view;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.border.EmptyBorder;
 
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
 public class ConsultationInProgressView extends AbstractTableView implements VisibleView,
 	Popupable {
 
-	private final JPanel contentPanel = new JPanel();
+	// private final JPanel contentPanel = new JPanel();
 	
 	private JMenuItem mntmDelivery;
 	
@@ -65,35 +56,36 @@ public class ConsultationInProgressView extends AbstractTableView implements Vis
 	 * Create the dialog.
 	 */
 	public ConsultationInProgressView() {
-		setBounds(100, 100, 450, 300);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setLayout(new FlowLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		
-		table = new JTable();
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		contentPanel.add(scrollPane);
-		
-		scrollPane.setViewportView(table);
-		
-		
-		JPanel buttonPane = new JPanel();
-		buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
-		buttonPane.setBounds(0, 177, 370, 43);
-		getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			
-		JButton okButton = new JButton("Ok");
-		buttonPane.add(okButton);
-		
-		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
-				dispose();
-			}
-		});	
+//		setBounds(100, 100, 450, 300);
+//		getContentPane().setLayout(new BorderLayout());
+//		contentPanel.setLayout(new FlowLayout());
+//		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+//		getContentPane().add(contentPanel, BorderLayout.CENTER);
+//		
+//		table = new JTable();
+//		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+//		
+//		JScrollPane scrollPane = new JScrollPane();
+//		contentPanel.add(scrollPane);
+//		
+//		scrollPane.setViewportView(table);
+//		
+//		
+//		JPanel buttonPane = new JPanel();
+//		buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
+//		buttonPane.setBounds(0, 177, 370, 43);
+//		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+//			
+//		JButton okButton = new JButton("Ok");
+//		buttonPane.add(okButton);
+//		
+//		okButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				setVisible(false);
+//				dispose();
+//			}
+//		});	
+		super();
 		
 		this.menu = new JPopupMenu();
 		

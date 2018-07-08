@@ -19,7 +19,6 @@ package com.github.nbena.librarymanager.gui.view;
 
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
@@ -87,12 +86,9 @@ public class ConsultationInProgressView extends AbstractTableView implements Vis
 //		});	
 		super();
 		
-		this.menu = new JPopupMenu();
-		
 		this.mntmDelivery = new JMenuItem("Consegna consultazione");
 		this.menu.add(this.mntmDelivery);
 		
-		this.table.setComponentPopupMenu(this.menu);
 	}
 
 

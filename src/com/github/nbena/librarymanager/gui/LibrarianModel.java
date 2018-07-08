@@ -177,6 +177,10 @@ public class LibrarianModel extends AbstractModel {
 	public List<Loan> getLoansInLate() throws SQLException{
 		return super.manager.getLoansInLate();
 	}
+	
+	public List<Book> getDeletableBooks() throws SQLException{
+		return super.manager.getDeletableBooks();
+	}
 
 
 }

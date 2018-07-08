@@ -1133,7 +1133,7 @@ public class DbManager {
      */
     public List<Book> getDeletableBooks () throws SQLException{
     	 
-    	String query = "select id, title, authors, year, main_topic, phouse, \"\""+
+    	String query = "select id, title, authors, year, main_topic, phouse, ''"+
     					"from book where id not in ("+
     					"select bookid from lm_copy)";
     	

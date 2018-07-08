@@ -2,7 +2,6 @@ package com.github.nbena.librarymanager.gui.view;
 
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
@@ -100,8 +99,6 @@ public class GenericUserTableView extends AbstractTableView implements Popupable
 //			}
 //		});
 		
-		this.menu = new JPopupMenu();
-		
 		this.mntmViewDetails = new JMenuItem("Dettagli");
 		this.mntmCancel = new JMenuItem("Cancella");
 		this.mntmReserve = new JMenuItem("Prenota");
@@ -109,8 +106,6 @@ public class GenericUserTableView extends AbstractTableView implements Popupable
 		this.menu.add(this.mntmViewDetails);
 		this.menu.add(this.mntmCancel);
 		this.menu.add(this.mntmReserve);
-		
-		this.table.setComponentPopupMenu(this.menu);
 		
 	}
 

@@ -20,6 +20,7 @@ package com.github.nbena.librarymanager.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -30,6 +31,7 @@ import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddUser;
+import com.github.nbena.librarymanager.gui.librarianint.ActionChangeCopiesNumber;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation;
@@ -38,13 +40,16 @@ import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedConsult
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionSendMail;
 import com.github.nbena.librarymanager.gui.view.ConsultationInProgressView;
+import com.github.nbena.librarymanager.gui.view.BookTableView;
 import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.LoansInLateView;
 import com.github.nbena.librarymanager.gui.view.RegisterUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
+import com.github.nbena.librarymanager.gui.view.table.BookTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
+import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.ReservationException;
@@ -75,6 +80,7 @@ public class LibrarianController extends AbstractController {
 	private RegisterUserView userView;
 	private ConsultationInProgressView consultationsView;
 	private LoansInLateView loansInLateView;
+	private BookTableView bookView;
 	
 	private boolean isWithUser = false;
 	
@@ -110,6 +116,7 @@ public class LibrarianController extends AbstractController {
 		this.userView = new RegisterUserView();
 		this.consultationsView = new ConsultationInProgressView();
 		this.loansInLateView = new LoansInLateView();
+		this.bookView = new BookTableView();
 		
 		this.addListeners();
 		
@@ -123,6 +130,7 @@ public class LibrarianController extends AbstractController {
 		this.addUserViewListeners();
 		this.addConsultationsListListeners();
 		this.addLateLoansListeners();
+		this.addBookViewListeners();
 	}
 	
 	
@@ -250,11 +258,14 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					showWithUsersView(false);
-					// TODO this is different
-					// TODO add action here too
-				} catch (SQLException e1) {
+				
+				try{
+					action = new ActionAddBook(model);
+					List<Book> books = model.getDeletableBooks();
+					bookView.setMenuItemChangeCopiesNumberEnabled(false);
+					bookView.setMenuItemDeleteEnabled(true);
+					displayTableItems(new BookTableModel(books), bookView, view);
+				}catch(SQLException e1){
 					displayError(view, e1);
 				}
 			}
@@ -267,8 +278,17 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					showWithUsersView(false);
+					/**
+					 * We use the deleteBookView as a more generic BookView
+					 * that lets us to change copies number too.
+					 */
 					// TODO this is different
 					// TODO add action here too
+					action = new ActionChangeCopiesNumber(model);
+					List<Book> books = /**/new LinkedList<Book>();
+					bookView.setMenuItemChangeCopiesNumberEnabled(false);
+					bookView.setMenuItemDeleteEnabled(true);
+					displayTableItems(new BookTableModel(books), bookView, view);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -478,7 +498,8 @@ public class LibrarianController extends AbstractController {
 				JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	private void askConfirmationAndExecuteAction(Object... args){
+	private boolean[] askConfirmationAndExecuteAction(Object... args){
+		boolean thrown = false;
 		int ok = JOptionPane.OK_OPTION;
 		if (action.askConfirmation()){
 			ok = this.askActionConfirmation();
@@ -490,10 +511,11 @@ public class LibrarianController extends AbstractController {
 				action.execute();
 			} catch (SQLException | ReservationException e) {
 				displayError(view, e);
+				thrown = true;
 			}
 			this.showActionResult();
 		}
-		
+		return new boolean[]{ok == JOptionPane.OK_OPTION, thrown};
 	}
 	
 	
@@ -515,6 +537,62 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				userView.setVisible(false);
 				userView.reset();
+			}
+			
+		});
+	}
+	
+	
+	private void addBookViewListeners(){
+		
+		super.addPopupListenerToTable(bookView);
+		
+		this.bookView.addMenuItemDeleteListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				Book book = (Book) bookView.getSelectedItem();
+				boolean [] done = askConfirmationAndExecuteAction(book);
+				if (done[1] == true){
+					bookView.setVisible(false);
+				}
+				
+				if (done[0] && done[1] == false){
+					/*
+					 * After a book has been deleted, we fetch the
+					 * remaining list of available-to-delete books.
+					 */
+					try {
+						List<Book> books = model.getDeletableBooks();
+						if(books.size() > 0){
+							// If there are books to show
+							bookView.setTableModel(new BookTableModel(books));
+						}else{
+							// else set visibility to false cause
+							// there's nothing to show.
+							bookView.setVisible(false);
+							displayMessage(view, "Non ci sono altri libri cancellabili",
+									"Info", JOptionPane.INFORMATION_MESSAGE);
+						}
+					} catch (SQLException e) {
+						displayError(view, e);
+					}
+					
+				}
+				
+			}
+			
+		});
+		
+		
+		//TODO change the table model to show copies number too.
+		this.bookView.addMenuItemChangeCopiesNumberListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
 			}
 			
 		});

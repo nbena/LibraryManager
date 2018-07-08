@@ -21,7 +21,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 @SuppressWarnings("serial")
 public class LoansInLateView extends AbstractTableView implements VisibleView {
@@ -51,12 +50,8 @@ public class LoansInLateView extends AbstractTableView implements VisibleView {
 	public LoansInLateView() {
 		super();
 		
-		super.menu = new JPopupMenu();
-		
 		this.mntmSendMail = new JMenuItem("Invia sollecito");
 		this.menu.add(this.mntmSendMail);
-		
-		this.table.setComponentPopupMenu(super.menu);
 	}
 
 }

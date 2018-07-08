@@ -395,6 +395,10 @@ public class LibraryManager {
 	public List<Loan> getLoansInLate() throws SQLException{
 		return this.dbManager.getLoansInLate();
 	}
+	
+	public List<Book> getDeletableBooks() throws SQLException{
+		return this.dbManager.getDeletableBooks();
+	}
 
 
 

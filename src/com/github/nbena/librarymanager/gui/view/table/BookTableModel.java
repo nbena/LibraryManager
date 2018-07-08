@@ -25,13 +25,13 @@ import javax.swing.table.AbstractTableModel;
 import com.github.nbena.librarymanager.core.Book;
 
 @SuppressWarnings("serial")
-public class BookTableItem extends AbstractTableModel implements SelectableItem {
+public class BookTableModel extends AbstractTableModel implements SelectableItem {
 
 
 	private final String [] columns = {"Titolo", "Autori", "Anno", "Casa ed.", "Argomento"};
 	private List<Book> items;
 	
-	public BookTableItem(List<Book> items) {
+	public BookTableModel(List<Book> items) {
 		this.items = items;
 	}
 	

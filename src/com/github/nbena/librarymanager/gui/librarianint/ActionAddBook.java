@@ -12,7 +12,8 @@ public class ActionAddBook extends AbstractAction implements Action {
 	
 	public ActionAddBook(LibrarianModel model){
 		super(model);
-		super.ask = false;
+		super.ask = true;
+		super.confirmationMessage = "Confermi l'aggiunta di questo libro?";
 		super.resultMessage = "Libro aggiunto";
 	}
 
@@ -21,7 +22,7 @@ public class ActionAddBook extends AbstractAction implements Action {
 	 @ \ensures this.book.getTitle().equals((String)args[0])
 	 @	\ensures \forall int i = 0; i < this.book.getAuthors().length; \exists int j; j = 0;
 	 @	j < ((String[]) args[1]).length
-	 @	book.getAuthors[i].equals(((String[]) args[1])[j]);
+	 @	\ensures book.getAuthors[i].equals(((String[]) args[1])[j]);
 	 @  \ensures this.book.getYearOfPublishing() == (int)args[2];
 	 @	\ensures this.book.getMainTopic().equals((String)args[3]);
 	 @	\ensures this.book.getPublishingHouse().equals((String)args[4]);

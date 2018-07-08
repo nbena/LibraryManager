@@ -28,6 +28,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.librarianint.Action;
+import com.github.nbena.librarymanager.gui.librarianint.ActionAddBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddUser;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryLoan;
@@ -135,8 +136,8 @@ public class LibrarianController extends AbstractController {
 //					User user = askUser();
 //					searchableBookView.reset();
 //					searchableBookView.setVisible(true);
-					showWithUsersView(true);
 					action = new ActionNewNotReservedLoan(model);
+					showWithUsersView(true);
 				} catch (SQLException e) {
 					displayError(view, e);
 				}
@@ -151,9 +152,9 @@ public class LibrarianController extends AbstractController {
 //					User user = askUser();
 //					searchableBookView.reset();
 //					searchableBookView.setVisible(true);
+					action = new ActionNewReservedLoan(model);
 					showWithUsersView(true);
 					// action = new ActionNewReservedLoan(model);
-					action = new ActionNewReservedLoan(model);
 				} catch (SQLException e) {
 					displayError(view, e);
 				}
@@ -165,8 +166,8 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					showWithUsersView(true);
 					action = new ActionDeliveryLoan(model);
+					showWithUsersView(true);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -179,8 +180,8 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					showWithUsersView(true);
 					action = new ActionNewNotReservedConsultation(model);
+					showWithUsersView(true);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -193,8 +194,8 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					showWithUsersView(true);
 					action = new ActionNewReservedConsultation(model);
+					showWithUsersView(true);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -236,9 +237,8 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					action = new ActionAddBook(model);
 					showWithUsersView(false);
-					// TODO this is different
-					// TODO add action here too
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -437,6 +437,8 @@ public class LibrarianController extends AbstractController {
 	
 	private void addLateLoansListeners(){
 		
+		super.addPopupListenerToTable(this.loansInLateView);
+		
 		this.loansInLateView.addMenuItemSendMailListener(new ActionListener(){
 
 			@Override
@@ -473,7 +475,7 @@ public class LibrarianController extends AbstractController {
 	
 	private void showActionResult(){
 		JOptionPane.showMessageDialog(view, this.action.getResultMessage(), "Info",
-				JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private void askConfirmationAndExecuteAction(Object... args){

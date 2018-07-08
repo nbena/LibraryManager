@@ -301,4 +301,20 @@ public class DbManagerHelper {
 		query = query.substring(0, query.lastIndexOf(logical));
 		return query;
 	}
+	
+	final static String CONSULTATION_IN_PROGRESS_QUERY =
+			"select consultation.id, start_date, end_date, "+
+			"copyid, title, authors, year, main_topic, phouse, status, "+
+			"lm_user.id, name, surname, internal "+
+			"from lm_user join consultation on lm_user.id = consultation.userid "+
+			"join lm_copy on lm_copy.id = consultation.copyid "+
+			"join book on lm_copy.id = book.id ";
+	
+	static String CONSULTATION_IN_PROGRESS_BY_USER_QUERY = 
+			"select consultation.id, start_date, end_date, copyid, title, authors, "+
+			"year, main_topic, phouse, status "+
+			"from consultation join lm_copy on consultation.copyid = lm_copy.id "+
+			"join book on lm_copy.bookid = book.id "+
+			"where end_date is null and consultation.userid = ?";
+			
 }

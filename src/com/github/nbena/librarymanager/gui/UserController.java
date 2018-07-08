@@ -52,7 +52,10 @@ import com.github.nbena.librarymanager.gui.view.table.LoanTableModel;
 import com.github.nbena.librarymanager.gui.view.table.SeatReservationTableModel;
 
 public class UserController extends AbstractController {
-	
+	/**
+	 * The action pattern is not followed HERE because user's actions are not
+	 * 'atomic' as librarian's ones.
+	 */
 	
 	private UserView userView;
 	private UserModel userModel;

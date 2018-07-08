@@ -53,7 +53,7 @@ public class LoansInLateView extends AbstractTableView implements VisibleView {
 		
 		super.menu = new JPopupMenu();
 		
-		this.mntmSendMail = new JMenuItem();
+		this.mntmSendMail = new JMenuItem("Invia sollecito");
 		this.menu.add(this.mntmSendMail);
 		
 		this.table.setComponentPopupMenu(super.menu);

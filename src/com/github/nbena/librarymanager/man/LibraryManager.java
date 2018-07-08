@@ -379,7 +379,13 @@ public class LibraryManager {
 	}
 	
 	public List<Consultation> getConsultationInProgressByUser(User user) throws SQLException{
-		return this.dbManager.consultationInProgressByUser(user);
+		List<Consultation> result = null;
+		if (user!=null){
+			result = this.dbManager.consultationInProgressByUser(user);
+		}else{
+			result = this.dbManager.consultationInProgress();
+		}
+		return result;
 	}
 	
 	public User searchUser(String email) throws SQLException{

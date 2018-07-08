@@ -69,6 +69,10 @@ public class LibrarianModel extends AbstractModel {
 		super.manager.deleteBook(book);
 	}
 	
+	public void sendMailFor(Loan loan){
+		
+	}
+	
 //	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
 //		super.manager.deliveryBook(user, copy);
 //	}

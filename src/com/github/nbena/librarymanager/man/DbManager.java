@@ -1024,11 +1024,7 @@ public class DbManager {
     // TODO add tests for this
     public List<Consultation> consultationInProgressByUser(User user) throws SQLException {
     	
-    	String query = "select consultation.id, start_date, end_date, copyid, title, authors, "+
-    					"year, main_topic, phouse, status "+
-    					"from consultation join lm_copy on consultation.copyid = lm_copy.id "+
-    					"join book on lm_copy.bookid = book.id "+
-    					"where end_date is null and consultation.userid = ?";
+    	String query = DbManagerHelper.CONSULTATION_IN_PROGRESS_BY_USER_QUERY;
     	
     	PreparedStatement pstmt = this.connection.prepareStatement(query);
     	
@@ -1048,6 +1044,31 @@ public class DbManager {
     		
     		consultations.add(consultation);
     		
+    	}
+    	
+    	return consultations;
+    }
+    
+    
+    public List<Consultation> consultationInProgress() throws SQLException{
+    	
+    	String query = DbManagerHelper.CONSULTATION_IN_PROGRESS_QUERY;
+    	
+    	Statement stat = this.connection.createStatement();
+    	
+    	List<Consultation> consultations = new LinkedList<Consultation>();
+    	
+    	ResultSet rs = stat.executeQuery(query);
+    	
+    	while(rs.next()){
+    		Copy copy = DbManagerHelper.getCopyFrom(rs, 4);
+    		CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
+    		
+    		User user = DbManagerHelper.getUserFrom(rs, 11);
+    		
+    		Consultation consultation = DbManagerHelper.getConsultationFrom(rs, 1, copyForConsultation, user);
+    		
+    		consultations.add(consultation);
     	}
     	
     	return consultations;
@@ -1080,7 +1101,7 @@ public class DbManager {
     public List<Loan> getLoansInLate() throws SQLException{
     	
     	String query = "select lm_user.id, name, surname, email, internal, "+
-    					"loan.id, start_date, end_date, null, renew_available, "+
+    					"loan.id, start_date, end_date, restitution_date, renew_available, "+
     					"lm_copy.id, title, authors, year, main_topic, phouse, status "+
     					"from lm_user join loan on lm_user.id = loan.userid "+
     					"join lm_copy on loan.copyid = lm_copy.id "+

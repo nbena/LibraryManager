@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
+import javax.swing.border.TitledBorder;
 
 @SuppressWarnings("serial")
 public class LibrarianView extends JFrame {
@@ -23,6 +24,9 @@ public class LibrarianView extends JFrame {
 	private JButton btnAddBook;
 	private JButton btnDeleteBook;
 	private JButton btnChangeCopiesNumber;
+	
+	private JButton btnViewConsultationsInProgress;
+	private JButton btnViewLoansInLate;
 	
 	
 	public void addActionListenerNewNotReservedLoan(ActionListener listener){
@@ -65,6 +69,14 @@ public class LibrarianView extends JFrame {
 		this.btnChangeCopiesNumber.addActionListener(listener);
 	}
 	
+	public void addActionListenerViewConsultationsInProgress(ActionListener listener){
+		this.btnViewConsultationsInProgress.addActionListener(listener);
+	}
+	
+	public void addActionListenerViewLoansInLate(ActionListener listener){
+		this.btnViewLoansInLate.addActionListener(listener);
+	}
+	
 	/**
 	 * Launch the application.
 	 */
@@ -87,50 +99,82 @@ public class LibrarianView extends JFrame {
 	public LibrarianView() {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 300);
+		setBounds(100, 100, 600, 384);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		btnNewNotReservedLoan = new JButton("Nuovo prestito non prenotato");
-		btnNewNotReservedLoan.setBounds(12, 24, 226, 24);
-		contentPane.add(btnNewNotReservedLoan);
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Utenti", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(12, 204, 271, 136);
+		contentPane.add(panel);
+		panel.setLayout(null);
 		
 		btnNewUser = new JButton("Registra utente");
-		btnNewUser.setBounds(12, 184, 135, 24);
-		contentPane.add(btnNewUser);
+		btnNewUser.setBounds(12, 26, 159, 24);
+		panel.add(btnNewUser);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(null, "Prestiti", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBounds(12, 12, 271, 186);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+		
+		btnNewNotReservedLoan = new JButton("Nuovo prestito non prenotato");
+		btnNewNotReservedLoan.setBounds(12, 22, 226, 24);
+		panel_1.add(btnNewNotReservedLoan);
 		
 		btnNewReservedLoan = new JButton("Nuovo prestito prenotato");
-		btnNewReservedLoan.setBounds(12, 68, 226, 24);
-		contentPane.add(btnNewReservedLoan);
+		btnNewReservedLoan.setBounds(12, 58, 226, 24);
+		panel_1.add(btnNewReservedLoan);
 		
 		btnDeliveryLoan = new JButton("Registra consegna prestito");
-		btnDeliveryLoan.setBounds(12, 115, 226, 24);
-		contentPane.add(btnDeliveryLoan);
+		btnDeliveryLoan.setBounds(12, 102, 226, 24);
+		panel_1.add(btnDeliveryLoan);
+		
+		btnViewLoansInLate = new JButton("Vedi prestiti in ritardo");
+		btnViewLoansInLate.setBounds(12, 150, 226, 24);
+		panel_1.add(btnViewLoansInLate);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new TitledBorder(null, "Consultazioni", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_2.setBounds(295, 12, 293, 186);
+		contentPane.add(panel_2);
+		panel_2.setLayout(null);
 		
 		btnNewNotReservedConsultation = new JButton("Nuova consultazione non prenotata");
-		btnNewNotReservedConsultation.setBounds(287, 24, 280, 24);
-		contentPane.add(btnNewNotReservedConsultation);
+		btnNewNotReservedConsultation.setBounds(12, 22, 269, 24);
+		panel_2.add(btnNewNotReservedConsultation);
 		
 		btnNewReservedConsultation = new JButton("Nuova consultazione prenotata");
-		btnNewReservedConsultation.setBounds(287, 68, 280, 24);
-		contentPane.add(btnNewReservedConsultation);
+		btnNewReservedConsultation.setBounds(12, 58, 269, 24);
+		panel_2.add(btnNewReservedConsultation);
 		
 		btnDeliveryConsultation = new JButton("Registra consegna consultazione");
-		btnDeliveryConsultation.setBounds(287, 114, 280, 24);
-		contentPane.add(btnDeliveryConsultation);
+		btnDeliveryConsultation.setBounds(12, 101, 269, 24);
+		panel_2.add(btnDeliveryConsultation);
+		
+		btnViewConsultationsInProgress = new JButton("Vedi consultazioni in corso");
+		btnViewConsultationsInProgress.setBounds(12, 144, 269, 24);
+		panel_2.add(btnViewConsultationsInProgress);
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(null, "Libri", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_3.setBounds(295, 204, 293, 136);
+		contentPane.add(panel_3);
+		panel_3.setLayout(null);
 		
 		btnAddBook = new JButton("Aggiungi libro");
-		btnAddBook.setBounds(168, 184, 135, 24);
-		contentPane.add(btnAddBook);
-		
-		btnDeleteBook = new JButton("Rimuovi libro");
-		btnDeleteBook.setBounds(168, 220, 135, 24);
-		contentPane.add(btnDeleteBook);
+		btnAddBook.setBounds(12, 22, 185, 24);
+		panel_3.add(btnAddBook);
 		
 		btnChangeCopiesNumber = new JButton("Modifica numero copie");
-		btnChangeCopiesNumber.setBounds(326, 184, 187, 24);
-		contentPane.add(btnChangeCopiesNumber);
+		btnChangeCopiesNumber.setBounds(12, 58, 187, 24);
+		panel_3.add(btnChangeCopiesNumber);
+		
+		btnDeleteBook = new JButton("Rimuovi libro");
+		btnDeleteBook.setBounds(12, 94, 185, 24);
+		panel_3.add(btnDeleteBook);
 	}
 }

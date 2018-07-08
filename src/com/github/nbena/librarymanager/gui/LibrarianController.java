@@ -28,19 +28,24 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.librarianint.Action;
+import com.github.nbena.librarymanager.gui.librarianint.ActionAddUser;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedLoan;
+import com.github.nbena.librarymanager.gui.librarianint.ActionSendMail;
 import com.github.nbena.librarymanager.gui.view.ConsultationInProgressView;
 import com.github.nbena.librarymanager.gui.view.LibrarianView;
+import com.github.nbena.librarymanager.gui.view.LoansInLateView;
 import com.github.nbena.librarymanager.gui.view.RegisterUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
+import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
 import com.github.nbena.librarymanager.core.Consultation;
+import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.ReservationException;
 
 public class LibrarianController extends AbstractController {
@@ -57,8 +62,8 @@ public class LibrarianController extends AbstractController {
 	 * -	the onclick buttons of the main view (the ones that onclick make the sub view to open)
 	 * 		instances the concrete implementation of the action.
 	 * 
-	 * This pattern is only followed when there is a view with more possible actions,
-	 * otherwise it is a unnecessary complication.
+	 * This pattern is followed EVERYWHERE HERE because it allows me to write
+	 * more consistent code. 
 	 */
 	
 	private LibrarianModel model;
@@ -68,6 +73,7 @@ public class LibrarianController extends AbstractController {
 	
 	private RegisterUserView userView;
 	private ConsultationInProgressView consultationsView;
+	private LoansInLateView loansInLateView;
 	
 	private boolean isWithUser = false;
 	
@@ -102,6 +108,7 @@ public class LibrarianController extends AbstractController {
 		this.searchableBookView = new SearchableBookUserView();
 		this.userView = new RegisterUserView();
 		this.consultationsView = new ConsultationInProgressView();
+		this.loansInLateView = new LoansInLateView();
 		
 		this.addListeners();
 		
@@ -114,6 +121,7 @@ public class LibrarianController extends AbstractController {
 		this.addSearchableViewListeners();
 		this.addUserViewListeners();
 		this.addConsultationsListListeners();
+		this.addLateLoansListeners();
 	}
 	
 	
@@ -216,7 +224,9 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				userView.setVisible(true);
+				action = new ActionAddUser(model);
 			}
 			
 		});
@@ -228,6 +238,7 @@ public class LibrarianController extends AbstractController {
 				try {
 					showWithUsersView(false);
 					// TODO this is different
+					// TODO add action here too
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -242,6 +253,7 @@ public class LibrarianController extends AbstractController {
 				try {
 					showWithUsersView(false);
 					// TODO this is different
+					// TODO add action here too
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -256,9 +268,44 @@ public class LibrarianController extends AbstractController {
 				try {
 					showWithUsersView(false);
 					// TODO this is different
+					// TODO add action here too
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
+			}
+			
+		});
+		
+		this.view.addActionListenerViewConsultationsInProgress(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+		
+				try {
+					List<Consultation> consultations = model.consultations(null);
+					displayTableItems(new ConsultationInProgressTableModel(consultations),
+							consultationsView, view);
+				} catch (SQLException e) {
+					displayError(view, e);
+				}
+			}
+			
+		});
+		
+		this.view.addActionListenerViewLoansInLate(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				try{
+					List<Loan> loans = model.getLoansInLate();
+					displayTableItems(new LoansInLateTableModel(loans),
+							loansInLateView, view);
+					action = new ActionSendMail(model);
+				}catch(SQLException e1){
+					displayError(view, e1);
+				}
+				
 			}
 			
 		});
@@ -309,22 +356,23 @@ public class LibrarianController extends AbstractController {
 				Consultation arg = (Consultation) consultationsView.getSelectedItem();
 				
 				// initialize now to avoid warning.
-				int ok = JOptionPane.OK_OPTION;
-				if(action.askConfirmation()){
-					ok = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Info",
-							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-				}
-				
-				if (ok == JOptionPane.OK_OPTION){
-					action.setArgs(arg);
-					try {
-						action.execute();
-						displayMessage(view, action.getResultMessage(), null, 0);
-						consultationsView.setVisible(false);
-					} catch (SQLException | ReservationException e) {
-						displayError(view, e);
-					}
-				}
+//				int ok = JOptionPane.OK_OPTION;
+//				if(action.askConfirmation()){
+//					ok = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Info",
+//							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+//				}
+//				
+//				if (ok == JOptionPane.OK_OPTION){
+//					action.setArgs(arg);
+//					try {
+//						action.execute();
+//						displayMessage(view, action.getResultMessage(), null, 0);
+//						consultationsView.setVisible(false);
+//					} catch (SQLException | ReservationException e) {
+//						displayError(view, e);
+//					}
+//				}
+				askConfirmationAndExecuteAction(arg);
 				
 			}
 			
@@ -354,21 +402,22 @@ public class LibrarianController extends AbstractController {
 				
 				
 				// set default to true so we can avoid a nesting level
-				int userOk = JOptionPane.OK_OPTION;
-				if (action.askConfirmation()){
-					userOk = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Info",
-							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-				}
-				
-				if (userOk == JOptionPane.OK_OPTION){
-					action.setArgs(args);
-					try{
-						action.execute();
-						displayMessage(view, action.getResultMessage(), null, 0);
-					}catch(SQLException | ReservationException e){
-						displayError(view, e);
-					}
-				}
+//				int userOk = JOptionPane.OK_OPTION;
+//				if (action.askConfirmation()){
+//					userOk = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Info",
+//							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+//				}
+//				
+//				if (userOk == JOptionPane.OK_OPTION){
+//					action.setArgs(args);
+//					try{
+//						action.execute();
+//						displayMessage(view, action.getResultMessage(), null, 0);
+//					}catch(SQLException | ReservationException e){
+//						displayError(view, e);
+//					}
+//				}
+				askConfirmationAndExecuteAction(args);
 			}
 			
 			
@@ -386,6 +435,65 @@ public class LibrarianController extends AbstractController {
 //		});
 	}
 	
+	private void addLateLoansListeners(){
+		
+		this.loansInLateView.addMenuItemSendMailListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+//				int ok = JOptionPane.OK_OPTION;
+//				if (action.askConfirmation()){
+//					ok = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(),
+//							"Domanda", JOptionPane.OK_CANCEL_OPTION);
+//				}
+//				
+//				if (ok == JOptionPane.OK_OPTION){
+//					Loan loan = (Loan) loansInLateView.getSelectedItem();	
+//					action.setArgs(loan);
+//					
+//					try {
+//						action.execute();
+//					} catch (SQLException | ReservationException e1) {
+//						displayError(view, e1);
+//					}
+//				}
+				
+				Loan loan = (Loan) loansInLateView.getSelectedItem();
+				askConfirmationAndExecuteAction(loan);
+			}
+			
+		});
+	}
+	
+	private int askActionConfirmation(){
+		return JOptionPane.showConfirmDialog(view, this.action.getConfirmationMessage(), "Conferma",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+	}
+	
+	private void showActionResult(){
+		JOptionPane.showMessageDialog(view, this.action.getResultMessage(), "Info",
+				JOptionPane.PLAIN_MESSAGE);
+	}
+	
+	private void askConfirmationAndExecuteAction(Object... args){
+		int ok = JOptionPane.OK_OPTION;
+		if (action.askConfirmation()){
+			ok = this.askActionConfirmation();
+		}
+		
+		if (ok == JOptionPane.OK_OPTION){
+			try {
+				action.setArgs(args);
+				action.execute();
+			} catch (SQLException | ReservationException e) {
+				displayError(view, e);
+			}
+			this.showActionResult();
+		}
+		
+	}
+	
 	
 	private void addUserViewListeners(){
 		
@@ -393,16 +501,8 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
 				User user = userView.getUser();
-				try {
-					model.addUser(user);
-					userView.setVisible(false);
-					userView.reset();
-				} catch (SQLException e) {
-					displayError(view, e);
-				}
-				
+				askConfirmationAndExecuteAction(user);
 			}
 			
 		});

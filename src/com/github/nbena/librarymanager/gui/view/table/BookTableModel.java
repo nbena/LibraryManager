@@ -44,6 +44,11 @@ public class BookTableModel extends AbstractTableModel implements SelectableItem
 	public int getRowCount() {
 		return this.items.size();
 	}
+	
+	@Override
+	public String getColumnName(int col){
+		return this.columns[col];
+	}
 
 	@Override
 	public Object getValueAt(int arg0, int arg1) {

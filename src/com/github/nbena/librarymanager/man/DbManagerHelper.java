@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
@@ -300,6 +302,13 @@ public class DbManagerHelper {
 		}
 		query = query.substring(0, query.lastIndexOf(logical));
 		return query;
+	}
+	
+	static BookCopiesNumber getBookCopiesNumberFrom(ResultSet rs, int startingIndex) throws SQLException{
+		
+		Book b = DbManagerHelper.getCopyFrom(rs, startingIndex);
+		int copiesNumber = rs.getInt(startingIndex + 7);
+		return new BookCopiesNumber(b, copiesNumber);
 	}
 	
 	final static String CONSULTATION_IN_PROGRESS_QUERY =

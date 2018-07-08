@@ -26,6 +26,7 @@ import java.util.List;
 
 import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
@@ -396,8 +397,12 @@ public class LibraryManager {
 		return this.dbManager.getLoansInLate();
 	}
 	
-	public List<Book> getDeletableBooks() throws SQLException{
-		return this.dbManager.getDeletableBooks();
+	public List<? extends Book> getDeletableBooks(boolean withCopiesNumber) throws SQLException{
+		return this.dbManager.getDeletableBooks(withCopiesNumber);
+	}
+	
+	public List<BookCopiesNumber> books() throws SQLException{
+		return this.dbManager.bookCopiesNumber();
 	}
 
 

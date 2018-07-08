@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
@@ -1131,9 +1132,9 @@ public class DbManager {
      * @return
      * @throws SQLException
      */
-    public List<Book> getDeletableBooks () throws SQLException{
+    public List<? extends Book> getDeletableBooks (boolean withCopiesNumber) throws SQLException{
     	 
-    	String query = "select id, title, authors, year, main_topic, phouse, ''"+
+    	String query = "select id, title, authors, year, main_topic, phouse, 'free'"+
     					"from book where id not in ("+
     					"select bookid from lm_copy)";
     	
@@ -1145,7 +1146,34 @@ public class DbManager {
     	
     	while(rs.next()){
     		Book book = DbManagerHelper.getCopyFrom(rs, 1);
+    		if (withCopiesNumber){
+    			book = new BookCopiesNumber(book, 0);
+    		}
     		books.add(book);
+    	}
+    	
+    	return books;
+    }
+    
+    public List<BookCopiesNumber> bookCopiesNumber() throws SQLException{
+    	
+    	// Pg allows this not-perfect query recognizing that we group by a 
+    	// primary key.
+    	String query = "select book.id, title, authors, year, main_topic, phouse, " +
+    				   "'free', count(*) "+
+    				   "from book join lm_copy on book.id = lm_copy.bookid "+
+    				   "group by book.id "+
+    				   "order by title, authors";
+    	
+    	Statement stat = this.connection.createStatement();
+    	
+    	List<BookCopiesNumber> books = new LinkedList<BookCopiesNumber>();
+    	
+    	ResultSet rs = stat.executeQuery(query);
+    	
+    	while(rs.next()){
+    		BookCopiesNumber b = DbManagerHelper.getBookCopiesNumberFrom(rs, 1);
+    		books.add(b);
     	}
     	
     	return books;

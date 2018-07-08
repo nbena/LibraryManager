@@ -20,7 +20,6 @@ package com.github.nbena.librarymanager.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -45,11 +44,12 @@ import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.LoansInLateView;
 import com.github.nbena.librarymanager.gui.view.RegisterUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
-import com.github.nbena.librarymanager.gui.view.table.BookTableModel;
+import com.github.nbena.librarymanager.gui.view.table.BookCopiesNumberTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.ReservationException;
@@ -261,10 +261,10 @@ public class LibrarianController extends AbstractController {
 				
 				try{
 					action = new ActionAddBook(model);
-					List<Book> books = model.getDeletableBooks();
+					List<BookCopiesNumber> books = model.getDeletableBooks();
 					bookView.setMenuItemChangeCopiesNumberEnabled(false);
 					bookView.setMenuItemDeleteEnabled(true);
-					displayTableItems(new BookTableModel(books), bookView, view);
+					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
 				}catch(SQLException e1){
 					displayError(view, e1);
 				}
@@ -277,7 +277,6 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					showWithUsersView(false);
 					/**
 					 * We use the deleteBookView as a more generic BookView
 					 * that lets us to change copies number too.
@@ -285,10 +284,10 @@ public class LibrarianController extends AbstractController {
 					// TODO this is different
 					// TODO add action here too
 					action = new ActionChangeCopiesNumber(model);
-					List<Book> books = /**/new LinkedList<Book>();
+					List<BookCopiesNumber> books = model.books();
 					bookView.setMenuItemChangeCopiesNumberEnabled(false);
 					bookView.setMenuItemDeleteEnabled(true);
-					displayTableItems(new BookTableModel(books), bookView, view);
+					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -564,10 +563,10 @@ public class LibrarianController extends AbstractController {
 					 * remaining list of available-to-delete books.
 					 */
 					try {
-						List<Book> books = model.getDeletableBooks();
+						List<BookCopiesNumber> books = model.getDeletableBooks();
 						if(books.size() > 0){
 							// If there are books to show
-							bookView.setTableModel(new BookTableModel(books));
+							bookView.setTableModel(new BookCopiesNumberTableModel(books));
 						}else{
 							// else set visibility to false cause
 							// there's nothing to show.

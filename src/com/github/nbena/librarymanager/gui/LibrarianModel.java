@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.InternalUser;
@@ -178,8 +179,15 @@ public class LibrarianModel extends AbstractModel {
 		return super.manager.getLoansInLate();
 	}
 	
-	public List<Book> getDeletableBooks() throws SQLException{
-		return super.manager.getDeletableBooks();
+	// here we cast from parent to child which is not good
+	// but here I know it's safe
+	@SuppressWarnings("unchecked")
+	public List<BookCopiesNumber> getDeletableBooks() throws SQLException{
+		return (List<BookCopiesNumber>) super.manager.getDeletableBooks(true);
+	}
+	
+	public List<BookCopiesNumber> books() throws SQLException{
+		return super.manager.books();
 	}
 
 

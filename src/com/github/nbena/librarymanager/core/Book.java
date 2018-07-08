@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class Book implements IDble {
 	
 	protected String title;
-	private int ID;
+	protected int ID;
 	protected String [] authors;
 	protected int yearOfPublishing;
 	protected String mainTopic;

@@ -245,6 +245,14 @@ begin
 		where book_id = $1
 	);
 
+	-- can't renew, sorry
+	update loan set renew_available = false
+	where copyid in 
+	(	select lm_copy.id
+		from lm_copy join book on lm_copy.bookid = book.id
+		where book_id = $1
+	);
+
 	return max_available;
 	end
 $$ language plpgsql;

@@ -325,5 +325,23 @@ public class DbManagerHelper {
 			"from consultation join lm_copy on consultation.copyid = lm_copy.id "+
 			"join book on lm_copy.bookid = book.id "+
 			"where end_date is null and consultation.userid = ?";
+	
+	private final static String CONSULTATION_RESERVATION_BY_USER = "select copyid, title, authors, year, main_topic, "+
+			"phouse, status, for_consultation, "+
+			"seat_number, table_number, "+
+			"cr.id, time_stamp, reservation_date "+
+			"from book join lm_copy on book.id = lm_copy.bookid "+
+			"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
+			"where cr.userid=?";
+	
+	static String getConsultationReservationByUserQuery(LocalDate date){
+		
+		String result = CONSULTATION_RESERVATION_BY_USER;
+		if(date!=null){
+			result += "and reservation_date = ?";
+		}
+		
+		return result;
+	}
 			
 }

@@ -35,7 +35,6 @@ import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
-import com.github.nbena.librarymanager.core.Emailable;
 import com.github.nbena.librarymanager.core.IDble;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
@@ -676,25 +675,25 @@ public class DbManager {
 		pstmt.execute();
 	}
 
-	public User getUser(Emailable login) throws SQLException{
-
-		String query = "select id, name, surname, email, internal "+
-						"from lm_user where email = ?";
-
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-
-		pstmt.setString(1, login.getEmail());
-
-		User user = null;
-
-		ResultSet rs = pstmt.executeQuery();
-
-		if(rs.next()){
-
-		}
-
-		return user;
-	}
+//	public User getUser(Emailable login) throws SQLException{
+//
+//		String query = "select id, name, surname, email, internal "+
+//						"from lm_user where email = ?";
+//
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//
+//		pstmt.setString(1, login.getEmail());
+//
+//		User user = null;
+//
+//		ResultSet rs = pstmt.executeQuery();
+//
+//		if(rs.next()){
+//
+//		}
+//
+//		return user;
+//	}
 
 	public Librarian authenticateLibrarian(Loginable librarian) throws SQLException{
 		String query =  "select id, email from librarian where "+
@@ -892,20 +891,25 @@ public class DbManager {
 		return reservations;
 	}
 
-    public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user) throws SQLException{
+	/**
+	 * get the consultations reservations for a given user, and possibly, for a given date.
+	 * @param user 
+	 * @param date can be <pre>null</pre> if you want all the reservations.
+	 * @return
+	 * @throws SQLException
+	 */
+    public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user, LocalDate date) throws SQLException{
 
-		String query = "select copyid, title, authors, year, main_topic, "+
-				"phouse, status, for_consultation, "+
-				"seat_number, table_number, "+
-				"cr.id, time_stamp, reservation_date "+
-				"from book join lm_copy on book.id = lm_copy.bookid "+
-				"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
-				"where cr.userid=?";
+		String query = DbManagerHelper.getConsultationReservationByUserQuery(date);
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 
 		// System.out.println(query);
 		pstmt.setInt(1, user.getID());
+		
+		if(date!=null){
+			pstmt.setObject(2, date);
+		}
 
 		ResultSet rs = pstmt.executeQuery();
 		List<ConsultationReservation> reservations = new LinkedList<ConsultationReservation>();
@@ -1075,7 +1079,7 @@ public class DbManager {
     	return consultations;
     }
     
-    public User fillUser(String email) throws SQLException{
+    public User getUser(String email) throws SQLException{
     	
     	String query = "select id, name, surname, email, internal from lm_user "+
     					"where email = ?";

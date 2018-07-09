@@ -80,7 +80,7 @@ public class UserModel extends AbstractModel {
 	}
 	
 	public List<ConsultationReservation> getConsultationReservation() throws SQLException{
-		return super.manager.getConsultationReservationByUser((InternalUser) super.user);
+		return super.manager.getConsultationReservationByUser((InternalUser) super.user, null);
 	}
 	
 	public List<LoanReservation> getLoanReservation() throws SQLException{

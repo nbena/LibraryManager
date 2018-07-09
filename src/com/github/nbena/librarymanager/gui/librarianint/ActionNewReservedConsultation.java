@@ -2,11 +2,13 @@ package com.github.nbena.librarymanager.gui.librarianint;
 
 import java.sql.SQLException;
 
-import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionNewReservedConsultation extends AbstractActionWithBookUser {
+public class ActionNewReservedConsultation extends AbstractAction {
+	
+	private ConsultationReservation reservation;
 	
 	public ActionNewReservedConsultation(LibrarianModel model){
 		super(model);
@@ -18,8 +20,15 @@ public class ActionNewReservedConsultation extends AbstractActionWithBookUser {
 	
 	@Override
 	public void execute() throws SQLException, ReservationException{
-		super.model.startReservedConsultation((InternalUser) super.user, super.title,
-				super.authors, super.year, super.topic, super.phouse);
+//		super.model.startReservedConsultation((InternalUser) super.user, super.title,
+//				super.authors, super.year, super.topic, super.phouse);
+		super.model.startReservedConsultation(this.reservation);
+	}
+
+
+	@Override
+	public void setArgs(Object... args) {
+		this.reservation = (ConsultationReservation) args[0];
 	}
 
 }

@@ -40,11 +40,23 @@ public class LibrarianModel extends AbstractModel {
 		super(manager);
 	}
 	
+	/**
+	 * Get the full user object from the given mail.
+	 * @param email the search param
+	 * @return the user with this email
+	 * @throws SQLException
+	 * @throws ReservationException if the user is not found
+	 */
+	public User getUser(String email) throws SQLException, ReservationException{
+		User user = super.manager.getUserFromMail(email);
+		if(user!=null){
+			throw new ReservationException("Utente non trovato");
+		}
+		return user;
+	}
 	
-	public User getUserFromEmail(String email) throws SQLException{
-		User user = new User();
-		user.setEmail(email);
-		return super.manager.getUserFromMail(user);
+	public User getUser(User u) throws SQLException, ReservationException{
+		return this.getUser(u.getEmail());
 	}
 
 //	public void createUser(String name, String surname, String email, String password, boolean internal) throws SQLException{
@@ -138,17 +150,29 @@ public class LibrarianModel extends AbstractModel {
 	}
 
 	
-	public Seat startReservedConsultation(InternalUser user, String title, String [] authors,
-			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
-
-		ConsultationReservation reservation = super.manager.getConsultationReservationByUserCopy(
-				user, LocalDate.now(), title, authors, year, mainTopic, phouse);
-		
-		if(reservation == null){
+//	public Seat startReservedConsultation(InternalUser user, String title, String [] authors,
+//			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
+//
+//		ConsultationReservation reservation = super.manager.getConsultationReservationByUserCopy(
+//				user, LocalDate.now(), title, authors, year, mainTopic, phouse);
+//		
+//		if(reservation == null){
+//			throw new ReservationException(LibraryManager.NO_RESERVATION);
+//		}
+//		
+//		return super.manager.startReservedConsultation(reservation);
+//	}
+	
+	public Seat startReservedConsultation(ConsultationReservation reservation) throws SQLException, ReservationException{
+		if (reservation == null){
 			throw new ReservationException(LibraryManager.NO_RESERVATION);
 		}
-		
 		return super.manager.startReservedConsultation(reservation);
+	}
+	
+	public List<ConsultationReservation> getConsultationReservationsByUserToday(InternalUser user) throws SQLException{
+		
+		return super.manager.getConsultationReservationByUser(user, LocalDate.now());
 	}
 	
 	// for this one we can have a list of the consultations in progress
@@ -167,13 +191,13 @@ public class LibrarianModel extends AbstractModel {
 		return super.manager.getConsultationInProgressByUser(user);
 	}
 	
-	public User fillUser(String email) throws SQLException, ReservationException{
-		User user = super.manager.searchUser(email);
-		if (user==null){
-			throw new ReservationException("User not found");
-		}
-		return user;
-	}
+//	public User fillUser(String email) throws SQLException, ReservationException{
+//		User user = super.manager.searchUser(email);
+//		if (user==null){
+//			throw new ReservationException("User not found");
+//		}
+//		return user;
+//	}
 	
 	public List<Loan> getLoansInLate() throws SQLException{
 		return super.manager.getLoansInLate();

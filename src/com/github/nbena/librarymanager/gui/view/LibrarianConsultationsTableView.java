@@ -25,16 +25,38 @@ import com.github.nbena.librarymanager.gui.view.table.Popupable;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
-public class ConsultationInProgressView extends AbstractTableView implements VisibleView,
+/**
+ * This class is used by the librarian to:
+ * <ol>
+ * 	<li> view consultations in progress -> delivery
+ * 	<li> view consultations reservation by user -> start
+ * </ol>
+ * @author nicola
+ *
+ */
+public class LibrarianConsultationsTableView extends AbstractTableView implements VisibleView,
 	Popupable {
 
 	// private final JPanel contentPanel = new JPanel();
 	
 	private JMenuItem mntmDelivery;
+	private JMenuItem mntmStart;
 	
 
 	public void addMenuItemDeliveryListener(ActionListener listener){
 		this.mntmDelivery.addActionListener(listener);
+	}
+	
+	public void addMenuItemStartListener(ActionListener listener){
+		this.mntmStart.addActionListener(listener);
+	}
+	
+	public void setMenuItemDeliveryEnabled(boolean enabled){
+		this.mntmDelivery.setEnabled(enabled);
+	}
+	
+	public void setMenuItemStartEnabled(boolean enabled){
+		this.mntmStart.setEnabled(enabled);
 	}
 	
 	
@@ -43,7 +65,7 @@ public class ConsultationInProgressView extends AbstractTableView implements Vis
 	 */
 	public static void main(String[] args) {
 		try {
-			ConsultationInProgressView dialog = new ConsultationInProgressView();
+			LibrarianConsultationsTableView dialog = new LibrarianConsultationsTableView();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -54,7 +76,7 @@ public class ConsultationInProgressView extends AbstractTableView implements Vis
 	/**
 	 * Create the dialog.
 	 */
-	public ConsultationInProgressView() {
+	public LibrarianConsultationsTableView() {
 //		setBounds(100, 100, 450, 300);
 //		getContentPane().setLayout(new BorderLayout());
 //		contentPanel.setLayout(new FlowLayout());
@@ -89,6 +111,15 @@ public class ConsultationInProgressView extends AbstractTableView implements Vis
 		this.mntmDelivery = new JMenuItem("Consegna consultazione");
 		this.menu.add(this.mntmDelivery);
 		
+		this.mntmStart = new JMenuItem("Inizia consultazione");
+		this.menu.add(this.mntmStart);
+		
+	}
+
+
+	@Override
+	public Object getSelectedItem(int row) {
+		return super.getSelectedItem();
 	}
 
 

@@ -32,7 +32,6 @@ import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.CopyStatus;
-import com.github.nbena.librarymanager.core.Emailable;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
@@ -309,8 +308,8 @@ public class LibraryManager {
 		return this.dbManager.getSeatsReservationByUser(user);
 	}
 
-	public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user) throws SQLException{
-		return this.dbManager.getConsultationReservationByUser(user);
+	public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user, LocalDate date) throws SQLException{
+		return this.dbManager.getConsultationReservationByUser(user, date);
 	}
 
 	public List<LoanReservation> getLoanReservationByUser(InternalUser user) throws SQLException{
@@ -330,8 +329,8 @@ public class LibraryManager {
 		return this.dbManager.search(title, authors, year, mainTopic, phouse);
 	}
 
-	public User getUserFromMail(Emailable emailable) throws SQLException{
-		return this.dbManager.getUser(emailable);
+	public User getUserFromMail(String email) throws SQLException{
+		return this.dbManager.getUser(email);
 	}
 
 	public List<User> users() throws SQLException{
@@ -389,9 +388,9 @@ public class LibraryManager {
 		return result;
 	}
 	
-	public User searchUser(String email) throws SQLException{
-		return this.dbManager.fillUser(email);
-	}
+//	public User searchUser(String email) throws SQLException{
+//		return this.dbManager.fillUser(email);
+//	}
 	
 	public List<Loan> getLoansInLate() throws SQLException{
 		return this.dbManager.getLoansInLate();

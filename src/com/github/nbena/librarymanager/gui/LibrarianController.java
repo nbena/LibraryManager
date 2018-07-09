@@ -31,7 +31,6 @@ import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddCopies;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddUser;
-import com.github.nbena.librarymanager.gui.librarianint.ActionChangeCopiesNumber;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteCopies;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
@@ -41,7 +40,7 @@ import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionSendMail;
-import com.github.nbena.librarymanager.gui.view.ConsultationInProgressView;
+import com.github.nbena.librarymanager.gui.view.LibrarianConsultationsTableView;
 import com.github.nbena.librarymanager.gui.view.BookTableView;
 import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.LoansInLateView;
@@ -49,11 +48,14 @@ import com.github.nbena.librarymanager.gui.view.RegisterUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
 import com.github.nbena.librarymanager.gui.view.table.BookCopiesNumberTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
+import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
+import com.github.nbena.librarymanager.core.ConsultationReservation;
+import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.ReservationException;
 
@@ -81,7 +83,7 @@ public class LibrarianController extends AbstractController {
 	private Action action;
 	
 	private RegisterUserView userView;
-	private ConsultationInProgressView consultationsView;
+	private LibrarianConsultationsTableView consultationsView;
 	private LoansInLateView loansInLateView;
 	private BookTableView bookView;
 	
@@ -117,7 +119,7 @@ public class LibrarianController extends AbstractController {
 		
 		this.searchableBookView = new SearchableBookUserView();
 		this.userView = new RegisterUserView();
-		this.consultationsView = new ConsultationInProgressView();
+		this.consultationsView = new LibrarianConsultationsTableView();
 		this.loansInLateView = new LoansInLateView();
 		this.bookView = new BookTableView();
 		
@@ -206,9 +208,12 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					action = new ActionNewReservedConsultation(model);
-					showWithUsersView(true);
-				} catch (SQLException e1) {
+					showConsultationsReservationPerUser();
+				} catch (SQLException | ReservationException e1) {
 					displayError(view, e1);
+				} catch (ClassCastException e1){
+					ReservationException ex = new ReservationException("Qualcosa è andato storto", e1);
+					displayError(view, ex);
 				}
 			}
 			
@@ -338,30 +343,47 @@ public class LibrarianController extends AbstractController {
 				"Inserisci la mail dell'uente", "Info", JOptionPane.QUESTION_MESSAGE);
 		
 		if (email != null && !email.equals("")){
-			user = this.model.fillUser(email);
+			user = this.model.getUser(email);
 		}
 		return user;
 	}
+	
+	private User askAndFillUser() throws SQLException, ReservationException{
+		
+		return this.model.getUser(this.askUser().getEmail());
+	}
 
 	private void showConsultationsPerUser() throws SQLException, ReservationException{
-		User user = askUser();
+		User user = askAndFillUser();
 
 		if (user!=null){
 			// now showing all the in progress consultation
 			// for this user.
 
 			List<Consultation> consultations = model.consultations(user);
-			
-//			if (consultations.size()>0){
-//				consultationsView.setTableModel(new ConsultationInProgressTableModel(consultations));
-//				consultationsView.setVisible(true);
-//			}else{
-//				super.displayNoItemsToShow(view);
-//			}
+			consultationsView.setMenuItemDeliveryEnabled(true);
+			consultationsView.setMenuItemStartEnabled(false);
 			super.displayTableItems(new ConsultationInProgressTableModel(consultations),
 					consultationsView, view);
 		}
 	}
+	
+	
+	private void showConsultationsReservationPerUser() throws SQLException, ReservationException, ClassCastException{ 
+		
+		InternalUser user = (InternalUser) askAndFillUser();
+		if(user!=null){
+			List<ConsultationReservation> reservations = model.getConsultationReservationsByUserToday(user);
+			
+			consultationsView.setMenuItemStartEnabled(true);
+			consultationsView.setMenuItemDeliveryEnabled(false);
+			
+			super.displayTableItems(new ConsultationReservationTableModel(reservations),
+					consultationsView, view);
+		}
+	}
+	
+	
 	
 	private void addConsultationsListListeners(){
 		
@@ -395,6 +417,16 @@ public class LibrarianController extends AbstractController {
 //				}
 				askConfirmationAndExecuteAction(arg);
 				
+			}
+			
+		});
+		
+		this.consultationsView.addMenuItemStartListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				ConsultationReservation arg = (ConsultationReservation) consultationsView.getSelectedItem();
+				askConfirmationAndExecuteAction(arg);
 			}
 			
 		});

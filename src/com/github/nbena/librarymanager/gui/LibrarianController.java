@@ -20,7 +20,6 @@ package com.github.nbena.librarymanager.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -586,7 +585,6 @@ public class LibrarianController extends AbstractController {
 		});
 		
 		
-		//TODO change the table model to show copies number too.
 		this.bookView.addMenuItemChangeCopiesNumberListener(new ActionListener(){
 
 			@Override

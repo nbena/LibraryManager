@@ -134,7 +134,7 @@ begin
 	end if;
 	return new;
 end
-$$ language plpgsql;
+$$ language plpgsql;  
 
 create or replace function trigger_function_update_copy_status_after_ins_loan_res () returns trigger as $$
 begin
@@ -175,6 +175,80 @@ create trigger trigger_update_copy_status_after_del
 after delete on loan_reservation
 for each row
 execute procedure trigger_function_update_copy_status_after_delete_loan_res();
+
+-- this function add more copies for a given book.
+create or replace function add_more_copies (bookid integer, change integer, for_consultation boolean) returns void as $$
+declare
+	counter integer;
+begin
+	counter := 0;
+
+	-- adding more copies till we're done
+	while counter < $2 loop
+		insert into lm_copy(bookid, for_consultation)
+		values ($1, $2);
+
+		counter := counter + 1;
+	end loop;
+
+end;
+
+$$ language plpgsql;
+
+
+create or replace function delete_copies (bookid integer, change integer) returns integer as $$
+declare
+	-- the number of effectively deletable copies.
+	max_available integer;
+
+	-- the array of copies that can be
+	-- effectively deleted.
+	can_be_deletable integer[];
+
+begin
+	-- selecting the copies that can be deleted.
+	can_be_deletable := (select array_agg(id) from
+					(select lm_copy.id
+					from lm_copy join book on lm_copy.bookid = book.id
+					where bookid = $1
+					and lm_copy.id not in
+						(select copyid
+						from loan where restitution_date is null)
+					and lm_copy.id not in
+						(select copyid
+						from loan_reservation where is_done = false)
+					and lm_copy.id not in
+						(select copyid
+						from consultation_reservation
+						where reservation_date >= current_date)
+					and lm_copy.id not in
+						(select copyid
+						from consultation where end_date is null)
+					) as available);
+
+	
+	max_available = array_length(can_be_deletable, 1);
+
+	if max_available > 0 then
+		delete from lm_copy where
+		lm_copy.id = any(can_be_deletable);
+	end if;
+
+	-- every other copy you want to delete
+	-- will be marked as 'reserved' so nobody can
+	-- reserve it another time
+	-- #genius
+	update lm_copy set status = 'reserved'
+	where lm_copy.id in
+	(	select lm_copy.id
+		from lm_copy join book on lm_copy.bookid = book.id
+		where book_id = $1
+	);
+
+	return max_available;
+	end
+$$ language plpgsql;
+
 
 -- hash of 'password' ;)
 insert into lm_user(name, surname, email, internal, password) values

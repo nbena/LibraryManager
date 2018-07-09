@@ -404,6 +404,15 @@ public class LibraryManager {
 	public List<BookCopiesNumber> books() throws SQLException{
 		return this.dbManager.bookCopiesNumber();
 	}
+	
+	
+	public int deleteCopies(Book book, int number) throws SQLException{
+		return this.dbManager.deleteSomeCopies(book, number);
+	}
+	
+	public void addCopies(Book book, int number, boolean forConsultation) throws SQLException{
+		this.dbManager.addSomeCopies(book, number, forConsultation);
+	}
 
 
 

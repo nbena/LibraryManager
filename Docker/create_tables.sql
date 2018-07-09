@@ -224,6 +224,7 @@ begin
 					and lm_copy.id not in
 						(select copyid
 						from consultation where end_date is null)
+					limit $2
 					) as available);
 
 	

@@ -189,6 +189,15 @@ public class LibrarianModel extends AbstractModel {
 	public List<BookCopiesNumber> books() throws SQLException{
 		return super.manager.books();
 	}
+	
+	
+	public int deleteCopies(Book book, int number) throws SQLException{
+		return super.manager.deleteCopies(book, number);
+	}
+	
+	public void addCopies(Book book, int number, boolean forConsultation) throws SQLException{
+		super.manager.addCopies(book, number, forConsultation);
+	}
 
 
 }

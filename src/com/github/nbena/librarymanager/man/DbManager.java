@@ -1180,5 +1180,36 @@ public class DbManager {
     	
     	return books;
     }
+    
+    public int deleteSomeCopies(Book book, int number) throws SQLException{
+    	
+    	String query = "select delete_copies(?, ?)";
+    	
+    	PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	
+    	pstmt.setInt(1, book.getID());
+    	pstmt.setInt(2, number);
+    	
+    	int res = 0;
+    	
+    	ResultSet rs = pstmt.executeQuery();
+    	rs.next();
+    	res = rs.getInt(1);
+    	
+    	return res;
+    }
+    
+    public void addSomeCopies(Book book, int number, boolean forConsultation) throws SQLException{
+    	
+    	String query = "select add_more_copies(?, ?, ?)";
+    	
+    	PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	
+    	pstmt.setInt(1, book.getID());
+    	pstmt.setInt(2, number);
+    	pstmt.setBoolean(3, forConsultation);
+    	
+    	pstmt.execute();
+    }
 
 }

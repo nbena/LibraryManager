@@ -26,22 +26,39 @@ import com.github.nbena.librarymanager.gui.LibrarianModel;
 public class ActionChangeCopiesNumber extends AbstractAction {
 	
 	private Book book;
+	private int previousNumber;
+	private int newNumber;
+	private boolean forConsultation;
 
 	public ActionChangeCopiesNumber(LibrarianModel model) {
 		super(model);
 		super.ask = true;
-		super.confirmationMessage = "Confermi la modifica del numero di copies?";
+		super.confirmationMessage = "Confermi la modifica del numero di copie? Ricordati che "+
+				"se vuoi diminuirne il numero, può darsi che la riduzione sarà minore rispetto "+
+				"a quella desiderata";
 		super.resultMessage = "Modifica confermata";
 	}
 
 	@Override
 	public void setArgs(Object... args) {
 		this.book = (Book) args[0];
+		this.previousNumber = (int) args[1];
+		this.newNumber = (int) args[2];
+		this.forConsultation = (boolean) args[3];
 	}
 
+	// TODO jmlify this
 	@Override
 	public void execute() throws SQLException, ReservationException {
-		// TODO Auto-generated method stub
+		
+		if(newNumber == previousNumber){
+			throw new ReservationException("Il nuovo numero è uguale al primo");
+		}else if(newNumber < previousNumber){
+			model.deleteCopies(this.book, this.newNumber);
+		}else{
+			model.addCopies(this.book, this.newNumber, this.forConsultation);	
+		}
+		
 	}
 
 }

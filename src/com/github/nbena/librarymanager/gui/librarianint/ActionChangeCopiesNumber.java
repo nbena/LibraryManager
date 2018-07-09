@@ -27,7 +27,7 @@ public class ActionChangeCopiesNumber extends AbstractAction {
 	
 	private Book book;
 	private int previousNumber;
-	private int newNumber;
+	private int difference;
 	private boolean forConsultation;
 
 	public ActionChangeCopiesNumber(LibrarianModel model) {
@@ -40,10 +40,13 @@ public class ActionChangeCopiesNumber extends AbstractAction {
 	}
 
 	@Override
+	/**
+	 * args = [book, previousNumber, difference, forConsultation]
+	 */
 	public void setArgs(Object... args) {
 		this.book = (Book) args[0];
 		this.previousNumber = (int) args[1];
-		this.newNumber = (int) args[2];
+		this.difference = (int) args[2];
 		this.forConsultation = (boolean) args[3];
 	}
 
@@ -51,12 +54,18 @@ public class ActionChangeCopiesNumber extends AbstractAction {
 	@Override
 	public void execute() throws SQLException, ReservationException {
 		
-		if(newNumber == previousNumber){
+		int changed = 0;
+		
+		if(difference == previousNumber){
 			throw new ReservationException("Il nuovo numero è uguale al primo");
-		}else if(newNumber < previousNumber){
-			model.deleteCopies(this.book, this.newNumber);
+		}else if(difference < previousNumber){
+			changed = model.deleteCopies(this.book, this.difference);
 		}else{
-			model.addCopies(this.book, this.newNumber, this.forConsultation);	
+			model.addCopies(this.book, this.difference, this.forConsultation);	
+		}
+		
+		if(difference < previousNumber){
+			super.resultMessage = String.format("Modifica confermata: eliminate %d copie", changed);
 		}
 		
 	}

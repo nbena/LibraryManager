@@ -589,7 +589,24 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				
+				Book book = (Book) bookView.getSelectedItem();
+				int itemsCount = bookView.getItemsCount();
+				
+				int difference = 0;
+				boolean forConsultation = false;
+				
+				// TODO jOptionPane to ask for number
+				
+				Object [] args = {book, itemsCount, difference, forConsultation};
+				
+				action.setArgs(args);
+				
+				boolean [] done = askConfirmationAndExecuteAction(book);
+
+				if (done[1] == true){
+					bookView.setVisible(false);
+				}
 				
 			}
 			

@@ -4,5 +4,7 @@ package com.github.nbena.librarymanager.gui.view.table;
 public interface SelectableItem {
 	
 	public Object getSelectedItem(int row);
+	
+	public int getItemsCount();
 
 }

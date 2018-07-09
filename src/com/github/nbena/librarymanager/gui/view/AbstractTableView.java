@@ -22,7 +22,8 @@ import com.github.nbena.librarymanager.gui.view.table.Popupable;
 import com.github.nbena.librarymanager.gui.view.table.SelectableItem;
 
 @SuppressWarnings("serial")
-public abstract class AbstractTableView extends JDialog implements Popupable, VisibleView {
+public abstract class AbstractTableView extends JDialog implements
+	Popupable, VisibleView, SelectableItem {
 	
 	protected JTable table;
 	protected JPopupMenu menu;
@@ -86,6 +87,10 @@ public abstract class AbstractTableView extends JDialog implements Popupable, Vi
 	
 	public void setPopupEnabled(boolean enabled){
 		this.menu.setEnabled(enabled);
+	}
+	
+	public int getItemsCount(){
+		return this.table.getModel().getRowCount();
 	}
 	
 	protected AbstractTableView(){

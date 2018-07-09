@@ -29,9 +29,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddBook;
+import com.github.nbena.librarymanager.gui.librarianint.ActionAddCopies;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddUser;
 import com.github.nbena.librarymanager.gui.librarianint.ActionChangeCopiesNumber;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteBook;
+import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteCopies;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation;
@@ -282,7 +284,8 @@ public class LibrarianController extends AbstractController {
 					 * We use the deleteBookView as a more generic BookView
 					 * that lets us to change copies number too.
 					 */
-					action = new ActionChangeCopiesNumber(model);
+					// here the action is decided then
+					// action = new ActionChangeCopiesNumber(model);
 					List<BookCopiesNumber> books = model.books();
 					bookView.setMenuItemChangeCopiesNumberEnabled(false);
 					bookView.setMenuItemDeleteEnabled(true);
@@ -590,24 +593,51 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				boolean doAction = false;
 				Book book = (Book) bookView.getSelectedItem();
 				int itemsCount = bookView.getItemsCount();
 				
 				int difference = 0;
 				boolean forConsultation = false;
 				
-				// TODO jOptionPane to ask for number
+				String [] values = {"Aggiungi", "Rimuovi"};
+				
+				String choice = (String) JOptionPane.showInputDialog(view, "Cosa vuoi fare?", "Domanda",
+						JOptionPane.DEFAULT_OPTION, null, values, values[0]);
+				
+				String diffString = JOptionPane.showInputDialog(view, "Inserisci di quanto vuoi aumentare/diminuire le copie",
+						"Domanda", JOptionPane.QUESTION_MESSAGE);
+				
+				if(diffString != null && !diffString.trim().equals("")){
+					doAction = true;
+					difference = Integer.parseInt(diffString);
+				}
+				
+				if (choice.equals(values[0])){
+					action = new ActionAddCopies(model);
+					if (itemsCount + difference < itemsCount){
+						displayError(view, new ReservationException("Hai scelto di aggiungere copie ma la cifra è sbagliata"));
+						doAction = false;
+					}
+				}else if (choice.equals(values[1])){
+					action = new ActionDeleteCopies(model);
+					if (itemsCount - difference > itemsCount){
+						displayError(view, new ReservationException("Hai scelto di eliminare copie ma la cifra è sbagliata"));
+						doAction = false;
+					}
+				}
 				
 				Object [] args = {book, itemsCount, difference, forConsultation};
 				
 				action.setArgs(args);
 				
-				boolean [] done = askConfirmationAndExecuteAction(book);
+				if (doAction){
+					boolean [] done = askConfirmationAndExecuteAction(book);
 
-				if (done[1] == true){
-					bookView.setVisible(false);
+					if (done[1] == true){
+						bookView.setVisible(false);
+					}	
 				}
-				
 			}
 			
 		});

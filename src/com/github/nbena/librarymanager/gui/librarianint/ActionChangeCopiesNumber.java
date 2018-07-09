@@ -17,18 +17,18 @@
 
 package com.github.nbena.librarymanager.gui.librarianint;
 
-import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.Book;
-import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionChangeCopiesNumber extends AbstractAction {
+public abstract class ActionChangeCopiesNumber extends AbstractAction {
 	
-	private Book book;
-	private int previousNumber;
-	private int difference;
-	private boolean forConsultation;
+
+	
+	protected Book book;
+	protected int previousNumber;
+	protected int difference;
+	
 
 	public ActionChangeCopiesNumber(LibrarianModel model) {
 		super(model);
@@ -41,33 +41,14 @@ public class ActionChangeCopiesNumber extends AbstractAction {
 
 	@Override
 	/**
-	 * args = [book, previousNumber, difference, forConsultation]
+	 * args = [book, previousNumber, difference]
 	 */
 	public void setArgs(Object... args) {
 		this.book = (Book) args[0];
 		this.previousNumber = (int) args[1];
 		this.difference = (int) args[2];
-		this.forConsultation = (boolean) args[3];
 	}
 
-	// TODO jmlify this
-	@Override
-	public void execute() throws SQLException, ReservationException {
-		
-		int changed = 0;
-		
-		if(difference == previousNumber){
-			throw new ReservationException("Il nuovo numero è uguale al primo");
-		}else if(difference < previousNumber){
-			changed = model.deleteCopies(this.book, this.difference);
-		}else{
-			model.addCopies(this.book, this.difference, this.forConsultation);	
-		}
-		
-		if(difference < previousNumber){
-			super.resultMessage = String.format("Modifica confermata: eliminate %d copie", changed);
-		}
-		
-	}
+
 
 }

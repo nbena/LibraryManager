@@ -21,7 +21,7 @@ package com.github.nbena.librarymanager.core;
 public class Copy extends Book {
 
 	
-	private int ID;
+	// private int ID;
 	private boolean reserved;
 	private CopyStatus status;
 	
@@ -33,13 +33,13 @@ public class Copy extends Book {
 		status = CopyStatus.FREE;
 	}
 
-	public int getID() {
-		return ID;
-	}
-
-	public void setID(int iD) {
-		ID = iD;
-	}
+//	public int getID() {
+//		return ID;
+//	}
+//
+//	public void setID(int iD) {
+//		ID = iD;
+//	}
 
 	public boolean isReserved() {
 		return reserved;

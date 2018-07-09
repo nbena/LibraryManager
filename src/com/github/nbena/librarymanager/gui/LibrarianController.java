@@ -20,6 +20,7 @@ package com.github.nbena.librarymanager.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -31,6 +32,7 @@ import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddUser;
 import com.github.nbena.librarymanager.gui.librarianint.ActionChangeCopiesNumber;
+import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation;
@@ -260,7 +262,7 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				
 				try{
-					action = new ActionAddBook(model);
+					action = new ActionDeleteBook(model);
 					List<BookCopiesNumber> books = model.getDeletableBooks();
 					bookView.setMenuItemChangeCopiesNumberEnabled(false);
 					bookView.setMenuItemDeleteEnabled(true);
@@ -281,8 +283,6 @@ public class LibrarianController extends AbstractController {
 					 * We use the deleteBookView as a more generic BookView
 					 * that lets us to change copies number too.
 					 */
-					// TODO this is different
-					// TODO add action here too
 					action = new ActionChangeCopiesNumber(model);
 					List<BookCopiesNumber> books = model.books();
 					bookView.setMenuItemChangeCopiesNumberEnabled(false);
@@ -553,6 +553,7 @@ public class LibrarianController extends AbstractController {
 				
 				Book book = (Book) bookView.getSelectedItem();
 				boolean [] done = askConfirmationAndExecuteAction(book);
+
 				if (done[1] == true){
 					bookView.setVisible(false);
 				}

@@ -191,7 +191,8 @@ insert into book(title, authors, year, phouse, main_topic) values
 ('Title0', '{"Author1", "Author2"}', 2010, 'oreilly', 'IT'),
 ('Title2', '{"Author1"}', 2001, 'McGraw Hill', 'Networking'),
 ('Title3', '{"Author2"}', 2018, 'oxford', 'Programming'),
-('Title4', '{"Author5"}', 1999, 'oreilly', 'DBMS');
+('Title4', '{"Author5"}', 1999, 'oreilly', 'DBMS'),
+('Deletable', '{"Author-nil"}', 1900, 'oreilly', 'DBMS');
 
 
 insert into lm_copy(bookid, for_consultation)

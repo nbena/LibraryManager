@@ -1146,9 +1146,11 @@ public class DbManager {
     	
     	while(rs.next()){
     		Book book = DbManagerHelper.getCopyFrom(rs, 1);
+    		
     		if (withCopiesNumber){
     			book = new BookCopiesNumber(book, 0);
     		}
+    		
     		books.add(book);
     	}
     	

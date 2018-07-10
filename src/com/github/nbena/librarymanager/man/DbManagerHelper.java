@@ -314,10 +314,10 @@ public class DbManagerHelper {
 	final static String CONSULTATION_IN_PROGRESS_QUERY =
 			"select consultation.id, start_date, end_date, "+
 			"copyid, title, authors, year, main_topic, phouse, status, "+
-			"lm_user.id, name, surname, internal "+
+			"lm_user.id, email, name, surname, internal "+
 			"from lm_user join consultation on lm_user.id = consultation.userid "+
 			"join lm_copy on lm_copy.id = consultation.copyid "+
-			"join book on lm_copy.id = book.id ";
+			"join book on lm_copy.bookid = book.id ";
 	
 	static String CONSULTATION_IN_PROGRESS_BY_USER_QUERY = 
 			"select consultation.id, start_date, end_date, copyid, title, authors, "+

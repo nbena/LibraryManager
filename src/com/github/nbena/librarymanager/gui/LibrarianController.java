@@ -403,6 +403,8 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				action = new ActionDeliveryConsultation(model);
+				
 				Consultation arg = (Consultation) consultationsView.getSelectedItem();
 				
 				// initialize now to avoid warning.

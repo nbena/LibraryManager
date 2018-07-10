@@ -49,7 +49,7 @@ public class LibrarianModel extends AbstractModel {
 	 */
 	public User getUser(String email) throws SQLException, ReservationException{
 		User user = super.manager.getUserFromMail(email);
-		if(user!=null){
+		if(user == null){
 			throw new ReservationException("Utente non trovato");
 		}
 		return user;

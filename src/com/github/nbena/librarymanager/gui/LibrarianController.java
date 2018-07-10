@@ -337,20 +337,22 @@ public class LibrarianController extends AbstractController {
 		});
 	}
 
-	private User askUser() throws SQLException, ReservationException{
-		User user = null;
-		String email = JOptionPane.showInputDialog(view,
+	private String askUser() {
+		return JOptionPane.showInputDialog(view,
 				"Inserisci la mail dell'uente", "Info", JOptionPane.QUESTION_MESSAGE);
-		
-		if (email != null && !email.equals("")){
-			user = this.model.getUser(email);
+	}
+	
+	private User fillUser(String email) throws SQLException, ReservationException{
+		User u = null;
+		if (email != "" && ! email.trim().equals("")){
+			u = this.model.getUser(email);
 		}
-		return user;
+		return u;
 	}
 	
 	private User askAndFillUser() throws SQLException, ReservationException{
-		
-		return this.model.getUser(this.askUser().getEmail());
+		String email = this.askUser();
+		return this.fillUser(email);
 	}
 
 	private void showConsultationsPerUser() throws SQLException, ReservationException{
@@ -400,6 +402,7 @@ public class LibrarianController extends AbstractController {
 		
 		this.consultationsView.addMenuItemDeliveryListener(new ActionListener(){
 
+			// TODO set consultation delivery from the main button.
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				

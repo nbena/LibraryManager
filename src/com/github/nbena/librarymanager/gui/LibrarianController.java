@@ -292,8 +292,8 @@ public class LibrarianController extends AbstractController {
 					// here the action is decided then
 					// action = new ActionChangeCopiesNumber(model);
 					List<BookCopiesNumber> books = model.books();
-					bookView.setMenuItemChangeCopiesNumberEnabled(false);
-					bookView.setMenuItemDeleteEnabled(true);
+					bookView.setMenuItemChangeCopiesNumberEnabled(true);
+					bookView.setMenuItemDeleteEnabled(false);
 					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
 				} catch (SQLException e1) {
 					displayError(view, e1);
@@ -394,6 +394,7 @@ public class LibrarianController extends AbstractController {
 	
 	
 	// TODO WHY CONSULTATION IN PROGRESS IS SHOWN EVEN IF IT'S FINISHED.
+	// ahah done
 	private void addConsultationsListListeners(){
 		
 		super.addPopupListenerToTable(this.consultationsView);
@@ -403,30 +404,15 @@ public class LibrarianController extends AbstractController {
 		this.consultationsView.addMenuItemDeliveryListener(new ActionListener(){
 
 			// TODO set consultation delivery from the main button.
+			// done
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				// this is set here.
 				action = new ActionDeliveryConsultation(model);
 				
 				Consultation arg = (Consultation) consultationsView.getSelectedItem();
-				
-				// initialize now to avoid warning.
-//				int ok = JOptionPane.OK_OPTION;
-//				if(action.askConfirmation()){
-//					ok = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Info",
-//							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-//				}
-//				
-//				if (ok == JOptionPane.OK_OPTION){
-//					action.setArgs(arg);
-//					try {
-//						action.execute();
-//						displayMessage(view, action.getResultMessage(), null, 0);
-//						consultationsView.setVisible(false);
-//					} catch (SQLException | ReservationException e) {
-//						displayError(view, e);
-//					}
-//				}
+
 				askConfirmationAndExecuteAction(arg);
 				
 			}
@@ -436,6 +422,8 @@ public class LibrarianController extends AbstractController {
 		this.consultationsView.addMenuItemStartListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				
+				// action is set previously.
 				
 				ConsultationReservation arg = (ConsultationReservation) consultationsView.getSelectedItem();
 				askConfirmationAndExecuteAction(arg);
@@ -673,10 +661,10 @@ public class LibrarianController extends AbstractController {
 				
 				Object [] args = {book, itemsCount, difference, forConsultation};
 				
-				action.setArgs(args);
+				// action.setArgs(args);
 				
 				if (doAction){
-					boolean [] done = askConfirmationAndExecuteAction(book);
+					boolean [] done = askConfirmationAndExecuteAction(args);
 
 					if (done[1] == true){
 						bookView.setVisible(false);

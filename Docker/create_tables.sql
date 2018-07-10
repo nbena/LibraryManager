@@ -187,7 +187,7 @@ begin
 	-- adding more copies till we're done
 	while counter < $2 loop
 		insert into lm_copy(bookid, for_consultation)
-		values ($1, $2);
+		values ($1, $3);
 
 		counter := counter + 1;
 	end loop;

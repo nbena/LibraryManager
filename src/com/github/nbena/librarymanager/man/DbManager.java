@@ -23,6 +23,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -665,6 +666,23 @@ public class DbManager {
 		return consultation;
 	}
 
+	
+	public void autoSave(boolean save) throws SQLException{
+		this.connection.setAutoCommit(save);
+	}
+	
+	/**
+	 * Commit the current transaction
+	 * @param setSave if <pre>true</pre>: <pre>this.connection.setAutoCommit(true);</pre>
+	 * @throws SQLException
+	 */
+	public void commit(boolean setSave) throws SQLException{
+		this.connection.commit();
+		if(setSave){
+			this.autoSave(true);
+		}
+	}
+
 	public void endConsultation(Consultation consultation)throws SQLException{
 		String query = "update consultation set end_date=current_timestamp where id=?";
 
@@ -672,6 +690,17 @@ public class DbManager {
 
 		pstmt.setInt(1, consultation.getID());
 
+		pstmt.execute();
+	}
+	
+	public void setConsultationReservationDone(ConsultationReservation reservation) throws SQLException{
+		
+		String query = "update consultation_reservation set done=true where id=?";
+		
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		pstmt.setInt(1, reservation.getID());
+		
 		pstmt.execute();
 	}
 
@@ -898,19 +927,21 @@ public class DbManager {
 	 * @return
 	 * @throws SQLException
 	 */
-    public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user, LocalDate date) throws SQLException{
+    public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user, LocalDate date,
+    		boolean useDoneParam, boolean doneParam) throws SQLException{
 
-		String query = DbManagerHelper.getConsultationReservationByUserQuery(date);
+		String query = DbManagerHelper.getConsultationReservationByUserQuery(date, useDoneParam);
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 
 		// System.out.println(query);
-		pstmt.setInt(1, user.getID());
-		
-		if(date!=null){
-			pstmt.setObject(2, date);
-		}
-
+//		pstmt.setInt(1, user.getID());
+//		
+//		if(date!=null){
+//			pstmt.setObject(2, date);
+//		}
+		pstmt = DbManagerHelper.prepareQueryConsultationsReservationByUserQuery(pstmt, user, date, useDoneParam, doneParam);
+	
 		ResultSet rs = pstmt.executeQuery();
 		List<ConsultationReservation> reservations = new LinkedList<ConsultationReservation>();
 		while (rs.next()){

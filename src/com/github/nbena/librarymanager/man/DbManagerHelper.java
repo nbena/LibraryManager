@@ -334,14 +334,47 @@ public class DbManagerHelper {
 			"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
 			"where cr.userid=?";
 	
-	static String getConsultationReservationByUserQuery(LocalDate date){
+	static String getConsultationReservationByUserQuery(LocalDate date, boolean useDoneParam){
 		
 		String result = CONSULTATION_RESERVATION_BY_USER;
 		if(date!=null){
 			result += "and reservation_date = ?";
 		}
 		
+		if(useDoneParam){
+			result += "and done = ?";
+		}
+		
 		return result;
+	}
+	
+	/**
+	 * Prepare the statement for the query.
+	 * @param pstmt the statement
+	 * @param user	the user you want to get ConsultationReservation
+	 * @param date	the date you want to search for, can be null to get everything
+	 * @param useDoneParam	set to <pre>true</pre> if you want to use the 'done' field
+	 * @param doneParam		the value of the 'done' field to look for.
+	 * @return pstmt
+	 * @throws SQLException
+	 */
+	static PreparedStatement prepareQueryConsultationsReservationByUserQuery(PreparedStatement pstmt, InternalUser user,
+			LocalDate date, boolean useDoneParam, boolean doneParam) throws SQLException{
+		
+		pstmt.setInt(1, user.getID());
+		
+		int doneIndex = 2;
+		
+		if (date!=null){
+			pstmt.setObject(2, date);
+			doneIndex ++;
+		}
+		
+		if(useDoneParam){
+			pstmt.setObject(doneIndex, doneParam);
+		}
+	
+		return pstmt;
 	}
 			
 }

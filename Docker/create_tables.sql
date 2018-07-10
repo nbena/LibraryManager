@@ -101,6 +101,7 @@ create table consultation_reservation (
 	reservation_date date not null,
 	seat_number integer not null,
 	table_number integer not null,
+	done boolean not null default false,
 	constraint cr_unique_1 unique(reservation_date, seat_number, table_number),
 	constraint cr_unique_2 unique(reservation_date, userid, copyid),
 	primary key (id),

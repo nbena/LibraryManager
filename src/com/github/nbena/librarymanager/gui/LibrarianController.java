@@ -368,7 +368,14 @@ public class LibrarianController extends AbstractController {
 		}
 	}
 	
-	
+	/**
+	 * Ask the librarian to insert the user email, then it fills up
+	 * the user object, then it gets all the consultations reservations
+	 * that that user has for today.
+	 * @throws SQLException
+	 * @throws ReservationException
+	 * @throws ClassCastException if the user is not internal
+	 */
 	private void showConsultationsReservationPerUser() throws SQLException, ReservationException, ClassCastException{ 
 		
 		InternalUser user = (InternalUser) askAndFillUser();

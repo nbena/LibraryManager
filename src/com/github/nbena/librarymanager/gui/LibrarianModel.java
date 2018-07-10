@@ -170,9 +170,15 @@ public class LibrarianModel extends AbstractModel {
 		return super.manager.startReservedConsultation(reservation);
 	}
 	
+	/**
+	 * Get the List<ConsultationReservation> for a given user that not complete yet.
+	 * @param user
+	 * @return
+	 * @throws SQLException
+	 */
 	public List<ConsultationReservation> getConsultationReservationsByUserToday(InternalUser user) throws SQLException{
 		
-		return super.manager.getConsultationReservationByUser(user, LocalDate.now());
+		return super.manager.getConsultationReservationByUser(user, LocalDate.now(), true, false);
 	}
 	
 	// for this one we can have a list of the consultations in progress

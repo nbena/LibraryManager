@@ -425,7 +425,7 @@ public class DbManagerTest {
 	  int count = getCountOf("select count (*) from consultation_reservation where ", this.consultationReservations);
 	  assertTrue(count == this.consultationReservations.length);
 	  
-	  count = this.db.getConsultationReservationByUser(this.consultationReservations[0].getUser()).size();
+	  count = this.db.getConsultationReservationByUser(this.consultationReservations[0].getUser(), null, false, false).size();
 	  assertTrue(count == this.consultationReservations.length);
 	  
 	  ConsultationReservation expected = this.consultationReservations[0];

@@ -79,8 +79,13 @@ public class UserModel extends AbstractModel {
 		return super.manager.getSeatReservationByUser((InternalUser) super.user);
 	}
 	
+	/**
+	 * Get all the ConsultationReservation for this user that are not done yet.
+	 * @return
+	 * @throws SQLException
+	 */
 	public List<ConsultationReservation> getConsultationReservation() throws SQLException{
-		return super.manager.getConsultationReservationByUser((InternalUser) super.user, null);
+		return super.manager.getConsultationReservationByUser((InternalUser) super.user, null, true, false);
 	}
 	
 	public List<LoanReservation> getLoanReservation() throws SQLException{
@@ -103,7 +108,7 @@ public class UserModel extends AbstractModel {
 	public Loan renewLoan(Loan loan) throws SQLException, ReservationException{
 		boolean res = super.manager.tryRenewLoan(loan);
 		if (!res){
-			throw new ReservationException("Fail to renew");
+			throw new ReservationException("Impossibile rinnovare");
 		}
 		return loan;
 	}

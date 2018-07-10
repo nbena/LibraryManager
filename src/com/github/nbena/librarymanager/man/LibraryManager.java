@@ -273,14 +273,22 @@ public class LibraryManager {
 			throw new ReservationException(NO_RESERVATION);
 		}
 
+		this.dbManager.autoSave(false);
+
 		Consultation consultation = reservation.getCopy()
 				.startConsultation(reservation.getUser());
+		
+		// consequently, we set the ConsultationReservation to be done.
+		this.dbManager.setConsultationReservationDone(reservation);
 
 		Seat seat = reservation.getSeat();
 		seat.setFree(false);
 
 		this.dbManager.startConsultation(consultation);
 		this.dbManager.setSeatOccupied(seat, false);
+		
+		this.dbManager.commit(true);
+		
 
 		return seat;
 
@@ -308,8 +316,9 @@ public class LibraryManager {
 		return this.dbManager.getSeatsReservationByUser(user);
 	}
 
-	public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user, LocalDate date) throws SQLException{
-		return this.dbManager.getConsultationReservationByUser(user, date);
+	public List<ConsultationReservation> getConsultationReservationByUser(InternalUser user, LocalDate date,
+			boolean useDoneParam, boolean doneParam) throws SQLException{
+		return this.dbManager.getConsultationReservationByUser(user, date, useDoneParam, doneParam);
 	}
 
 	public List<LoanReservation> getLoanReservationByUser(InternalUser user) throws SQLException{

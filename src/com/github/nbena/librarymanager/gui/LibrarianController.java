@@ -393,7 +393,7 @@ public class LibrarianController extends AbstractController {
 	}
 	
 	
-	
+	// TODO WHY CONSULTATION IN PROGRESS IS SHOWN EVEN IF IT'S FINISHED.
 	private void addConsultationsListListeners(){
 		
 		super.addPopupListenerToTable(this.consultationsView);

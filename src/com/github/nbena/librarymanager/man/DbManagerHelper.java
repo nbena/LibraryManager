@@ -317,7 +317,8 @@ public class DbManagerHelper {
 			"lm_user.id, email, name, surname, internal "+
 			"from lm_user join consultation on lm_user.id = consultation.userid "+
 			"join lm_copy on lm_copy.id = consultation.copyid "+
-			"join book on lm_copy.bookid = book.id ";
+			"join book on lm_copy.bookid = book.id " +
+			"where end_date is null";
 	
 	static String CONSULTATION_IN_PROGRESS_BY_USER_QUERY = 
 			"select consultation.id, start_date, end_date, copyid, title, authors, "+

@@ -270,7 +270,7 @@ public class LibrarianController extends AbstractController {
 				try{
 					action = new ActionDeleteBook(model);
 					List<BookCopiesNumber> books = model.getDeletableBooks();
-					bookView.setMenuItemChangeCopiesNumberEnabled(false);
+					bookView.setMenuItemIncrementCopiesNumberEnabled(false);
 					bookView.setMenuItemDeleteEnabled(true);
 					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
 				}catch(SQLException e1){
@@ -289,12 +289,15 @@ public class LibrarianController extends AbstractController {
 					 * We use the deleteBookView as a more generic BookView
 					 * that lets us to change copies number too.
 					 */
-					// here the action is decided then
-					// action = new ActionChangeCopiesNumber(model);
-					List<BookCopiesNumber> books = model.books();
-					bookView.setMenuItemChangeCopiesNumberEnabled(true);
-					bookView.setMenuItemDeleteEnabled(false);
-					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
+					// here the real action is decided then	
+
+//					List<BookCopiesNumber> books = model.books();
+//					bookView.setMenuItemIncrementCopiesNumberEnabled(true);
+//					bookView.setMenuItemDeleteEnabled(false);
+//					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
+					
+					// AddAcopies so the method know which MenuItem enables.
+					displayBooks(new ActionAddCopies(model));
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -353,6 +356,33 @@ public class LibrarianController extends AbstractController {
 	private User askAndFillUser() throws SQLException, ReservationException{
 		String email = this.askUser();
 		return this.fillUser(email);
+	}
+	
+	/**
+	 * This method fetches the list of BookCopiesNumber and displays them.
+	 * The <pre>MenuItem</pre>(s) are properly enabled basing on the current
+	 * action.
+	 * @param action the Action you want to do. We do not use the attribute because
+	 * in some cases the action is set after then a call to this function.
+	 * @throws SQLException
+	 */
+	private void displayBooks(Action action) throws SQLException{
+		List<BookCopiesNumber> books = this.model.books();
+		boolean incrementEnabled = false;
+		boolean decrementEnabled = false;
+		boolean deleteEnabled = true;
+		if(action instanceof ActionAddCopies || action instanceof ActionDeleteCopies){
+			incrementEnabled = true;
+			decrementEnabled = true;
+			
+		}
+		
+		this.bookView.setMenuItemIncrementCopiesNumberEnabled(incrementEnabled);
+		this.bookView.setMenuItemDecrementCopiesNumberEnabled(decrementEnabled);
+		this.bookView.setMenuItemDeleteEnabled(deleteEnabled);
+		
+		super.displayTableItems(new BookCopiesNumberTableModel(books),
+				bookView, view);
 	}
 
 	private void showConsultationsPerUser() throws SQLException, ReservationException{
@@ -452,40 +482,12 @@ public class LibrarianController extends AbstractController {
 					args = res;
 				}
 				
-				
-				
-				// set default to true so we can avoid a nesting level
-//				int userOk = JOptionPane.OK_OPTION;
-//				if (action.askConfirmation()){
-//					userOk = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Info",
-//							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-//				}
-//				
-//				if (userOk == JOptionPane.OK_OPTION){
-//					action.setArgs(args);
-//					try{
-//						action.execute();
-//						displayMessage(view, action.getResultMessage(), null, 0);
-//					}catch(SQLException | ReservationException e){
-//						displayError(view, e);
-//					}
-//				}
 				askConfirmationAndExecuteAction(args);
 			}
 			
 			
 		});
 		
-//		this.searchableBookView.addActionListenerCancel(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				
-//				searchableBookView.setVisible(false);
-//				
-//			}
-//			
-//		});
 	}
 	
 	private void addLateLoansListeners(){
@@ -496,23 +498,6 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-//				int ok = JOptionPane.OK_OPTION;
-//				if (action.askConfirmation()){
-//					ok = JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(),
-//							"Domanda", JOptionPane.OK_CANCEL_OPTION);
-//				}
-//				
-//				if (ok == JOptionPane.OK_OPTION){
-//					Loan loan = (Loan) loansInLateView.getSelectedItem();	
-//					action.setArgs(loan);
-//					
-//					try {
-//						action.execute();
-//					} catch (SQLException | ReservationException e1) {
-//						displayError(view, e1);
-//					}
-//				}
 				
 				Loan loan = (Loan) loansInLateView.getSelectedItem();
 				askConfirmationAndExecuteAction(loan);
@@ -542,11 +527,11 @@ public class LibrarianController extends AbstractController {
 			try {
 				action.setArgs(args);
 				action.execute();
+				this.showActionResult();
 			} catch (SQLException | ReservationException e) {
 				displayError(view, e);
 				thrown = true;
 			}
-			this.showActionResult();
 		}
 		return new boolean[]{ok == JOptionPane.OK_OPTION, thrown};
 	}
@@ -620,56 +605,88 @@ public class LibrarianController extends AbstractController {
 		});
 		
 		
-		this.bookView.addMenuItemChangeCopiesNumberListener(new ActionListener(){
+		this.bookView.addMenuItemIncrementCopiesNumberListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				boolean doAction = false;
 				Book book = (Book) bookView.getSelectedItem();
 				int itemsCount = bookView.getItemsCount();
-				
 				int difference = 0;
+				
+				boolean doAction = false;
 				boolean forConsultation = false;
 				
-				String [] values = {"Aggiungi", "Rimuovi"};
-				
-				String choice = (String) JOptionPane.showInputDialog(view, "Cosa vuoi fare?", "Domanda",
-						JOptionPane.DEFAULT_OPTION, null, values, values[0]);
-				
-				String diffString = JOptionPane.showInputDialog(view, "Inserisci di quanto vuoi aumentare/diminuire le copie",
-						"Domanda", JOptionPane.QUESTION_MESSAGE);
-				
-				if(diffString != null && !diffString.trim().equals("")){
+				difference = askNumber(view, "Inserisci il numero di copie che vuoi aggiungere");
+				if(difference != Integer.MAX_VALUE){
 					doAction = true;
-					difference = Integer.parseInt(diffString);
 				}
 				
-				if (choice.equals(values[0])){
-					action = new ActionAddCopies(model);
-					if (itemsCount + difference < itemsCount){
-						displayError(view, new ReservationException("Hai scelto di aggiungere copie ma la cifra è sbagliata"));
-						doAction = false;
-					}
-				}else if (choice.equals(values[1])){
-					action = new ActionDeleteCopies(model);
-					if (itemsCount - difference > itemsCount){
-						displayError(view, new ReservationException("Hai scelto di eliminare copie ma la cifra è sbagliata"));
-						doAction = false;
-					}
-				}
+				// asking if they are for consultation
+				int res = JOptionPane.showConfirmDialog(view, "Le copie sono per consultazione?",
+						"Domanda", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				
+				forConsultation = res == JOptionPane.YES_OPTION;
 				
 				Object [] args = {book, itemsCount, difference, forConsultation};
 				
-				// action.setArgs(args);
+				action = new ActionAddCopies(model);
 				
-				if (doAction){
+				if(doAction){
 					boolean [] done = askConfirmationAndExecuteAction(args);
-
-					if (done[1] == true){
-						bookView.setVisible(false);
-					}	
+					
+					// refreshing the list
+					if (done[0] && !done[1]){
+						
+						try {
+							displayBooks(action);
+						} catch (SQLException e) {
+							displayError(view, "Non è stato possibile refreshare la tabella", e);
+							bookView.setVisible(false);
+						}
+						
+					}
 				}
+
+			}
+			
+		});
+		
+		this.bookView.addMenuItemDecrementCopiesNumberListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				Book book = (Book) bookView.getSelectedItem();
+				int itemsCount = bookView.getItemsCount();
+				int difference = 0;
+				
+				boolean doAction = false;
+				
+				difference = askNumber(view, "Inserisci il numero di copie che vuoi rimuovere");
+				if(difference != Integer.MAX_VALUE){
+					doAction = true;
+				}
+				
+				Object [] args = {book, itemsCount, difference};
+				
+				action = new ActionDeleteCopies(model);
+				
+				if(doAction){
+					// refreshing the list
+					boolean [] done = askConfirmationAndExecuteAction(args);
+					if (done[0] && !done[1]){
+						
+						try {
+							displayBooks(action);
+						} catch (SQLException e) {
+							displayError(view, "Non è stato possibile refreshare la tabella", e);
+							bookView.setVisible(false);
+						}
+						
+					}
+				}
+
 			}
 			
 		});

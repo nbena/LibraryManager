@@ -211,17 +211,17 @@ begin
 	can_be_deletable := (select array_agg(id) from
 					(select lm_copy.id
 					from lm_copy join book on lm_copy.bookid = book.id
-					where bookid = $1
+					where lm_copy.bookid = $1
 					and lm_copy.id not in
 						(select copyid
 						from loan where restitution_date is null)
 					and lm_copy.id not in
 						(select copyid
-						from loan_reservation where is_done = false)
+						from loan_reservation where done = false)
 					and lm_copy.id not in
 						(select copyid
 						from consultation_reservation
-						where reservation_date >= current_date)
+						where reservation_date >= current_date and done = false)
 					and lm_copy.id not in
 						(select copyid
 						from consultation where end_date is null)
@@ -244,7 +244,7 @@ begin
 	where lm_copy.id in
 	(	select lm_copy.id
 		from lm_copy join book on lm_copy.bookid = book.id
-		where book_id = $1
+		where lm_copy.bookid = $1
 	);
 
 	-- can't renew, sorry
@@ -252,7 +252,7 @@ begin
 	where copyid in 
 	(	select lm_copy.id
 		from lm_copy join book on lm_copy.bookid = book.id
-		where book_id = $1
+		where lm_copy.bookid = $1
 	);
 
 	return max_available;

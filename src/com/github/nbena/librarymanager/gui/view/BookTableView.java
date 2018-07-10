@@ -28,22 +28,31 @@ import com.github.nbena.librarymanager.gui.view.table.Popupable;
 public class BookTableView extends AbstractTableView implements Popupable {
 
 	private JMenuItem mntmDelete;
-	private JMenuItem mntmChangeCopiesNumber;
+	private JMenuItem mntmIncrementCopiesNumber;
+	private JMenuItem mntmDecrementCopiesNumber;
 	
 	public void addMenuItemDeleteListener(ActionListener listener){
 		this.mntmDelete.addActionListener(listener);
 	}
 	
-	public void addMenuItemChangeCopiesNumberListener(ActionListener listener){
-		this.mntmChangeCopiesNumber.addActionListener(listener);
+	public void addMenuItemIncrementCopiesNumberListener(ActionListener listener){
+		this.mntmIncrementCopiesNumber.addActionListener(listener);
+	}
+	
+	public void addMenuItemDecrementCopiesNumberListener(ActionListener listener){
+		this.mntmDecrementCopiesNumber.addActionListener(listener);
 	}
 	
 	public void setMenuItemDeleteEnabled(boolean enabled){
 		this.mntmDelete.setEnabled(enabled);
 	}
 	
-	public void setMenuItemChangeCopiesNumberEnabled(boolean enabled){
-		this.mntmChangeCopiesNumber.setEnabled(enabled);
+	public void setMenuItemIncrementCopiesNumberEnabled(boolean enabled){
+		this.mntmIncrementCopiesNumber.setEnabled(enabled);
+	}
+	
+	public void setMenuItemDecrementCopiesNumberEnabled(boolean enabled){
+		this.mntmDecrementCopiesNumber.setEnabled(enabled);
 	}
 	
 	public BookTableView(){
@@ -52,8 +61,11 @@ public class BookTableView extends AbstractTableView implements Popupable {
 		this.mntmDelete = new JMenuItem("Elimina");
 		super.menu.add(this.mntmDelete);
 		
-		this.mntmChangeCopiesNumber = new JMenuItem("Modifica numero copie");
-		super.menu.add(this.mntmChangeCopiesNumber);
+		this.mntmIncrementCopiesNumber = new JMenuItem("Incrementa numero copie");
+		super.menu.add(this.mntmIncrementCopiesNumber);
+		
+		this.mntmDecrementCopiesNumber = new JMenuItem("Riduci numero copie");
+		super.menu.add(this.mntmDecrementCopiesNumber);
 	}
 	
 }

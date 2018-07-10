@@ -24,6 +24,37 @@ public abstract class AbstractController {
 	// protected GenericTableView genericTableView;
 	protected SearchableBook searchableBookView;
 	
+	/**
+	 * <pre>askNumber</pre> asks the user to insert a number >= 0
+	 * @param message the message to show
+	 * @return the integer inserted. If some error occurs, an error message is show and
+	 * Integer.MAX_VALUE is returned.
+	 */
+	protected int askNumber(Component view, String message){
+		int difference = Integer.MAX_VALUE;
+
+		String diffString = JOptionPane.showInputDialog(view, message,
+				"Domanda", JOptionPane.QUESTION_MESSAGE);
+		
+		if (diffString != null && !diffString.trim().equals("")){
+			try{
+				difference = Integer.parseInt(diffString);
+				
+				if (difference <= 0){
+					displayMessage(view, "Numbero inserito deve essere > 0",
+							"Errore", JOptionPane.ERROR_MESSAGE);
+					difference = Integer.MAX_VALUE;
+				}
+				
+			}catch(NumberFormatException e){
+				displayMessage(view, "Numero inserito non valido", "Errore",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
+		return difference;
+	}
+	
 	
 	public static void displayMessage(Component parent, String message, String title, int messageType){
 		if (messageType == Integer.MAX_VALUE){
@@ -52,7 +83,25 @@ public abstract class AbstractController {
 	
 	public static void displayError(Component parent, Exception exception){
 		exception.printStackTrace();
-		JOptionPane.showMessageDialog(parent, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(parent, exception.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public static void displayError(Component parent, String message){
+		JOptionPane.showMessageDialog(parent, message, "Errore", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	/**
+	 * displayError displays the content of <pre>message</pre>. This method is intended to
+	 * be used when you want to display a message caused by an exception but you do not want to
+	 * call <pre>exception.getMessage()</pre>.
+	 * @param parent the parent component, can be <pre>null</pre>
+	 * @param message	the message to show
+	 * @param cause	the exception that have caused  the error, it'll be just printed to
+	 * stdout using <pre>cause.printStackTrace()</pre>.
+	 */
+	public static void displayError(Component parent, String message, Exception cause){
+		cause.printStackTrace();
+		JOptionPane.showMessageDialog(parent, message, "Errore", JOptionPane.ERROR_MESSAGE);
 	}
 	
 //	protected void showSeatReservationDetails(SeatReservation reservation){

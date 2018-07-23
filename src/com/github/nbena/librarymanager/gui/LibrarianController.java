@@ -271,6 +271,7 @@ public class LibrarianController extends AbstractController {
 					action = new ActionDeleteBook(model);
 					List<BookCopiesNumber> books = model.getDeletableBooks();
 					bookView.setMenuItemIncrementCopiesNumberEnabled(false);
+					bookView.setMenuItemDecrementCopiesNumberEnabled(false);
 					bookView.setMenuItemDeleteEnabled(true);
 					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
 				}catch(SQLException e1){

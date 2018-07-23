@@ -50,5 +50,10 @@ public class SeatReservationTableModel extends AbstractTableModel implements Sel
 	public SeatReservation getSelectedItem(int row) {
 		return this.items.get(row);
 	}
+	
+	@Override
+	public int getItemsCount(){
+		return this.items.size();
+	}
 
 }

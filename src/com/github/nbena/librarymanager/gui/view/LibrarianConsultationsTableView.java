@@ -117,10 +117,10 @@ public class LibrarianConsultationsTableView extends AbstractTableView implement
 	}
 
 
-	@Override
-	public Object getSelectedItem(int row) {
-		return super.getSelectedItem();
-	}
+//	@Override
+//	public Object getSelectedItem(int row) {
+//		return super.getSelectedItem();
+//	}
 
 
 }

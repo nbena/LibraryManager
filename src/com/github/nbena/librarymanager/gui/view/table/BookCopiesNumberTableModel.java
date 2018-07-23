@@ -57,5 +57,10 @@ public class BookCopiesNumberTableModel extends AbstractTableModel implements Se
 	public Object getSelectedItem(int row) {
 		return items.get(row);
 	}
+	
+	@Override
+	public int getItemsCount(){
+		return this.items.size();
+	}
 
 }

@@ -59,4 +59,9 @@ public class ConsultationReservationTableModel extends AbstractTableModel
 	public ConsultationReservation getSelectedItem(int row) {
 		return this.items.get(row);
 	}
+	
+	@Override
+	public int getItemsCount(){
+		return this.items.size();
+	}
 }

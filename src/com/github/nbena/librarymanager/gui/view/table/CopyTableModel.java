@@ -65,5 +65,10 @@ public class CopyTableModel extends AbstractTableModel
 		return this.items.get(row);
 	}
 	
+	@Override
+	public int getItemsCount(){
+		return this.items.size();
+	}
+	
 
 }

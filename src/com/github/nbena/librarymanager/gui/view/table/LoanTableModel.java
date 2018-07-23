@@ -53,5 +53,10 @@ public class LoanTableModel extends AbstractTableModel implements SelectableItem
 	public Loan getSelectedItem(int row) {
 		return this.loans.get(row);
 	}
+	
+	@Override
+	public int getItemsCount(){
+		return this.loans.size();
+	}
 
 }

@@ -67,5 +67,10 @@ public class LoanReservationTableModel extends AbstractTableModel
 	public LoanReservation getSelectedItem(int row) {
 		return this.items.get(row);
 	}
+	
+	@Override
+	public int getItemsCount(){
+		return this.items.size();
+	}
 
 }

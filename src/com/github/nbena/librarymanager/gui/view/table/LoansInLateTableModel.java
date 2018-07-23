@@ -66,5 +66,10 @@ public class LoansInLateTableModel extends AbstractTableModel
 	public Object getSelectedItem(int row) {
 		return this.items.get(row);
 	}
+	
+	@Override
+	public int getItemsCount(){
+		return this.items.size();
+	}
 
 }

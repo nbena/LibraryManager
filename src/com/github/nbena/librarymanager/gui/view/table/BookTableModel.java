@@ -73,5 +73,10 @@ public class BookTableModel extends AbstractTableModel implements SelectableItem
 	public Object getSelectedItem(int row) {
 		return items.get(row);
 	}
+	
+	@Override
+	public int getItemsCount(){
+		return this.items.size();
+	}
 
 }

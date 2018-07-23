@@ -270,10 +270,11 @@ public class LibrarianController extends AbstractController {
 				try{
 					action = new ActionDeleteBook(model);
 					List<BookCopiesNumber> books = model.getDeletableBooks();
-					bookView.setMenuItemIncrementCopiesNumberEnabled(false);
-					bookView.setMenuItemDecrementCopiesNumberEnabled(false);
-					bookView.setMenuItemDeleteEnabled(true);
-					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
+//					bookView.setMenuItemIncrementCopiesNumberEnabled(false);
+//					bookView.setMenuItemDecrementCopiesNumberEnabled(false);
+//					bookView.setMenuItemDeleteEnabled(true);
+//					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
+					displayBooks(action, books);
 				}catch(SQLException e1){
 					displayError(view, e1);
 				}
@@ -298,7 +299,15 @@ public class LibrarianController extends AbstractController {
 //					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
 					
 					// AddAcopies so the method know which MenuItem enables.
-					displayBooks(new ActionAddCopies(model));
+					// it is a fake 'action' because the action attribute of 
+					// model is actually changed when the menuItem is clicked.
+					// we use AddCopie just because the method displayBooks:
+					// <pre>
+					// if (action instanceof ActionAddCopies || action instanceof ActionDeleteCopies)
+					// menItemIncrement.enabled
+					// menuItemDecrement.enabled
+					// </pre>
+					displayBooks(new ActionAddCopies(model), null);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -365,17 +374,23 @@ public class LibrarianController extends AbstractController {
 	 * action.
 	 * @param action the Action you want to do. We do not use the attribute because
 	 * in some cases the action is set after then a call to this function.
+	 * @param books if null, a list will be loaded with <pre>model.books()</pre>
 	 * @throws SQLException
 	 */
-	private void displayBooks(Action action) throws SQLException{
-		List<BookCopiesNumber> books = this.model.books();
+	private void displayBooks(Action action, List<BookCopiesNumber> books) throws SQLException{
+		if (books==null){
+			books = this.model.books();
+		}
 		boolean incrementEnabled = false;
 		boolean decrementEnabled = false;
-		boolean deleteEnabled = true;
+		boolean deleteEnabled = false;
 		if(action instanceof ActionAddCopies || action instanceof ActionDeleteCopies){
 			incrementEnabled = true;
 			decrementEnabled = true;
-			
+		}
+		
+		if (action instanceof ActionDeleteBook){
+			deleteEnabled = true;
 		}
 		
 		this.bookView.setMenuItemIncrementCopiesNumberEnabled(incrementEnabled);
@@ -566,6 +581,10 @@ public class LibrarianController extends AbstractController {
 		
 		super.addPopupListenerToTable(bookView);
 		
+		/**
+		 * Listener called when the table 'Delete book' shows up
+		 * and user right click -> delete.
+		 */
 		this.bookView.addMenuItemDeleteListener(new ActionListener(){
 
 			@Override
@@ -640,7 +659,7 @@ public class LibrarianController extends AbstractController {
 					if (done[0] && !done[1]){
 						
 						try {
-							displayBooks(action);
+							displayBooks(action, null);
 						} catch (SQLException e) {
 							displayError(view, "Non è stato possibile refreshare la tabella", e);
 							bookView.setVisible(false);
@@ -679,7 +698,8 @@ public class LibrarianController extends AbstractController {
 					if (done[0] && !done[1]){
 						
 						try {
-							displayBooks(action);
+							// books with a copies number of zero are no longer shown.
+							displayBooks(action, null);
 						} catch (SQLException e) {
 							displayError(view, "Non è stato possibile refreshare la tabella", e);
 							bookView.setVisible(false);

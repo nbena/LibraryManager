@@ -16,6 +16,8 @@ import com.github.nbena.librarymanager.gui.UserController;
 import com.github.nbena.librarymanager.gui.UserModel;
 import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.UserView;
+import com.github.nbena.librarymanager.gui.view.turnstile.TurnstileView;
+import com.github.nbena.librarymanager.gui.view.turnstile.TurnstileViewController;
 import com.github.nbena.librarymanager.man.LibraryManager;
 import com.github.nbena.librarymanager.utils.Hash;
 
@@ -50,6 +52,8 @@ public class Main {
 	}
 	
 	public void turnstile(){
+		TurnstileView view = new TurnstileView();
+		new TurnstileViewController(this.manager, view);
 		
 	}
 	

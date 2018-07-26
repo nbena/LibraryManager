@@ -1,23 +1,29 @@
 package com.github.nbena.librarymanager.gui.view.turnstile;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.github.nbena.librarymanager.gui.view.MainableView;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
-public class TurnstileView extends JDialog {
+public class TurnstileView extends JDialog implements MainableView{
 	
 	private JButton btnExit;
 	private JButton btnEnter;
 	private JButton btnPassed;
 	private JTextField textFieldStatus;
 	private JLabel lblSemaphor;
+	private JLabel lblMain;
 	
 	public void addActionListenerEnterButton(ActionListener listener){
 		this.btnEnter.addActionListener(listener);
@@ -35,8 +41,22 @@ public class TurnstileView extends JDialog {
 		this.textFieldStatus.setText(text);
 	}
 	
-	public void setSemapherColor(){
-		
+	private void setSemaphorColor(Color color){
+		this.lblSemaphor.setBackground(color);
+	}
+	
+	public void setSemaphorRed(){
+		this.lblSemaphor.setText("STOP");
+		this.setSemaphorColor(Color.RED);
+	}
+	
+	public void setSemaphorGreen(){
+		this.lblSemaphor.setText("PASSA");
+		this.setSemaphorColor(Color.GREEN);
+	}
+	
+	public void setPassedButtonEnabled(boolean enabled){
+		this.btnPassed.setEnabled(enabled);
 	}
 
 
@@ -60,35 +80,47 @@ public class TurnstileView extends JDialog {
 	 * Create the dialog.
 	 */
 	public TurnstileView() {
-		setBounds(100, 100, 472, 411);
+		setBounds(100, 100, 309, 210);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
 		btnEnter = new JButton("Entra");
-		btnEnter.setBounds(37, 26, 98, 24);
+		btnEnter.setBounds(12, 80, 98, 24);
 		contentPanel.add(btnEnter);
 		
 		btnExit = new JButton("Esci");
-		btnExit.setBounds(194, 26, 98, 24);
+		btnExit.setBounds(165, 80, 98, 24);
 		contentPanel.add(btnExit);
 		
-		JLabel lblNewLabel = new JLabel("Stato:");
-		lblNewLabel.setBounds(37, 84, 55, 14);
-		contentPanel.add(lblNewLabel);
-		
 		textFieldStatus = new JTextField();
-		textFieldStatus.setBounds(179, 82, 114, 18);
+		textFieldStatus.setEditable(false);
+		textFieldStatus.setBounds(12, 50, 114, 18);
 		contentPanel.add(textFieldStatus);
 		textFieldStatus.setColumns(10);
 		
-		lblSemaphor = new JLabel("");
-		lblSemaphor.setBounds(179, 129, 55, 14);
+		lblSemaphor = new JLabel("STOP");
+		lblSemaphor.setBounds(179, 52, 55, 14);
 		contentPanel.add(lblSemaphor);
+		lblSemaphor.setOpaque(true);
 		
 		btnPassed = new JButton("Sono passato");
-		btnPassed.setBounds(124, 161, 129, 24);
+		btnPassed.setBounds(91, 125, 129, 24);
 		contentPanel.add(btnPassed);
+		
+		btnPassed.setEnabled(false);
+		
+		lblMain = new JLabel("", SwingConstants.CENTER);
+		lblMain.setBounds(12, 12, 285, 14);
+		contentPanel.add(lblMain);
+		
+		this.setSemaphorRed();
+		this.textFieldStatus.setText("Chiuso");
+	}
+
+	@Override
+	public void setMainTitle(String main) {
+		this.lblMain.setText(main);
 	}
 }

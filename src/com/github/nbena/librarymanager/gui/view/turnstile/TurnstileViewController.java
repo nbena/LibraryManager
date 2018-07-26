@@ -10,6 +10,9 @@ public class TurnstileViewController {
 	public TurnstileViewController(LibraryManager manager, TurnstileView view){
 		this.manager = manager;
 		this.view = view;
+		
+		this.view.setMainTitle("Tornello biblioteca");
+		this.view.setVisible(true);
 	}
 
 }

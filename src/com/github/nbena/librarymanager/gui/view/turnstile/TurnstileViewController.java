@@ -38,7 +38,13 @@ public class TurnstileViewController {
 	
 	private Turnstile turnstile;
 	
-	private User getCredential() throws SQLException{
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 * @throws NullPointerException if the user has choosen to cancel
+	 */
+	private User getCredential() throws SQLException, NullPointerException{
 		StartupLogin login = new StartupLogin();
 		String [] cred = login.getCredentials("Inserisci email e password");
 		User user = null;
@@ -48,7 +54,7 @@ public class TurnstileViewController {
 			user.setHashedPassword(Hash.hash(cred[1]));
 			user = manager.authenticateUserWithError(user);
 		}else{
-			user = null;
+			throw new NullPointerException();
 		}
 		return user;
 	}
@@ -74,15 +80,15 @@ public class TurnstileViewController {
 		User user = null;
 		try {
 			user = this.getCredential();
-			if (user == null){
-				AbstractController.displayMessage(view,
+
+			AbstractController.displayMessage(view,
 						"Non è stato trovato nessun match",
 						"Errore",
 						JOptionPane.ERROR_MESSAGE);
-			}
+			
 		} catch (SQLException e) {
 			AbstractController.displayError(view, e);
-		}
+		} catch(NullPointerException e){}
 		return user;
 	}
 	

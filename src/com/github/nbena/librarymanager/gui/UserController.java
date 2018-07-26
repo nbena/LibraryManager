@@ -185,6 +185,26 @@ public class UserController extends AbstractController {
 	
 	private void addBasicListeneres(){
 		
+		this.userView.addActionListenerLogout(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				int res = JOptionPane.showConfirmDialog(userView,
+						"Sei sicuro di voler uscire?",
+						"Domanda",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				
+				if (res == JOptionPane.YES_OPTION){
+					userModel.close();
+					userView.setVisible(false);
+					userView.dispose();
+				}
+			}
+			
+		});
+		
 		// new seat reservation
 		
 		// tested and it works

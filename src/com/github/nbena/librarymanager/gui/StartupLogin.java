@@ -48,10 +48,13 @@ public class StartupLogin {
 		
 	}
 	
-	public String[] getCredentials(){
+	public String[] getCredentials(String msg){
+		if (msg == null){
+			msg = "Inserisci le tue credenziali";
+		}
 		String [] result = null;
 		int res = JOptionPane.showConfirmDialog(null, this.panel,
-				"Inserisci le tue credenziali: ", JOptionPane.OK_CANCEL_OPTION);
+				msg, JOptionPane.OK_CANCEL_OPTION);
 		if (res == JOptionPane.OK_OPTION){
 			result = new String[2];
 			result[0] = this.email.getText();

@@ -45,18 +45,28 @@ public class TurnstileView extends JDialog implements MainableView{
 		this.lblSemaphor.setBackground(color);
 	}
 	
-	public void setSemaphorRed(){
+	private void setSemaphorRed(){
 		this.lblSemaphor.setText("STOP");
 		this.setSemaphorColor(Color.RED);
 	}
 	
-	public void setSemaphorGreen(){
+	private void setSemaphorGreen(){
 		this.lblSemaphor.setText("PASSA");
 		this.setSemaphorColor(Color.GREEN);
 	}
 	
-	public void setPassedButtonEnabled(boolean enabled){
+	private void setPassedButtonEnabled(boolean enabled){
 		this.btnPassed.setEnabled(enabled);
+	}
+	
+	public void open(){
+		this.setPassedButtonEnabled(true);
+		this.setSemaphorGreen();
+	}
+	
+	public void close(){
+		this.setPassedButtonEnabled(false);
+		this.setSemaphorRed();		
 	}
 
 

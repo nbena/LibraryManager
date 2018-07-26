@@ -77,6 +77,12 @@ public class LibraryManager {
 		}
 		return returned;
 	}
+	
+	public User authenticateUserWithError(Loginable user) throws SQLException{
+		User returned = null;
+		returned = this.dbManager.authenticateUser(user);
+		return returned;
+	}
 
 	public void deregisterUser(User user) throws SQLException{
 		this.dbManager.deleteItem(user);

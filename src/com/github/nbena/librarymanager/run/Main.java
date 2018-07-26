@@ -64,7 +64,7 @@ public class Main {
 		String [] credentials;
 		
 		while (loop){
-			credentials = this.login.getCredentials();
+			credentials = this.login.getCredentials(null);
 			if (credentials == null){
 				loop = false;
 			}else{

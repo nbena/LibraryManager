@@ -17,11 +17,12 @@
 
 package com.github.nbena.librarymanager.core.turnstile;
 
+import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 
 public interface TurnstileState {
 	
-	public void userArrive(Turnstile turnstile, User user);
+	public Seat userArrive(Turnstile turnstile, User user) throws Exception;
 	
 	public void userPass(Turnstile turnstile);
 	

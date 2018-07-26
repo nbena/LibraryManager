@@ -1,4 +1,4 @@
-/*  LibraryManager
+/*  LibraryManager a toy library manager
     Copyright (C) 2018 nbena
 
     This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 
 package com.github.nbena.librarymanager.core.turnstile;
 
+import java.sql.SQLException;
+
+import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 
@@ -24,16 +27,18 @@ public class IdleState implements TurnstileState {
 	
 	public static IdleState IDLE_STATE = new IdleState();
 	
-	public void userArrive(Turnstile turnstile, User user){
+	public Seat userArrive(Turnstile turnstile, User user) throws SQLException, ReservationException{
 		Seat seat = turnstile.sendRequestForUser(user);
 		// turnstile.setState(RequestState.REQUEST_STATE);
 		
 		if (seat != null){
-			turnstile.showSeat(seat);
+			// turnstile.showSeat(seat);
 			turnstile.setState(OpenState.OPEN_STATE);
-		}else{
-			turnstile.showNoSeats();
 		}
+//		}else{
+//			turnstile.showNoSeats();
+//		}
+		return seat;
 	}
 	
 	public void userPass(Turnstile turnstile){}

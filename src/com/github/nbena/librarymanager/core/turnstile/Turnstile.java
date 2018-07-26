@@ -1,4 +1,4 @@
-/*  LibraryManager
+/*  LibraryManager a toy library manager
     Copyright (C) 2018 nbena
 
     This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 
 package com.github.nbena.librarymanager.core.turnstile;
 
+import java.sql.SQLException;
+
+import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.man.LibraryManager;
@@ -28,10 +31,11 @@ public class Turnstile {
 	
 	public Turnstile(LibraryManager manager){
 		this.controller = new TurnstileController(manager);
+		this.state = IdleState.IDLE_STATE;
 	}
 	
-	public void userArrive(User user){
-		this.state.userArrive(this, user);
+	public Seat userArrive(User user) throws Exception{
+		return this.state.userArrive(this, user);
 	}
 	
 	public void userPass(){
@@ -46,7 +50,7 @@ public class Turnstile {
 		this.state = state;
 	}
 	
-	Seat sendRequestForUser(User user){
+	Seat sendRequestForUser(User user) throws SQLException, ReservationException{
 		return this.controller.sendRequestForUser(user);
 	}
 	

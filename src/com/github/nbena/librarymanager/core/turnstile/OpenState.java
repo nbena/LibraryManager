@@ -1,4 +1,4 @@
-/*  LibraryManager
+/*  LibraryManager a toy library manager
     Copyright (C) 2018 nbena
 
     This program is free software: you can redistribute it and/or modify
@@ -17,13 +17,16 @@
 
 package com.github.nbena.librarymanager.core.turnstile;
 
+import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 
 public class OpenState implements TurnstileState {
 	
 	public static OpenState OPEN_STATE = new OpenState();
 	
-	public void userArrive(Turnstile turnstile, User user){}
+	public Seat userArrive(Turnstile turnstile, User user) throws Exception{
+		return null;
+	}
 	
 	public void userPass(Turnstile turnstile){
 		turnstile.setState(IdleState.IDLE_STATE);

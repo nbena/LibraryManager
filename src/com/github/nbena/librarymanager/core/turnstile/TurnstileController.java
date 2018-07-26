@@ -1,4 +1,4 @@
-/*  LibraryManager
+/*  LibraryManager a toy library manager
     Copyright (C) 2018 nbena
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
-
 package com.github.nbena.librarymanager.core.turnstile;
 
 import java.sql.SQLException;
@@ -36,22 +35,15 @@ public class TurnstileController {
 	void enablePass(){}
 	
 	String showSeat(Seat seat){
-		return String.format("The seat assigned is: (%d,%d)\n", seat.getNumber(), seat.getTableNumber());
+		return String.format("Il tuo posto è: [%d,%d]\n", seat.getNumber(), seat.getTableNumber());
 	}
 	
 	String showNoSeats(){
 		return "No seats available";
 	}
 	
-	Seat sendRequestForUser(User user){
-		
-		Seat seat = null;
-		try {
-			seat = this.manager.getOrAssignSeat(user);
-		} catch (SQLException | ReservationException e) {
-			
-		}
-		return seat;
+	Seat sendRequestForUser(User user) throws SQLException, ReservationException{
+		return this.manager.getOrAssignSeat(user);
 	}
 
 }

@@ -100,12 +100,23 @@ public class TurnstileViewController {
 		this.view.setVisible(true);
 	}
 	
+	private void setMainButtonEnabled(boolean enabled){
+		view.setButtonExitEnabled(enabled);
+		view.setButtonEnterEnabled(enabled);
+	}
+	
 	// user arrives with no reservations: works.
 	private void addEnterExitListeners(){
+		/**
+		 * when user pushed 'enter' or 'exit' they're all disabled
+		 * till it passes
+		 */
 		this.view.addActionListenerEnterButton(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				setMainButtonEnabled(false);
+
 				User user = getUserOrError();
 				if(user!=null){
 					try {
@@ -113,22 +124,29 @@ public class TurnstileViewController {
 						showSeatOrNothing(seat);
 					} catch (Exception e) {
 						AbstractController.displayError(view, e);
+						setMainButtonEnabled(true);
 					}
+				}else{
+					setMainButtonEnabled(true);
 				}
 				
 			}
 			
 		});
 		
+		
 		this.view.addActionListenerExitButton(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setMainButtonEnabled(false);
+
 				User user = getUserOrError();
 				if(user!=null){
 					view.open();
+				}else{
+					setMainButtonEnabled(true);
 				}
-				
 			}
 			
 		});
@@ -140,7 +158,9 @@ public class TurnstileViewController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				view.close();
-				turnstile.userPass();			
+				turnstile.userPass();
+
+				setMainButtonEnabled(true);
 			}
 			
 		});

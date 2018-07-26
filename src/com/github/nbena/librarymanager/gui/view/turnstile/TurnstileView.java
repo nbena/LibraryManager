@@ -85,6 +85,14 @@ public class TurnstileView extends JDialog implements MainableView{
 		this.setPassedButtonEnabled(false);
 		this.setSemaphorRed();		
 	}
+	
+	public void setButtonEnterEnabled(boolean enabled){
+		this.btnEnter.setEnabled(enabled);
+	}
+	
+	public void setButtonExitEnabled(boolean enabled){
+		this.btnExit.setEnabled(enabled);
+	}
 
 
 	private final JPanel contentPanel = new JPanel();

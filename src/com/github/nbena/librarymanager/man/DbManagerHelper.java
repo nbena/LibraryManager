@@ -142,9 +142,12 @@ public class DbManagerHelper {
 
 		OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(startingIndex + 1, OffsetDateTime.class);
 		LocalDate reservationDate = (LocalDate) rs.getObject(startingIndex + 2, LocalDate.class);
+		boolean done = rs.getBoolean(startingIndex + 3);
 
 		ConsultationReservation reservation = new ConsultationReservation(id, user, copyForConsultation,
 				seat, reservationDate, timestamp);
+		// System.out.println(reservation);
+		reservation.setDone(done);
 
 		return reservation;
 	}
@@ -196,7 +199,7 @@ public class DbManagerHelper {
 				title, authors, year, mainTopic, phouse)
 				.replaceAll("loan_reservation.id, time_stamp",
 						"seat_number, table_number, "+ // seat
-						"cr.id, time_stamp, reservation_date ")
+						"cr.id, time_stamp, reservation_date, done ")
 				.replaceAll("from loan_reservation join lm_copy on loan_reservation.copyid = lm_copy.id",
 							"from consultation_reservation as cr join lm_copy on cr.copyid = lm_copy.id")
 				.replaceAll("and loan_reservation.userid=\\?",

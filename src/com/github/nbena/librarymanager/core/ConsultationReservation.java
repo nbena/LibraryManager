@@ -73,9 +73,9 @@ public class ConsultationReservation extends AbstractReservationWithBook {
 		this.reservationDate = reservationDate;
 	}
 	
-	public boolean isDone(){
-		return this.reservationDate.isAfter(LocalDate.now());
-	}
+//	public boolean isDone(){
+//		return this.reservationDate.isAfter(LocalDate.now());
+//	}
 	
 	public String toString(){
 		return "Id: "+this.ID+

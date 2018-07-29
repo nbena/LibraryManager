@@ -22,6 +22,7 @@ import java.time.OffsetDateTime;
 public abstract class AbstractReservationWithBook extends AbstractReservation {
 	
 	protected Copy copy;
+	protected boolean done;
 	
 	public void setCopy(Copy copy){
 		this.copy = copy;
@@ -42,6 +43,14 @@ public abstract class AbstractReservationWithBook extends AbstractReservation {
 	
 	public AbstractReservationWithBook(InternalUser user, OffsetDateTime timestamp){
 		super(user, timestamp);
+	}
+
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
 	}
 
 }

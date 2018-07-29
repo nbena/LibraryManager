@@ -490,8 +490,6 @@ public class DbManager {
 		String query = DbManagerHelper.getLoanByUserCopyQuery(title,
 				authors, year, mainTopic, phouse);
 		
-		System.out.println(query);
-		
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		
 		Object [] res = DbManagerHelper.searchPrepare(1, pstmt,
@@ -798,7 +796,6 @@ public class DbManager {
 		String query = DbManagerHelper.getOneAvailableCopyForConsultationQuery(
 			title, authors, year, mainTopic, phouse);
 
-		System.out.println(query);
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 
@@ -832,9 +829,6 @@ public class DbManager {
 					   "(select copyid from consultation_reservation "+
 					   "where lm_copy.id=? and reservation_date=?) "+
 					   "and for_consultation = true limit 1";
-		
-		System.out.println(copy.getID());
-		System.out.println(date);
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		pstmt.setInt(1, copy.getID());

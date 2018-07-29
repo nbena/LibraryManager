@@ -26,7 +26,6 @@ public class LoanReservation extends AbstractReservationWithBook {
 	// private OffsetDateTime timestamp;
 	// private InternalUser user;
 	// private Copy copy;
-	private boolean done;
 	
 	
 
@@ -59,14 +58,5 @@ public class LoanReservation extends AbstractReservationWithBook {
 		return new Loan(this.user, this.copy);
 	}
 
-
-	public boolean isDone() {
-		return done;
-	}
-
-	public void setDone(boolean done) {
-		this.done = done;
-	}
-	
 	
 }

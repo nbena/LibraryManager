@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -297,6 +298,16 @@ public class DbManagerTest {
 	  this.db.commit(true);
 	  this.db.autoSave(true);
 	  
+	  assertTrue(this.db.authenticateUser(this.users[0]) != null);
+	  
+	  // we modify a user
+	  User mod = this.users[users.length - 1];
+	  String oldPass = mod.getHashedPassword();
+	  mod.setHashedPassword("will fail");
+	  assertTrue(this.db.authenticateUser(mod) == null);
+	  mod.setHashedPassword(oldPass);
+	  
+	  
   }
   
 
@@ -359,9 +370,31 @@ public class DbManagerTest {
 //	  Loan l = loans[0];
 //	  l.setRenewAvailable(false);
 //  }
+  private void addLoanInLate() throws SQLException{
+	  
+	  // finding out the loanin late added in the Dockerfile.
+	  boolean found = false;
+	  
+	  List<Loan> loansInLate = this.db.getLoansInLate();
+	 
+	  
+	  for(int i=0;i<loansInLate.size();i++){
+		  Loan loan = loansInLate.get(i);
+		  if(loan.getCopy().getTitle().equals("Title3")){
+			  found = true;
+			  i = loansInLate.size();
+		  }
+	  }
+	  
+	  
+	  assertTrue(found);
+  }
   
   public void loanOps() throws SQLException{
 	  this.addCopies();
+	  
+	  // we add a loan that we known it'll be in late
+	  this.addLoanInLate();
 	  
 	  this.addLoan();
 	  Loan l = this.loans[0];
@@ -528,15 +561,15 @@ public class DbManagerTest {
 	  
 	  // this.db.cancelConsultationReservation(got);
 	  this.db.setConsultationReservationDone(got);
-//	  List<ConsultationReservation> reservations = this.db.getConsultationReservationByUser(got.getUser(),
-//			  	got.getReservationDate(), false, false);
-//	  for(int i=0;i<reservations.size();i++){
-//		  ConsultationReservation cr = reservations.get(i);
-//		  if(cr.getID() == got.getID()){
-//			  assertTrue(cr.isDone() == true);
-//			  i = reservations.size(); //break
-//		  }
-//	  }
+	  List<ConsultationReservation> reservations = this.db.getConsultationReservationByUser(got.getUser(),
+			  	got.getReservationDate(), false, false);
+	  for(int i=0;i<reservations.size();i++){
+		  ConsultationReservation cr = reservations.get(i);
+		  if(cr.getID() == got.getID()){
+			  assertTrue(cr.isDone() == true);
+			  i = reservations.size(); //break
+		  }
+	  }
 	  // testing the is done has no sense because the attributes are separated (db and code):
 	  // code: if reservationDate > today then true
 	  // db	as a pure attribute.
@@ -654,7 +687,6 @@ public class DbManagerTest {
   private void searchTitleExists() throws SQLException {
 	  List<Copy> copies = this.db.search(this.books[0].getTitle(),
 			  null, 0, null, null);
-	  System.out.println(copies.size());
 	  assertTrue(copies.size() == this.copies.length + this.copiesForConsultation.length);
   }
   

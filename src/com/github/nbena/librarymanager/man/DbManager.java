@@ -490,6 +490,8 @@ public class DbManager {
 		String query = DbManagerHelper.getLoanByUserCopyQuery(title,
 				authors, year, mainTopic, phouse);
 		
+		System.out.println(query);
+		
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 		
 		Object [] res = DbManagerHelper.searchPrepare(1, pstmt,
@@ -509,30 +511,30 @@ public class DbManager {
 	}
 
 
-	@Deprecated
-	public Loan getLoanByUserCopy(User user, Copy copy, boolean delivered) throws SQLException{
-		String query = "select id, start_date, end_date, restitution_date, renew_available "+
-						"from loan where userid=? "+
-						"and copyid=?";
-
-		if (delivered){
-			query += " and restitution_date is not null";
-		}else{
-			query += " and restitution_date is null";
-		}
-
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-
-		pstmt.setInt(1, user.getID());
-		pstmt.setInt(2, copy.getID());
-
-		ResultSet rs = pstmt.executeQuery();
-		Loan loan = null;
-		if(rs.next()){
-			loan = DbManagerHelper.getLoanFrom(rs, 1, copy, user);
-		}
-		return loan;
-	}
+//	@Deprecated
+//	public Loan getLoanByUserCopy(User user, Copy copy, boolean delivered) throws SQLException{
+//		String query = "select id, start_date, end_date, restitution_date, renew_available "+
+//						"from loan where userid=? "+
+//						"and copyid=?";
+//
+//		if (delivered){
+//			query += " and restitution_date is not null";
+//		}else{
+//			query += " and restitution_date is null";
+//		}
+//
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//
+//		pstmt.setInt(1, user.getID());
+//		pstmt.setInt(2, copy.getID());
+//
+//		ResultSet rs = pstmt.executeQuery();
+//		Loan loan = null;
+//		if(rs.next()){
+//			loan = DbManagerHelper.getLoanFrom(rs, 1, copy, user);
+//		}
+//		return loan;
+//	}
 
 
 	public Loan getActiveLoanByCopy(Copy copy) throws SQLException{
@@ -612,40 +614,40 @@ public class DbManager {
 	}
 
 
-	@Deprecated
-	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDate date)
-					throws SQLException{
-
-		String query = "select copyid, title, authors, year, main_topic, "+
-						"phouse, status, for_consultation, "+
-						"seat_number, table_number, "+ // seat
-						"cr.id, time_stamp, reservation_date "+
-						"from book join lm_copy on book.id = lm_copy.bookid "+
-						"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
-						"where cr.userid=? and reservation_date = ? and "+
-						"title=? and authors=?";
-
-		PreparedStatement pstmt = connection.prepareStatement(query);
-
-		pstmt.setInt(1, user.getID());
-		// pstmt.setInt(2, book.getID());
-		pstmt.setObject(2, date);
-		pstmt.setString(3, book.getTitle());
-		pstmt.setArray(4, connection.createArrayOf("varchar", book.getAuthors()));
-
-		ResultSet rs = pstmt.executeQuery();
-		ConsultationReservation reservation = null;
-		if (rs.next()){
-
-//			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
-//			Seat seat = DbManagerHelper.getSeatFrom(rs, 8, false);
+//	@Deprecated
+//	public ConsultationReservation getConsultationReservation(InternalUser user, Book book, LocalDate date)
+//					throws SQLException{
 //
-//			reservation = DbManagerHelper.getConsultationReservationFrom(rs, 10, copy, seat, user);
-
-			reservation = DbManagerHelper.getFullConsultationReservationFrom(rs, 1, user);
-		}
-		return reservation;
-	}
+//		String query = "select copyid, title, authors, year, main_topic, "+
+//						"phouse, status, for_consultation, "+
+//						"seat_number, table_number, "+ // seat
+//						"cr.id, time_stamp, reservation_date "+
+//						"from book join lm_copy on book.id = lm_copy.bookid "+
+//						"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
+//						"where cr.userid=? and reservation_date = ? and "+
+//						"title=? and authors=?";
+//
+//		PreparedStatement pstmt = connection.prepareStatement(query);
+//
+//		pstmt.setInt(1, user.getID());
+//		// pstmt.setInt(2, book.getID());
+//		pstmt.setObject(2, date);
+//		pstmt.setString(3, book.getTitle());
+//		pstmt.setArray(4, connection.createArrayOf("varchar", book.getAuthors()));
+//
+//		ResultSet rs = pstmt.executeQuery();
+//		ConsultationReservation reservation = null;
+//		if (rs.next()){
+//
+////			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
+////			Seat seat = DbManagerHelper.getSeatFrom(rs, 8, false);
+////
+////			reservation = DbManagerHelper.getConsultationReservationFrom(rs, 10, copy, seat, user);
+//
+//			reservation = DbManagerHelper.getFullConsultationReservationFrom(rs, 1, user);
+//		}
+//		return reservation;
+//	}
 
 	public Consultation startConsultation(Consultation consultation)throws SQLException{
 		String query = "insert into consultation (userid, copyid) values (?,?) returning id";
@@ -850,40 +852,41 @@ public class DbManager {
 	}
 
 	// IMPORTANT: on consultation user cannot decide year and so, just author and title.
-	@Deprecated
-	public CopyForConsultation getOneAvailableCopyForConsultation(Book book, LocalDate date) throws SQLException{
+//	@Deprecated
+//	public CopyForConsultation getOneAvailableCopyForConsultation(Book book, LocalDate date) throws SQLException{
+//
+//		String query = "select lm_copy.id, title, authors, year, main_topic, phouse, status "+
+//						"from book join lm_copy on book.id=lm_copy.bookid where lm_copy.id not in "+
+//						"(select copyid from consultation_reservation where reservation_date=?) "+
+//						"and title=? and authors=? and for_consultation = true "+
+//						"limit 1";
+//
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//		pstmt.setObject(1, date);
+//		pstmt.setString(2, book.getTitle());
+//		pstmt.setArray(3, this.connection.createArrayOf("varchar", book.getAuthors()));
+//
+//		CopyForConsultation copy = null;
+//		ResultSet rs = pstmt.executeQuery();
+//		if(rs.next()){
+//			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
+//			copy = CopyForConsultation.create(from);
+//			copy.setID(from.getID());
+//		}
+//		return copy;
+//	}
 
-		String query = "select lm_copy.id, title, authors, year, main_topic, phouse, status "+
-						"from book join lm_copy on book.id=lm_copy.bookid where lm_copy.id not in "+
-						"(select copyid from consultation_reservation where reservation_date=?) "+
-						"and title=? and authors=? and for_consultation = true "+
-						"limit 1";
 
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-		pstmt.setObject(1, date);
-		pstmt.setString(2, book.getTitle());
-		pstmt.setArray(3, this.connection.createArrayOf("varchar", book.getAuthors()));
-
-		CopyForConsultation copy = null;
-		ResultSet rs = pstmt.executeQuery();
-		if(rs.next()){
-			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
-			copy = CopyForConsultation.create(from);
-			copy.setID(from.getID());
-		}
-		return copy;
-	}
-
-
-	public void registerLoanDelivered(Loan loan) throws SQLException{
-
-		String query = "update loan set restitution_date = current_date where id=?";
-
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-
-		pstmt.setInt(1, loan.getID());
-		pstmt.execute();
-	}
+//	@Deprecated
+//	public void registerLoanDelivered(Loan loan) throws SQLException{
+//
+//		String query = "update loan set restitution_date = current_date where id=?";
+//
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//
+//		pstmt.setInt(1, loan.getID());
+//		pstmt.execute();
+//	}
 
 
 	private SeatReservation getSeatReservationFrom(ResultSet rs, int startingIndex, InternalUser user) throws SQLException{

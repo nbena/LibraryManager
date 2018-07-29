@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
@@ -73,7 +74,14 @@ public class DbManagerTest {
 						2018,
 						"Info",
 						"phouse"
-						)
+						),
+				new Book("DeletableTitle",
+						new String[]{
+								"Me"
+						},
+						2018,
+						"NULL",
+						"phouse")
 		};
 		users = new User[]{
 				new User(
@@ -266,12 +274,29 @@ public class DbManagerTest {
 	
 	
   public void addUser() throws SQLException{
-	  for (User u: users){
+	  
+	  this.db.autoSave(false);
+	  
+	  for (User u: this.users){
 		  this.db.addUser(u);
 	  }
+	  
+	  this.db.commit(false);
+	  
 	  usersCreated = true;
 	  int count = getCountOf("select count (*) from lm_user where ", users);
 	  assertTrue(count >= users.length);
+	  
+	  // now call getUser
+	  User got = this.db.getUser(this.users[0].getEmail());
+	  assertTrue(got.getID() == this.users[0].getID());
+	  
+	  int usersCount = this.db.users().size();
+	  assertTrue(usersCount >= users.length);
+	  
+	  this.db.commit(true);
+	  this.db.autoSave(true);
+	  
   }
   
 
@@ -283,6 +308,40 @@ public class DbManagerTest {
 	  }
 	  int count = getCountOf("select count (*) from lm_copy where ", allCopies);
 	  assertTrue(count >= copies.length + copiesForConsultation.length);
+	  
+	  @SuppressWarnings("unchecked")
+	  List<Book> deletable = (List<Book>) this.db.getDeletableBooks(false);
+	  boolean found = false;
+	  for(int i=0;i<deletable.size();i++){
+		  Book b = deletable.get(i);
+		  if(b.getTitle().equals(this.books[1].getTitle())){
+			  found = true;
+			  i = deletable.size(); // break
+		  }
+	  }
+	  assertTrue(found);
+	  
+	  // now we add one copy to that book.
+	  this.db.addSomeCopies(deletable.get(0), 1, false);
+	  List<BookCopiesNumber> allBooks = this.db.bookCopiesNumber();
+	  for (int i = 0;i<allBooks.size();i++){
+		  BookCopiesNumber b = allBooks.get(i);
+		  if(b.getID() == deletable.get(0).getID()){
+			  assertTrue(b.getCopiesNumber() == 1);
+			  i = allBooks.size(); // break
+		  }
+	  }
+	  
+	  // now we delete them
+	  this.db.deleteSomeCopies(deletable.get(0), 1);
+	  allBooks = this.db.bookCopiesNumber();
+	  for (int i = 0;i<allBooks.size();i++){
+		  BookCopiesNumber b = allBooks.get(i);
+		  if(b.getID() == deletable.get(0).getID()){
+			  assertTrue(b.getCopiesNumber() == 0);
+			  i = allBooks.size(); // break
+		  }
+	  }
   }
   
   public void addLoan() throws SQLException{
@@ -318,18 +377,41 @@ public class DbManagerTest {
 			 );
 	  assertTrue(gotLoan.getID() == l.getID());
 	  
-	  this.db.registerLoanDelivered(gotLoan);
-//	  gotLoan = this.db.getLoanByUserCopy(l.getUser(),
-//			  l.getCopy().getTitle(),
-//			  l.getCopy().getAuthors(),
-//			  l.getCopy().getYearOfPublishing(),
-//			  l.getCopy().getMainTopic());
-//
-//	  assertTrue(gotLoan != null);
-//	  System.out.println(l.getID());
-//	  System.out.println(gotLoan.getID());
-//	  System.out.println(gotLoan.getRestitutionDate());
-//	  assertTrue(gotLoan.getRestitutionDate().equals(LocalDate.now()));
+	  
+	  // test the renew change
+	  gotLoan.setRenewAvailable(false);
+	  this.db.updateLoan(gotLoan); 
+	  List<Loan> gotLoans = this.db.getLoans(gotLoan.getUser(), false, false);
+	  for(Loan loan: gotLoans){
+		  if (loan.getID() == gotLoan.getID()){
+			  assertTrue(loan.isRenewAvailable() == false);
+			  break;
+		  }
+	  }
+	  
+	  // test the end
+	  gotLoan.setEnd(LocalDate.now());
+	  this.db.updateLoan(gotLoan);
+	  gotLoans = this.db.getLoans(gotLoan.getUser(), false, false);
+	  for(Loan loan: gotLoans){
+		  if (loan.getID() == gotLoan.getID()){
+			  assertTrue(loan.getEnd().equals(LocalDate.now()));
+			  break;
+		  }
+	  }
+	  
+	  // test the restitution
+	  gotLoan.setRestitutionDate(LocalDate.now());
+	  this.db.updateLoan(gotLoan);
+	  gotLoans = this.db.getLoans(gotLoan.getUser(), false, false);
+	  for(Loan loan: gotLoans){
+		  if (loan.getID() == gotLoan.getID()){
+			  assertTrue(loan.getRestitutionDate().equals(LocalDate.now()));
+			  break;
+		  }
+	  }	  
+	  
+	  
 	  boolean found = false;
 	  List<Loan> loansByUser = this.db.getLoans(l.getUser(), true, true);
 	  for(Loan loan: loansByUser){
@@ -410,6 +492,9 @@ public class DbManagerTest {
 			  got.getCopy().getMainTopic(), got.getCopy().getPublishingHouse());
 	  
 	  assertTrue(expected.getID() == expected.getID());
+	  
+	  List<BookCopiesNumber> booksCopiesNumber = this.db.bookCopiesNumber();
+	  assertTrue(booksCopiesNumber.size() >= this.books.length);
   }
   
   
@@ -442,6 +527,21 @@ public class DbManagerTest {
 	  assertTrue(expected.getID() == got.getID());
 	  
 	  // this.db.cancelConsultationReservation(got);
+	  this.db.setConsultationReservationDone(got);
+//	  List<ConsultationReservation> reservations = this.db.getConsultationReservationByUser(got.getUser(),
+//			  	got.getReservationDate(), false, false);
+//	  for(int i=0;i<reservations.size();i++){
+//		  ConsultationReservation cr = reservations.get(i);
+//		  if(cr.getID() == got.getID()){
+//			  assertTrue(cr.isDone() == true);
+//			  i = reservations.size(); //break
+//		  }
+//	  }
+	  // testing the is done has no sense because the attributes are separated (db and code):
+	  // code: if reservationDate > today then true
+	  // db	as a pure attribute.
+	  // this separation is necessary.
+	  
 	  this.db.deleteItem(got);
 
 	  count = getCountOf("select count (*) from consultation_reservation where ", new ConsultationReservation[]{got});
@@ -469,18 +569,6 @@ public class DbManagerTest {
 	  assertTrue(thrown);
 
 	  
-	  // expected = this.db.getConsultationReservation(got.getUser(), got.getCopy(), got.getReservationDate());
-//	  got = this.db.getConsultationReservationByUserCopy(
-//			  expected.getUser(),
-//			  expected.getReservationDate(),
-//			  expected.getCopy().getTitle(),
-//			  expected.getCopy().getAuthors(),
-//			  expected.getCopy().getYearOfPublishing(),
-//			  expected.getCopy().getMainTopic());
-//	  System.out.println(expected);
-//	  System.out.println(got);
-//	  assertTrue(got.getID() == oldId);
-	  
 	  for(Consultation c: this.consultations){
 		  db.startConsultation(c);
 	  }
@@ -489,6 +577,14 @@ public class DbManagerTest {
 			 this.consultations);
 	  
 	  assertTrue(count == this.consultations.length);
+	  
+	  // now we get the number of consultation in porgress
+	  int progress = this.db.consultationInProgress().size();
+	  assertTrue(count == progress);
+	  
+	  // now same but for a specific user
+	  int progressByUser = this.db.consultationInProgressByUser(this.consultations[0].getUser()).size();
+	  assertTrue(count >= progressByUser);
 	  
 	  for(Consultation c: this.consultations){
 		  db.endConsultation(c);
@@ -606,9 +702,9 @@ public class DbManagerTest {
   private void searchByPHouseNotExists() throws SQLException{
 	  List<Copy> copies = this.db.search(null, null, 0, null, "oreillyyyyy");
 	  assertTrue(copies.size() == 0);
-  }  
+  }
   
-  
+   
   
   @Test
   public void testLoans() throws SQLException{

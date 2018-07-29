@@ -180,7 +180,7 @@ public class LibraryManager {
 
 	public void deliveryLoan(Loan loan) throws SQLException{
 		loan.setEnd(LocalDate.now());
-		this.dbManager.registerLoanDelivered(loan);
+		this.dbManager.updateLoan(loan);
 	}
 
 //	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{

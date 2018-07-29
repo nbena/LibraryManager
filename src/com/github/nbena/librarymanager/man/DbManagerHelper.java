@@ -330,7 +330,7 @@ public class DbManagerHelper {
 	private final static String CONSULTATION_RESERVATION_BY_USER = "select copyid, title, authors, year, main_topic, "+
 			"phouse, status, for_consultation, "+
 			"seat_number, table_number, "+
-			"cr.id, time_stamp, reservation_date "+
+			"cr.id, time_stamp, reservation_date, done "+
 			"from book join lm_copy on book.id = lm_copy.bookid "+
 			"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
 			"where cr.userid=?";

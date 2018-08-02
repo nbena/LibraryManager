@@ -49,6 +49,7 @@ import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
 import com.github.nbena.librarymanager.gui.view.table.BookCopiesNumberTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
+import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
 import com.github.nbena.librarymanager.core.Book;
@@ -57,6 +58,7 @@ import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
+import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 
 public class LibrarianController extends AbstractController {
@@ -90,7 +92,7 @@ public class LibrarianController extends AbstractController {
 	private boolean isWithUser = false;
 	
 	private static final String TITLE_NEW_NOT_RESERVED_LOAN = "Nuovo prestito non prenotato";
-	private static final String TITLE_NEW_RESERVED_LOAN = "Nuovo prestito prenotato";
+	// private static final String TITLE_NEW_RESERVED_LOAN = "Nuovo prestito prenotato";
 	private static final String TITLE_REGISTER_LOAN_DELIVERY = "Registra consegna prestito";
 	private static final String TITLE_VIEW_LOANS_IN_LATE = "Prestiti in ritardo";
 	private static final String TITLE_REGISTER_USER = "Nuovo utente";
@@ -102,6 +104,7 @@ public class LibrarianController extends AbstractController {
 	private static final String TITLE_ADD_BOOK = "Nuovo libro";
 	private static final String TITLE_CHANGE_COPIES_NUMBER = "Modifica numero copie";
 	private static final String TITLE_DELETE_BOOK = "Elimina libro";
+	private static final String TITLE_VIEW_LOAN_RESERVATIONS = "Prestiti prenotati";
 	
 	
 	private void showWithUsersView(boolean withUsers, String title) throws SQLException{
@@ -163,10 +166,15 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0){
 				try {
+
 					action = new ActionNewReservedLoan(model);
-					showWithUsersView(true, TITLE_NEW_RESERVED_LOAN);
-				} catch (SQLException e) {
+					// showWithUsersView(true, TITLE_NEW_RESERVED_LOAN);
+					showLoanReservationsPerUser();
+				} catch (SQLException | ReservationException e) {
 					displayError(view, e);
+				} catch (ClassCastException e1){
+					ReservationException ex = new ReservationException("Qualcosa è andato storto", e1);
+					displayError(view, ex);
 				}
 			}
 		});
@@ -436,6 +444,19 @@ public class LibrarianController extends AbstractController {
 		}
 	}
 	
+	private void showLoanReservationsPerUser() throws SQLException, ReservationException{
+		InternalUser user = (InternalUser) askAndFillUser();
+		if (user!=null){
+			List<LoanReservation> reservations = model.getLoanReservationsByUser(user);
+			
+			consultationsView.setMenuItemStartEnabled(true);
+			consultationsView.setMenuItemDeliveryEnabled(false);
+			
+			super.displayTableItems(new LoanReservationTableModel(reservations),
+					consultationsView, view, TITLE_VIEW_LOAN_RESERVATIONS);
+		}
+	}
+	
 	
 	// TODO WHY CONSULTATION IN PROGRESS IS SHOWN EVEN IF IT'S FINISHED.
 	// ahah done
@@ -468,9 +489,13 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				// action is set previously.
-				
-				ConsultationReservation arg = (ConsultationReservation) consultationsView.getSelectedItem();
-				askConfirmationAndExecuteAction(arg);
+				if (action instanceof ActionNewReservedConsultation){
+					ConsultationReservation arg = (ConsultationReservation) consultationsView.getSelectedItem();
+					askConfirmationAndExecuteAction(arg);
+				}else if (action instanceof ActionNewReservedLoan){
+					LoanReservation arg = (LoanReservation) consultationsView.getSelectedItem();
+					askConfirmationAndExecuteAction(arg);
+				}
 			}
 			
 		});

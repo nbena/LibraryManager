@@ -179,7 +179,7 @@ public class LibraryManager {
 	}
 
 	public void deliveryLoan(Loan loan) throws SQLException{
-		loan.setEnd(LocalDate.now());
+		loan.setRestitutionDate(LocalDate.now());
 		this.dbManager.updateLoan(loan);
 	}
 

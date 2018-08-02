@@ -2,7 +2,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 
 import java.sql.SQLException;
 
-import com.github.nbena.librarymanager.core.InternalUser;
+import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
@@ -12,20 +12,39 @@ import com.github.nbena.librarymanager.gui.LibrarianModel;
  * @author nbena
  *
  */
-public class ActionNewReservedLoan extends AbstractActionWithBookUser implements Action {
-
-	public ActionNewReservedLoan(LibrarianModel model) {
+//public class ActionNewReservedLoan extends AbstractActionWithBookUser implements Action {
+//
+//	public ActionNewReservedLoan(LibrarianModel model) {
+//		super(model);
+//		super.ask = true;
+//		super.confirmationMessage = "Confermi questo prestito?";
+//		super.resultMessage = "Prestito confermato";
+//	}
+//	
+//	@Override
+//	public void execute () throws SQLException, ReservationException{
+//		super.model.loanReserved((InternalUser) super.user, super.title,
+//				super.authors, super.year, super.topic, super.phouse);
+//	}
+public class ActionNewReservedLoan extends AbstractAction implements Action{
+	
+	private LoanReservation reservation;
+	
+	public ActionNewReservedLoan(LibrarianModel model){
 		super(model);
 		super.ask = true;
-		super.confirmationMessage = "Confermi questo prestito?";
+		super.confirmationMessage = "Confermi l'inizio del prestitio?";
 		super.resultMessage = "Prestito confermato";
 	}
 	
 	@Override
-	public void execute () throws SQLException, ReservationException{
-		super.model.loanReserved((InternalUser) super.user, super.title,
-				super.authors, super.year, super.topic, super.phouse);
+	public void execute() throws SQLException, ReservationException{
+		super.model.loanReserved(this.reservation);
 	}
-
+	
+	@Override
+	public void setArgs(Object... args){
+		this.reservation = (LoanReservation) args[0];
+	}
 
 }

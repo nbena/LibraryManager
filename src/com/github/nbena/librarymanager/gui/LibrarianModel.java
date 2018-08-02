@@ -122,11 +122,8 @@ public class LibrarianModel extends AbstractModel {
 //		return super.manager.loanNotReserved(user, copy);
 //	}
 	
-	public Loan loanReserved(InternalUser user, String title, String [] authors, int year,
-			String mainTopic, String phouse) throws SQLException, ReservationException{
+	public Loan loanReserved(LoanReservation reservation) throws SQLException, ReservationException{
 		
-		LoanReservation reservation = super.manager.getLoanReservationByUserCopy(
-				user, title, authors, year, mainTopic, phouse);
 
 		if (reservation == null){
 			throw new ReservationException(LibraryManager.NO_RESERVATION);
@@ -179,6 +176,10 @@ public class LibrarianModel extends AbstractModel {
 	public List<ConsultationReservation> getConsultationReservationsByUserToday(InternalUser user) throws SQLException{
 		
 		return super.manager.getConsultationReservationByUser(user, LocalDate.now(), true, false);
+	}
+	
+	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
+		return super.manager.getLoanReservationByUser(user, true, false);
 	}
 	
 	// for this one we can have a list of the consultations in progress

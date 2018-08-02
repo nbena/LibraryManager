@@ -20,8 +20,6 @@ public class ActionNewReservedConsultation extends AbstractAction {
 	
 	@Override
 	public void execute() throws SQLException, ReservationException{
-//		super.model.startReservedConsultation((InternalUser) super.user, super.title,
-//				super.authors, super.year, super.topic, super.phouse);
 		super.model.startReservedConsultation(this.reservation);
 	}
 

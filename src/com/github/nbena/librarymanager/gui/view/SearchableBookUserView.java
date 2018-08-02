@@ -33,26 +33,19 @@ public class SearchableBookUserView extends SearchableBookView implements Search
 		this.lblUser.setVisible(enabled);
 	}
 	
-//	public void showUsers(boolean show){
-//		this.comboBoxUser.setVisible(show);
-//		this.lblUser.setVisible(show);
-//		this.comboBoxUser.setEnabled(show);
-//		this.lblUser.setEnabled(show);
-//	}
-	
-	
+		
 	public SearchableBookUserView() {
 		
-		super.setBounds(100, 100, 450, 261);
+		super.setBounds(100, 100, 450, 270);
 		
-		buttonPane.setLocation(0, 196);
+		buttonPane.setLocation(0, 200);
 		
 		lblUser = new JLabel("Utente");
-		lblUser.setBounds(12, 173, 55, 14);
+		lblUser.setBounds(12, 176, 55, 14);
 		contentPanel.add(lblUser);
 		
 		comboBoxUser = new JComboBox<User>();
-		comboBoxUser.setBounds(136, 173, 292, 23);
+		comboBoxUser.setBounds(136, 176, 292, 23);
 		contentPanel.add(comboBoxUser);
 	}
 }

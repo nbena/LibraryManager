@@ -150,36 +150,36 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.contentPanel.add(lblYear);
 		
 		JLabel lblTopic = new JLabel("Argomento");
-		lblTopic.setBounds(12, 123, 97, 14);
+		lblTopic.setBounds(12, 124, 97, 14);
 		this.contentPanel.add(lblTopic);
 		
 		JLabel lblPHouse = new JLabel("C. editrice");
-		lblPHouse.setBounds(12, 153, 97, 14);
+		lblPHouse.setBounds(12, 150, 97, 14);
 		this.contentPanel.add(lblPHouse);
 		
 		textFieldPhouse = new JTextField();
-		textFieldPhouse.setBounds(136, 153, 292 , 18);
+		textFieldPhouse.setBounds(136, 150, 292 , 18);
 		contentPanel.add(this.textFieldPhouse);
 		textFieldPhouse.setColumns(10);
 		
 		
 		textFieldTopic = new JTextField();
-		textFieldTopic.setBounds(136, 121, 292, 18);
+		textFieldTopic.setBounds(136, 124, 292, 18);
 		contentPanel.add(textFieldTopic);
 		textFieldTopic.setColumns(10);
 		
 		textFieldYear = new JTextField();
-		textFieldYear.setBounds(136, 96, 82, 18);
+		textFieldYear.setBounds(136, 98, 82, 18);
 		contentPanel.add(textFieldYear);
 		textFieldYear.setColumns(10);
 		
 		textFieldAuthors = new JTextField();
-		textFieldAuthors.setBounds(136, 70, 292, 18);
+		textFieldAuthors.setBounds(136, 72, 292, 18);
 		contentPanel.add(textFieldAuthors);
 		textFieldAuthors.setColumns(10);
 		
 		textFieldTitle = new JTextField();
-		textFieldTitle.setBounds(136, 44, 292, 18);
+		textFieldTitle.setBounds(136, 46, 292, 18);
 		contentPanel.add(textFieldTitle);
 		textFieldTitle.setColumns(10);
 		

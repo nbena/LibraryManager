@@ -50,6 +50,7 @@ import com.github.nbena.librarymanager.gui.view.table.BookCopiesNumberTableModel
 import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
+import com.github.nbena.librarymanager.gui.view.table.LoanTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
 import com.github.nbena.librarymanager.core.Book;
@@ -93,7 +94,7 @@ public class LibrarianController extends AbstractController {
 	
 	private static final String TITLE_NEW_NOT_RESERVED_LOAN = "Nuovo prestito non prenotato";
 	// private static final String TITLE_NEW_RESERVED_LOAN = "Nuovo prestito prenotato";
-	private static final String TITLE_REGISTER_LOAN_DELIVERY = "Registra consegna prestito";
+	// private static final String TITLE_REGISTER_LOAN_DELIVERY = "Registra consegna prestito";
 	private static final String TITLE_VIEW_LOANS_IN_LATE = "Prestiti in ritardo";
 	private static final String TITLE_REGISTER_USER = "Nuovo utente";
 	private static final String TITLE_NEW_NOT_RESERVED_CONSULTATION = "Nuova consultazione non prenotata";
@@ -105,6 +106,7 @@ public class LibrarianController extends AbstractController {
 	private static final String TITLE_CHANGE_COPIES_NUMBER = "Modifica numero copie";
 	private static final String TITLE_DELETE_BOOK = "Elimina libro";
 	private static final String TITLE_VIEW_LOAN_RESERVATIONS = "Prestiti prenotati";
+	private static final String TITLE_VIEW_LOANS = "Prestiti in corso";
 	
 	
 	private void showWithUsersView(boolean withUsers, String title) throws SQLException{
@@ -185,9 +187,13 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					action = new ActionDeliveryLoan(model);
-					showWithUsersView(true, TITLE_REGISTER_LOAN_DELIVERY);
-				} catch (SQLException e1) {
+					// showWithUsersView(true, TITLE_REGISTER_LOAN_DELIVERY);
+					showLoansInProgressPerUser();
+				} catch (SQLException | ReservationException e1) {
 					displayError(view, e1);
+				}catch (ClassCastException e1){
+					ReservationException ex = new ReservationException("Qualcosa è andato storto", e1);
+					displayError(view, ex);
 				}
 			}
 			
@@ -324,6 +330,12 @@ public class LibrarianController extends AbstractController {
 		
 				try {
 					List<Consultation> consultations = model.consultations(null);
+					
+					consultationsView.setItemsToConsultation();
+					
+					consultationsView.setMenuItemDeliveryEnabled(false);
+					consultationsView.setMenuItemStartEnabled(false);
+					
 					displayTableItems(new ConsultationInProgressTableModel(consultations),
 							consultationsView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
 				} catch (SQLException e) {
@@ -411,12 +423,13 @@ public class LibrarianController extends AbstractController {
 		User user = askAndFillUser();
 
 		if (user!=null){
-			// now showing all the in progress consultation
-			// for this user.
-
 			List<Consultation> consultations = model.consultations(user);
+			
+			consultationsView.setItemsToConsultation();
+			
 			consultationsView.setMenuItemDeliveryEnabled(true);
 			consultationsView.setMenuItemStartEnabled(false);
+			
 			super.displayTableItems(new ConsultationInProgressTableModel(consultations),
 					consultationsView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
 		}
@@ -436,6 +449,8 @@ public class LibrarianController extends AbstractController {
 		if(user!=null){
 			List<ConsultationReservation> reservations = model.getConsultationReservationsByUserToday(user);
 			
+			consultationsView.setItemsToConsultation();
+			
 			consultationsView.setMenuItemStartEnabled(true);
 			consultationsView.setMenuItemDeliveryEnabled(false);
 			
@@ -449,6 +464,8 @@ public class LibrarianController extends AbstractController {
 		if (user!=null){
 			List<LoanReservation> reservations = model.getLoanReservationsByUser(user);
 			
+			consultationsView.setItemsToLoan();
+			
 			consultationsView.setMenuItemStartEnabled(true);
 			consultationsView.setMenuItemDeliveryEnabled(false);
 			
@@ -457,9 +474,27 @@ public class LibrarianController extends AbstractController {
 		}
 	}
 	
+	private void showLoansInProgressPerUser() throws SQLException, ReservationException{
+		InternalUser user = (InternalUser) askAndFillUser();
+		if (user!=null){
+			List<Loan> loans = model.getLoansInProgressByUser(user);
+			
+			consultationsView.setItemsToLoan();
+			
+			consultationsView.setMenuItemDeliveryEnabled(true);
+			consultationsView.setMenuItemStartEnabled(false);
+			
+			super.displayTableItems(new LoanTableModel(loans),
+					consultationsView, view, TITLE_VIEW_LOANS);
+		}
+	}
 	
-	// TODO WHY CONSULTATION IN PROGRESS IS SHOWN EVEN IF IT'S FINISHED.
-	// ahah done
+	
+	
+	/**
+	 * Listeners to out generic view used to start a new reserved consultation/loan
+	 * and delivery consultation/loan.
+	 */
 	private void addConsultationsListListeners(){
 		
 		super.addPopupListenerToTable(this.consultationsView);
@@ -468,15 +503,15 @@ public class LibrarianController extends AbstractController {
 		
 		this.consultationsView.addMenuItemDeliveryListener(new ActionListener(){
 
-			// TODO set consultation delivery from the main button.
-			// done
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
 				// this is set here.
-				action = new ActionDeliveryConsultation(model);
+				Object arg = consultationsView.getSelectedItem();
+				// action = new ActionDeliveryConsultation(model);
 				
-				Consultation arg = (Consultation) consultationsView.getSelectedItem();
+				// Consultation arg = (Consultation) consultationsView.getSelectedItem();
 
 				askConfirmationAndExecuteAction(arg);
 				
@@ -484,18 +519,22 @@ public class LibrarianController extends AbstractController {
 			
 		});
 		
+		/**
+		 * 
+		 */
 		this.consultationsView.addMenuItemStartListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
 				// action is set previously.
-				if (action instanceof ActionNewReservedConsultation){
-					ConsultationReservation arg = (ConsultationReservation) consultationsView.getSelectedItem();
-					askConfirmationAndExecuteAction(arg);
-				}else if (action instanceof ActionNewReservedLoan){
-					LoanReservation arg = (LoanReservation) consultationsView.getSelectedItem();
-					askConfirmationAndExecuteAction(arg);
-				}
+				// Object arg = null;
+//				if (action instanceof ActionNewReservedConsultation){
+//					arg = (ConsultationReservation) consultationsView.getSelectedItem();				
+//				}else if (action instanceof ActionNewReservedLoan){
+//					arg = (LoanReservation) consultationsView.getSelectedItem();
+//				}
+				Object arg = consultationsView.getSelectedItem();
+				askConfirmationAndExecuteAction(arg);
 			}
 			
 		});

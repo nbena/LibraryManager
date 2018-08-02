@@ -12,20 +12,7 @@ import com.github.nbena.librarymanager.gui.LibrarianModel;
  * @author nbena
  *
  */
-//public class ActionNewReservedLoan extends AbstractActionWithBookUser implements Action {
-//
-//	public ActionNewReservedLoan(LibrarianModel model) {
-//		super(model);
-//		super.ask = true;
-//		super.confirmationMessage = "Confermi questo prestito?";
-//		super.resultMessage = "Prestito confermato";
-//	}
-//	
-//	@Override
-//	public void execute () throws SQLException, ReservationException{
-//		super.model.loanReserved((InternalUser) super.user, super.title,
-//				super.authors, super.year, super.topic, super.phouse);
-//	}
+
 public class ActionNewReservedLoan extends AbstractAction implements Action{
 	
 	private LoanReservation reservation;

@@ -60,6 +60,23 @@ public class LibrarianConsultationsTableView extends AbstractTableView implement
 	}
 	
 	
+	private static final String MENU_ITEM_DELIVER_CONSULTATION = "Consegna consultazione";
+	private static final String MENU_ITEM_DELIVER_LOAN = "Consegna prestito";
+	
+	private static final String MENU_ITEM_START_CONSULTATION = "Inizia consultazione";
+	private static final String MENU_ITEM_START_LOAN = "Inizia prestito";
+	
+	public void setItemsToLoan(){
+		this.mntmStart.setText(MENU_ITEM_START_LOAN);
+		this.mntmDelivery.setText(MENU_ITEM_DELIVER_LOAN);
+	}
+	
+	public void setItemsToConsultation(){
+		this.mntmStart.setText(MENU_ITEM_START_CONSULTATION);
+		this.mntmDelivery.setText(MENU_ITEM_DELIVER_CONSULTATION);
+	}
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -108,10 +125,10 @@ public class LibrarianConsultationsTableView extends AbstractTableView implement
 //		});	
 		super();
 		
-		this.mntmDelivery = new JMenuItem("Consegna consultazione");
+		this.mntmDelivery = new JMenuItem();
 		this.menu.add(this.mntmDelivery);
 		
-		this.mntmStart = new JMenuItem("Inizia consultazione");
+		this.mntmStart = new JMenuItem();
 		this.menu.add(this.mntmStart);
 		
 	}

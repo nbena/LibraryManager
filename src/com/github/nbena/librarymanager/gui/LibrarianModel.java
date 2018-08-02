@@ -86,15 +86,16 @@ public class LibrarianModel extends AbstractModel {
 		
 	}
 	
+	public List<Loan> getLoansInProgressByUser(InternalUser user) throws SQLException{
+		return super.manager.getLoanByUser(user, false);
+	}
+	
 //	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
 //		super.manager.deliveryBook(user, copy);
 //	}
 	
-	public void deliveryLoan(User user, String title, String [] authors, int year,
-			String mainTopic, String phouse) throws SQLException, ReservationException{
-		
-		Loan loan = super.manager.getLoanByUserCopy(user, title, authors, year,
-				mainTopic, phouse);
+	public void deliveryLoan(Loan loan) throws SQLException, ReservationException{
+
 		if(loan == null){
 			throw new ReservationException(LibraryManager.NO_LOAN);
 		}

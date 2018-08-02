@@ -184,15 +184,6 @@ public class LibraryManager {
 		this.dbManager.updateLoan(loan);
 	}
 
-//	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
-//		Loan loan = this.dbManager.getLoanByUserCopy(user, copy, false);
-//		if (loan == null){
-//			throw new ReservationException("Loan not found");
-//		}
-//
-//		loan.setEnd(LocalDate.now());
-//		this.dbManager.registerLoanDelivered(loan);
-//	}
 
 	public Loan loanNotReserved(User user, String title, String [] authors,
 			int year, String mainTopic, String phouse) throws SQLException, ReservationException{

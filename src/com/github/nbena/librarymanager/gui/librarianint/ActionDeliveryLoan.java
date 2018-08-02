@@ -2,10 +2,13 @@ package com.github.nbena.librarymanager.gui.librarianint;
 
 import java.sql.SQLException;
 
+import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionDeliveryLoan extends AbstractActionWithBookUser implements Action {
+public class ActionDeliveryLoan extends AbstractAction implements Action {
+	
+	private Loan loan;
 	
 	public ActionDeliveryLoan(LibrarianModel model){
 		super(model);
@@ -16,8 +19,12 @@ public class ActionDeliveryLoan extends AbstractActionWithBookUser implements Ac
 	
 	@Override
 	public void execute() throws SQLException, ReservationException{
-		super.model.deliveryLoan(super.user, super.title,
-				super.authors, super.year, super.topic, super.phouse);
+		super.model.deliveryLoan(this.loan);
+	}
+	
+	@Override
+	public void setArgs(Object... args){
+		this.loan = (Loan) args[0];
 	}
 
 }

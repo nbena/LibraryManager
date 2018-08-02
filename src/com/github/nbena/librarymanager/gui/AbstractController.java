@@ -176,12 +176,24 @@ public abstract class AbstractController {
 		displayMessage(component, "Non ci sono elementi da mostrare", "", Integer.MAX_VALUE);
 	}
 	
-	protected void displayTableItems(AbstractTableModel tableModel, AbstractTableView view, Component component){
+	/**
+	 * Shows up a new <pre>view</pre> using the given <pre>model</pre>.`
+	 * @param tableModel	the TableMOdel that contains the data
+	 * @param view	the view in which data will be shown	
+	 * @param component	the parent component
+	 * @param title	the title to set (it'll be the title of the <pre>view</pre>)
+	 */
+	protected void displayTableItems(AbstractTableModel tableModel,
+			AbstractTableView view,
+			Component component,
+			String title
+			){
 	
 		if(tableModel.getRowCount()>0){
 			view.setTableModel(tableModel);
 			view.setAlwaysOnTop(true);
-			view.setVisible(true);		
+			view.setMainTitle(title);
+			view.setVisible(true);
 		}else{
 			this.displayNoItemsToShow(component);
 		}

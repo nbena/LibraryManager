@@ -25,7 +25,7 @@ import com.github.nbena.librarymanager.gui.view.table.SelectableItem;
 
 @SuppressWarnings("serial")
 public abstract class AbstractTableView extends JDialog implements
-	Popupable, VisibleView {
+	Popupable, VisibleView, MainableView {
 	
 	protected JTable table;
 	protected JPopupMenu menu;
@@ -95,6 +95,11 @@ public abstract class AbstractTableView extends JDialog implements
 		return this.table.getModel().getRowCount();
 	}
 	
+	@Override
+	public void setMainTitle(String main) {
+		this.setTitle(main);
+	}
+
 	protected AbstractTableView(){
 		
 		GridBagLayout gbl_contentPane = new GridBagLayout();

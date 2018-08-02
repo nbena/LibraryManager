@@ -12,6 +12,7 @@ import com.github.nbena.librarymanager.core.Book;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 /**
@@ -107,11 +108,9 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.contentPanel = new JPanel();
 		
 		super.setBounds(100, 100, 450, 291);
-		// super.getContentPane().setLayout(null);
 		this.contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		super.getContentPane().add(contentPanel);
 		contentPanel.setLayout(null);
-		// this.contentPanel.setLayout(null);
 		
 		this.buttonPane = new JPanel();
 		this.buttonPane.setBounds(0, 197, 450, 45);
@@ -121,21 +120,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.btnOk = new JButton("Ok");
 		this.btnOk.setBounds(163, 12, 51, 24);
 		this.buttonPane.add(this.btnOk);
-		// this.btnOk.setActionCommand("OK");
-		
-		// JRootPane rootPane = super.getRootPane();
-		// rootPane.setLayout(null);
-		// rootPane.setDefaultButton(btnOk);
-		// rootPane.getContentPane().setLayout(null);
-		
-		// getContentPane().setLayout(null);		
-			
-		// this.btnCancel = new JButton("Cancel");
-		// this.btnCancel.setBounds(226, 12, 73, 24);
-		// this.buttonPane.add(this.btnCancel);
-		// this.btnCancel.setActionCommand("Cancel");
-			
-		
+					
 		
 		JLabel lblTitle = new JLabel("Titolo");
 		lblTitle.setBounds(12, 46, 55, 14);
@@ -183,7 +168,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		contentPanel.add(textFieldTitle);
 		textFieldTitle.setColumns(10);
 		
-		this.lblMain = new JLabel("");
+		this.lblMain = new JLabel("", SwingConstants.CENTER);
 		this.lblMain.setBounds(12, 12, 426, 14);
 		this.contentPanel.add(this.lblMain);
 		

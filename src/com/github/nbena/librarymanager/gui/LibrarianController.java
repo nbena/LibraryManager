@@ -89,28 +89,32 @@ public class LibrarianController extends AbstractController {
 	
 	private boolean isWithUser = false;
 	
-	private void showWithUsersView(boolean withUsers) throws SQLException{
+	private static final String TITLE_NEW_NOT_RESERVED_LOAN = "Nuovo prestito non prenotato";
+	private static final String TITLE_NEW_RESERVED_LOAN = "Nuovo prestito prenotato";
+	private static final String TITLE_REGISTER_LOAN_DELIVERY = "Registra consegna prestito";
+	private static final String TITLE_VIEW_LOANS_IN_LATE = "Prestiti in ritardo";
+	private static final String TITLE_REGISTER_USER = "Nuovo utente";
+	private static final String TITLE_NEW_NOT_RESERVED_CONSULTATION = "Nuova consultazione non prenotata";
+	// private static final String TITLE_NEW_RESERVED_CONSULTATION = "Nuova consultazione prenotata";
+	private static final String TITLE_VIEW_CONSULTATION_RESERVATIONS = "Consultazioni prenotate per utente";
+	// private static final String TITLE_REGISTER_CONSULTATION_DELIVERY = "Registra consegna consultazione";
+	private static final String TITLE_VIEW_CONSULTATIONS_IN_PROGRESS = "Consultazioni in corso";
+	private static final String TITLE_ADD_BOOK = "Nuovo libro";
+	private static final String TITLE_CHANGE_COPIES_NUMBER = "Modifica numero copie";
+	private static final String TITLE_DELETE_BOOK = "Elimina libro";
+	
+	
+	private void showWithUsersView(boolean withUsers, String title) throws SQLException{
 		if (withUsers){
 			((SearchableBookUser)this.searchableBookView).setUsers(this.model.users());
 		}else{
 			((SearchableBookUser)this.searchableBookView).setUserPanelEnabled(false);
 		}
 		this.isWithUser = withUsers;
+		this.searchableBookView.setMainTitle(title);
 		this.searchableBookView.setVisible(true);
 	}
 	
-	
-//	private User askUser() throws SQLException{
-//		String user = JOptionPane.showInputDialog(this.view,
-//				"Inserisci la mail dell'utente", "Utente", JOptionPane.QUESTION_MESSAGE);
-//		
-//		User asked = null;
-//		if (user!= null && !user.equals("")){
-//			asked = this.model.getUserFromEmail(user);
-//		}
-//		
-//		return asked;
-//	}
 	
 	
 	public LibrarianController(LibrarianModel model, LibrarianView view) {
@@ -146,11 +150,8 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0){
 				try {
-//					User user = askUser();
-//					searchableBookView.reset();
-//					searchableBookView.setVisible(true);
 					action = new ActionNewNotReservedLoan(model);
-					showWithUsersView(true);
+					showWithUsersView(true, TITLE_NEW_NOT_RESERVED_LOAN);
 				} catch (SQLException e) {
 					displayError(view, e);
 				}
@@ -162,12 +163,8 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0){
 				try {
-//					User user = askUser();
-//					searchableBookView.reset();
-//					searchableBookView.setVisible(true);
 					action = new ActionNewReservedLoan(model);
-					showWithUsersView(true);
-					// action = new ActionNewReservedLoan(model);
+					showWithUsersView(true, TITLE_NEW_RESERVED_LOAN);
 				} catch (SQLException e) {
 					displayError(view, e);
 				}
@@ -180,7 +177,7 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					action = new ActionDeliveryLoan(model);
-					showWithUsersView(true);
+					showWithUsersView(true, TITLE_REGISTER_LOAN_DELIVERY);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -194,7 +191,7 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					action = new ActionNewNotReservedConsultation(model);
-					showWithUsersView(true);
+					showWithUsersView(true, TITLE_NEW_NOT_RESERVED_CONSULTATION);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -243,6 +240,7 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				
 				userView.setVisible(true);
+				userView.setMainTitle(TITLE_REGISTER_USER);
 				action = new ActionAddUser(model);
 			}
 			
@@ -254,7 +252,7 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					action = new ActionAddBook(model);
-					showWithUsersView(false);
+					showWithUsersView(false, TITLE_ADD_BOOK);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -270,11 +268,7 @@ public class LibrarianController extends AbstractController {
 				try{
 					action = new ActionDeleteBook(model);
 					List<BookCopiesNumber> books = model.getDeletableBooks();
-//					bookView.setMenuItemIncrementCopiesNumberEnabled(false);
-//					bookView.setMenuItemDecrementCopiesNumberEnabled(false);
-//					bookView.setMenuItemDeleteEnabled(true);
-//					displayTableItems(new BookCopiesNumberTableModel(books), bookView, view);
-					displayBooks(action, books);
+					displayBooks(action, books, TITLE_DELETE_BOOK);
 				}catch(SQLException e1){
 					displayError(view, e1);
 				}
@@ -307,7 +301,7 @@ public class LibrarianController extends AbstractController {
 					// menItemIncrement.enabled
 					// menuItemDecrement.enabled
 					// </pre>
-					displayBooks(new ActionAddCopies(model), null);
+					displayBooks(new ActionAddCopies(model), null, TITLE_CHANGE_COPIES_NUMBER);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -323,7 +317,7 @@ public class LibrarianController extends AbstractController {
 				try {
 					List<Consultation> consultations = model.consultations(null);
 					displayTableItems(new ConsultationInProgressTableModel(consultations),
-							consultationsView, view);
+							consultationsView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
 				} catch (SQLException e) {
 					displayError(view, e);
 				}
@@ -339,7 +333,7 @@ public class LibrarianController extends AbstractController {
 				try{
 					List<Loan> loans = model.getLoansInLate();
 					displayTableItems(new LoansInLateTableModel(loans),
-							loansInLateView, view);
+							loansInLateView, view, TITLE_VIEW_LOANS_IN_LATE);
 					action = new ActionSendMail(model);
 				}catch(SQLException e1){
 					displayError(view, e1);
@@ -373,12 +367,15 @@ public class LibrarianController extends AbstractController {
 	 * This method fetches the list of BookCopiesNumber and displays them.
 	 * The <pre>MenuItem</pre>(s) are properly enabled basing on the current
 	 * action.
+	 * 
+	 * At the end it shows up <pre>this.bookView</pre>.
 	 * @param action the Action you want to do. We do not use the attribute because
 	 * in some cases the action is set after then a call to this function.
 	 * @param books if null, a list will be loaded with <pre>model.books()</pre>
+	 * @param title	the title to set to <pre>bookView</pre>
 	 * @throws SQLException
 	 */
-	private void displayBooks(Action action, List<BookCopiesNumber> books) throws SQLException{
+	private void displayBooks(Action action, List<BookCopiesNumber> books, String title) throws SQLException{
 		if (books==null){
 			books = this.model.books();
 		}
@@ -399,7 +396,7 @@ public class LibrarianController extends AbstractController {
 		this.bookView.setMenuItemDeleteEnabled(deleteEnabled);
 		
 		super.displayTableItems(new BookCopiesNumberTableModel(books),
-				bookView, view);
+				bookView, view, title);
 	}
 
 	private void showConsultationsPerUser() throws SQLException, ReservationException{
@@ -413,7 +410,7 @@ public class LibrarianController extends AbstractController {
 			consultationsView.setMenuItemDeliveryEnabled(true);
 			consultationsView.setMenuItemStartEnabled(false);
 			super.displayTableItems(new ConsultationInProgressTableModel(consultations),
-					consultationsView, view);
+					consultationsView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
 		}
 	}
 	
@@ -435,7 +432,7 @@ public class LibrarianController extends AbstractController {
 			consultationsView.setMenuItemDeliveryEnabled(false);
 			
 			super.displayTableItems(new ConsultationReservationTableModel(reservations),
-					consultationsView, view);
+					consultationsView, view, TITLE_VIEW_CONSULTATION_RESERVATIONS);
 		}
 	}
 	
@@ -660,7 +657,7 @@ public class LibrarianController extends AbstractController {
 					if (done[0] && !done[1]){
 						
 						try {
-							displayBooks(action, null);
+							displayBooks(action, null, TITLE_CHANGE_COPIES_NUMBER);
 						} catch (SQLException e) {
 							displayError(view, "Non è stato possibile refreshare la tabella", e);
 							bookView.setVisible(false);
@@ -700,7 +697,7 @@ public class LibrarianController extends AbstractController {
 						
 						try {
 							// books with a copies number of zero are no longer shown.
-							displayBooks(action, null);
+							displayBooks(action, null, TITLE_CHANGE_COPIES_NUMBER);
 						} catch (SQLException e) {
 							displayError(view, "Non è stato possibile refreshare la tabella", e);
 							bookView.setVisible(false);

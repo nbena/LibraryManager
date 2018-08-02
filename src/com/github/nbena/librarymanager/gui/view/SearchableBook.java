@@ -1,6 +1,6 @@
 package com.github.nbena.librarymanager.gui.view;
 
-public interface SearchableBook extends ViewableBook, ResettableView {
+public interface SearchableBook extends ViewableBook, ResettableView, MainableView {
 	
 	public String getTitle();
 	

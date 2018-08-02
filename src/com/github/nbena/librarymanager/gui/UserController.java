@@ -66,8 +66,14 @@ public class UserController extends AbstractController {
 	private UserController controller;
 	private GenericUserTableView genericTableView;
 	
-	// private LocalDate gotDate;
-	
+	private static final String TITLE_SEARCH_RESULTS = "Risultato ricerca";
+	private static final String TITLE_VIEW_LOANS = "I tuoi prestiti";
+	private static final String TITLE_VIEW_LOAN_RESERVATIONS = "Le tue prenotazioni";
+	private static final String TITLE_VIEW_SEAT_RESERVATIONS = "Le tue prenotazioni per posti";
+	private static final String TITLE_VIEW_CONSULTATION_RESERVATIONS = "Le tue prenotazioni per consultazioni";
+	// private static final String TITLE_UNREGISTER = "Deregistrati";
+	// private static final String RESERVE_SEAT = "Prenota posto";
+	// private static final String TITLE_LOGOUT = "Logout";
 
 	public UserController(UserModel userModel, UserView userView) {
 		this.userView = userView;
@@ -118,7 +124,8 @@ public class UserController extends AbstractController {
 			
 					details = new BookDetails(controller);
 					
-					displayTableItems(new CopyTableModel(copies), genericTableView, userView);
+					displayTableItems(new CopyTableModel(copies), genericTableView, userView,
+							TITLE_SEARCH_RESULTS);
 					genericTableView.setMenuItemReserveEnabled(true);
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -218,16 +225,10 @@ public class UserController extends AbstractController {
 				
 				LocalDate date = datePicker(userView, null);
 				if (date != null){
-//					try {
-						/*SeatReservation reservation = */userModel.reserveSeat(date);
+					
+						userModel.reserveSeat(date);
 						
-						
-						// showSeatReservationDetails(reservation);
 						displayReservationOk(userView);
-						
-//					} catch (ReservationException | SQLException e) {
-//						displayError(userView, e);
-//					}
 
 					}
 				}
@@ -259,7 +260,9 @@ public class UserController extends AbstractController {
 					List<ConsultationReservation> reservations = userModel.getConsultationReservation();
 					displayTableItems(new ConsultationReservationTableModel(reservations),
 							genericTableView,
-							userView);
+							userView,
+							TITLE_VIEW_CONSULTATION_RESERVATIONS
+							);
 					
 					details = new ConsultationReservationDetails(controller);
 					
@@ -279,7 +282,8 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<Loan> loans = userModel.getActiveLoan();
-					displayTableItems(new LoanTableModel(loans), genericTableView, userView);
+					displayTableItems(new LoanTableModel(loans), genericTableView, userView,
+							TITLE_VIEW_LOANS);
 					
 					details = new LoanDetails(controller);
 					
@@ -299,7 +303,10 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<LoanReservation> reservations = userModel.getLoanReservation();
-					displayTableItems(new LoanReservationTableModel(reservations), genericTableView, userView);
+					displayTableItems(new LoanReservationTableModel(reservations),
+							genericTableView, userView,
+							TITLE_VIEW_LOAN_RESERVATIONS
+							);
 					
 					details = new LoanReservationDetails(controller);
 					
@@ -321,7 +328,10 @@ public class UserController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					List<SeatReservation> reservations = userModel.getSeatsReservations();	
-					displayTableItems(new SeatReservationTableModel(reservations), genericTableView, userView);
+					displayTableItems(new SeatReservationTableModel(reservations),
+							genericTableView, userView,
+							TITLE_VIEW_SEAT_RESERVATIONS
+							);
 					
 					details = new SeatReservationDetails(controller);
 					

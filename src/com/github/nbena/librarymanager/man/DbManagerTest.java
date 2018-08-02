@@ -475,11 +475,13 @@ public class DbManagerTest {
 	  int count = getCountOf("select count (*) from loan_reservation where ", loanReservations);
 	  assertTrue(count == this.loanReservations.length);
 	  
-	  count = this.db.getLoanReservationsByUser(this.loanReservations[0].getUser()).size();
+	  count = this.db.getLoanReservationsByUser(this.loanReservations[0].getUser(),
+			  false, false).size();
 	  assertTrue(count == this.loanReservations.length);
 	  
 	  LoanReservation expected = this.loanReservations[0];
-	  LoanReservation got = this.db.getLoanReservationsByUser(expected.getUser()).get(0);
+	  LoanReservation got = this.db.getLoanReservationsByUser(expected.getUser(),
+			  true, false).get(0);
 	  
 	  assertTrue(expected.getID() == got.getID());
 	  

@@ -369,13 +369,15 @@ public class DbManager {
 	@ \requires startingIndex > 0;
 	@*/
 
-	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
+	public List<LoanReservation> getLoanReservationsByUser(InternalUser user,
+			boolean useDoneParam, boolean doneParam) throws SQLException{
 
-		String query = "select l.id, copyid, title, authors, year, main_topic, phouse, status, time_stamp "+
-		"from book join lm_copy as c on book.id = c.bookid join loan_reservation as l on c.id = l.copyid where userid=? order by time_stamp desc";
+		String query = DbManagerHelper.getLoanReservationByUserQuery(useDoneParam);
 
 		PreparedStatement pstmt = connection.prepareStatement(query);
-		pstmt.setInt(1, user.getID());
+		
+		pstmt = DbManagerHelper.prepareQueryLoanReservationDoneParam(pstmt,
+				user, useDoneParam, doneParam);
 
 		ResultSet rs = pstmt.executeQuery();
 
@@ -930,13 +932,9 @@ public class DbManager {
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 
-		// System.out.println(query);
-//		pstmt.setInt(1, user.getID());
-//		
-//		if(date!=null){
-//			pstmt.setObject(2, date);
-//		}
-		pstmt = DbManagerHelper.prepareQueryConsultationsReservationByUserQuery(pstmt, user, date, useDoneParam, doneParam);
+		pstmt = DbManagerHelper.prepareQueryConsultationReservationDoneParam(pstmt, user, date,
+				useDoneParam, doneParam);
+		
 	
 		ResultSet rs = pstmt.executeQuery();
 		List<ConsultationReservation> reservations = new LinkedList<ConsultationReservation>();
@@ -945,7 +943,8 @@ public class DbManager {
 		}
 		return reservations;
     }
-
+    
+   
 
     public List<Loan> getLoans(User user, boolean delivered, boolean checkDelivered) throws SQLException{
 

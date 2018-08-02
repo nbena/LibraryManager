@@ -336,11 +336,30 @@ public class DbManagerHelper {
 			"cr.id, time_stamp, reservation_date, done "+
 			"from book join lm_copy on book.id = lm_copy.bookid "+
 			"join consultation_reservation as cr on lm_copy.id = cr.copyid "+
-			"where cr.userid=?";
+			"where cr.userid=? ";
+	
+	private static final String LOAN_RESERVATION_BY_USER = "select l.id, copyid, title, "+
+			"authors, year, main_topic, phouse, status, time_stamp "+
+			"from book join lm_copy as c on book.id = c.bookid "+
+			"join loan_reservation as l on c.id = l.copyid " +
+			"where userid=? ";
+	
 	
 	static String getConsultationReservationByUserQuery(LocalDate date, boolean useDoneParam){
 		
-		String result = CONSULTATION_RESERVATION_BY_USER;
+		return getReservationQueryDoneParam(CONSULTATION_RESERVATION_BY_USER,
+					useDoneParam, date);
+	}
+	
+	static String getLoanReservationByUserQuery(boolean useDoneParam){
+		String result = getReservationQueryDoneParam(LOAN_RESERVATION_BY_USER,
+				useDoneParam, null);
+		result += " order by time_stamp desc";
+		return result;
+	}
+	
+	private static String getReservationQueryDoneParam(String base, boolean useDoneParam, LocalDate date){
+		String result = base;
 		if(date!=null){
 			result += "and reservation_date = ?";
 		}
@@ -355,16 +374,30 @@ public class DbManagerHelper {
 	/**
 	 * Prepare the statement for the query.
 	 * @param pstmt the statement
-	 * @param user	the user you want to get ConsultationReservation
+	 * @param user	the user for which you want to execute this query
 	 * @param date	the date you want to search for, can be null to get everything
 	 * @param useDoneParam	set to <pre>true</pre> if you want to use the 'done' field
 	 * @param doneParam		the value of the 'done' field to look for.
 	 * @return pstmt
 	 * @throws SQLException
 	 */
-	static PreparedStatement prepareQueryConsultationsReservationByUserQuery(PreparedStatement pstmt, InternalUser user,
+	static PreparedStatement prepareQueryConsultationReservationDoneParam(PreparedStatement pstmt,
+			InternalUser user,
 			LocalDate date, boolean useDoneParam, boolean doneParam) throws SQLException{
 		
+		return prepareQueryDoneParam(pstmt, user, date, useDoneParam, doneParam);
+	}
+	
+	static PreparedStatement prepareQueryLoanReservationDoneParam(PreparedStatement pstmt,
+			InternalUser user, boolean useDoneParam, boolean doneParam) throws SQLException{
+		
+		return prepareQueryDoneParam(pstmt, user, null, useDoneParam, doneParam);
+	}
+	
+	private static PreparedStatement prepareQueryDoneParam(PreparedStatement pstmt,
+			InternalUser user,
+			LocalDate date, boolean useDoneParam, boolean doneParam) throws SQLException{
+
 		pstmt.setInt(1, user.getID());
 		
 		int doneIndex = 2;

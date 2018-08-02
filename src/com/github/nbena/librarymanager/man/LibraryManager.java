@@ -327,8 +327,9 @@ public class LibraryManager {
 		return this.dbManager.getConsultationReservationByUser(user, date, useDoneParam, doneParam);
 	}
 
-	public List<LoanReservation> getLoanReservationByUser(InternalUser user) throws SQLException{
-		return this.dbManager.getLoanReservationsByUser(user);
+	public List<LoanReservation> getLoanReservationByUser(InternalUser user,
+			boolean useDoneParam, boolean doneParam) throws SQLException{
+		return this.dbManager.getLoanReservationsByUser(user, useDoneParam, doneParam);
 	}
 
 	public List<Loan> getLoanByUser(User user, boolean delivered) throws SQLException{

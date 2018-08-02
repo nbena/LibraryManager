@@ -89,7 +89,7 @@ public class UserModel extends AbstractModel {
 	}
 	
 	public List<LoanReservation> getLoanReservation() throws SQLException{
-		return super.manager.getLoanReservationByUser((InternalUser) super.user);
+		return super.manager.getLoanReservationByUser((InternalUser) super.user, true, true);
 	}
 	
 	public List<Loan> getActiveLoan() throws SQLException{

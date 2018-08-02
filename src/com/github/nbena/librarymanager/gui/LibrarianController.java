@@ -357,7 +357,8 @@ public class LibrarianController extends AbstractController {
 	
 	private User fillUser(String email) throws SQLException, ReservationException{
 		User u = null;
-		if (email != "" && ! email.trim().equals("")){
+		/* need to check it's not null because it's called afeter askUser() */
+		if (email != null && (email != "" && ! email.trim().equals(""))){
 			u = this.model.getUser(email);
 		}
 		return u;

@@ -49,7 +49,7 @@ public class Copy extends Book {
 		this.reserved = reserved;
 	}
 
-	public CopyStatus getStatus() {
+	public /*@ pure @*/ CopyStatus getStatus() {
 		return status;
 	}
 

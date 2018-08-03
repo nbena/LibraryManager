@@ -45,7 +45,7 @@ public class Consultation implements IDble{
 	public Consultation() {
 	}
 
-	public CopyForConsultation getCopy() {
+	public /*@ pure @*/ CopyForConsultation getCopy() {
 		return copy;
 	}
 
@@ -53,7 +53,7 @@ public class Consultation implements IDble{
 		this.copy = copy;
 	}
 
-	public User getUser() {
+	public /*@ pure @*/ User getUser() {
 		return user;
 	}
 

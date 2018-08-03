@@ -52,12 +52,16 @@ public class LibraryManager {
 				"questi parametri";
 	public static final String NO_LOAN = "Non ci sono prestiti che matchano questi parametri";
 
-	private DbManager dbManager;
+	private /*@ spec_public @*/DbManager dbManager;
 
 	public LibraryManager(String uri, String username, String password) throws ClassNotFoundException, SQLException{
 		this.dbManager = new DbManager(uri, username, password);
 	}
 
+	/*@ 
+	 @ requires user != null;
+	 @ 
+	 @*/
 	public void saveUser(User user) throws SQLException{
 		this.dbManager.addUser(user);
 	}
@@ -98,7 +102,19 @@ public class LibraryManager {
 		return returned;
 	}
 
-
+	/**
+	 * Trying to reserve a new seat for this user.
+	 * @param user
+	 * @param date
+	 * @return
+	 * @throws ReservationException
+	 * @throws SQLException
+	 */
+	/*@
+	 @ ensures date.isAfter(LocalDate.now());
+	 @ ensures user != null;
+	 @
+	 @*/
 	public SeatReservation tryReserveSeat(InternalUser user, LocalDate date) throws ReservationException, SQLException{
 
 			List<Seat> seats = this.dbManager.getAvailableSeats(date);
@@ -142,10 +158,14 @@ public class LibraryManager {
 		return reservation;
 	}
 
+	/*@ 
+	 @ ensures copy.getStatus() != CopyStatus.RESERVED;
+	 @ 
+	 @*/
 	public LoanReservation tryReserveLoan(InternalUser user, Copy copy) throws SQLException, ReservationException{
 
 		if(copy.getStatus() == CopyStatus.RESERVED){
-			throw new ReservationException("This copy is already reserved");
+			throw new ReservationException("Questa copia è già riservata");
 		}
 
 		Loan loan = this.dbManager.getActiveLoanByCopy(copy);
@@ -178,6 +198,10 @@ public class LibraryManager {
 		this.dbManager.deleteItem(reservation);
 	}
 
+	/*@
+	 @ ensures loan.getEnd().equals(LocalDate.now());
+	 @ ensures loan.getRestitutionDate().equals(LocalDate.now());
+	 @*/
 	public void deliveryLoan(Loan loan) throws SQLException{
 		loan.setEnd(LocalDate.now());
 		loan.setRestitutionDate(LocalDate.now());
@@ -199,15 +223,9 @@ public class LibraryManager {
 		return loan;
 	}
 
-	public Loan loanReserved(LoanReservation reservation/*InternalUser user, Copy copy*/) throws /*ReservationException, */
+	public Loan loanReserved(LoanReservation reservation) throws /*ReservationException, */
 		SQLException{
-//		LoanReservation reservation = this.dbManager.getLoanReservationByUserCopy(user, copy);
-//		if (reservation == null){
-//			throw new ReservationException("Reservation not found");
-//		}
-//		Loan loan = reservation.createLoan();
-//		this.dbManager.addLoan(loan);
-//		return loan;
+
 		Loan loan = reservation.createLoan();
 		this.dbManager.addLoan(loan);
 		return loan;
@@ -226,8 +244,10 @@ public class LibraryManager {
 	 * @return
 	 * @throws SQLException
 	 */
-	/*@ \ensures loan.isRenewAvailable() ==> (loan.isRenewAvailable() == false
-	 *@ loan.getEnd().equals(LocalDate.now().plusMonths(Loan.MAX_MONTHS_SINGLE_LOAN_DURATION)));
+	/*@ 
+	 @ ensures \result ==> (loan.isRenewAvailable() == false && 
+	 @	loan.getEnd().equals(LocalDate.now().plusMonths(Loan.MAX_MONTHS_SINGLE_LOAN_DURATION))); 
+	 @
 	 @*/
 	public boolean tryRenewLoan(Loan loan) throws SQLException{
 		boolean possible = true;
@@ -241,6 +261,11 @@ public class LibraryManager {
 		return possible;
 	}
 
+	// NOT REALLY IMPLEMENTED
+	/*@
+	 @ ensures this.dbManager.getAvailableSeats(LocalDate.now()).size() > 0 ==> \result != null;
+	 @ ensures \result.isFree() == false;
+	 @*/
 	public Seat startNotReservedConsultation(User user, String title, String [] authors,
 			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
 		// CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, LocalDate.now());
@@ -264,12 +289,16 @@ public class LibraryManager {
 		return seat;
 	}
 
+	/*@
+	 @ requires reservation != null;
+	 @ ensures \result.isFree() != false;
+	 @*/
 	public Seat startReservedConsultation(ConsultationReservation reservation) throws SQLException, ReservationException{
 		// ConsultationReservation reservation = this.dbManager.getConsultationReservation(user, book, LocalDate.now());
 
-		if (reservation == null){
-			throw new ReservationException(NO_RESERVATION);
-		}
+//		if (reservation == null){
+//			throw new ReservationException(NO_RESERVATION);
+//		}
 
 		this.dbManager.autoSave(false);
 
@@ -305,6 +334,10 @@ public class LibraryManager {
 		return seat;
 	}
 
+	/*@ 
+	 @ ensures consultation.getCopy().isInConsultation() == false;
+	 @
+	 @*/
 	public void deliveryConsultation(Consultation consultation) throws SQLException{
 		consultation.getCopy().setInConsultation(false);
 		this.dbManager.endConsultation(consultation);
@@ -346,12 +379,6 @@ public class LibraryManager {
 	}
 
 
-//	public Copy getOneAvailableCopyForLoan(String title, String [] authors,
-//			int year, String mainTopic) throws SQLException{
-//		return this.dbManager.getOneAvailableCopyForLoan(title, authors,
-//				year, mainTopic);
-//	}
-
 	public LoanReservation getLoanReservationByUserCopy(InternalUser user,
 			String title, String [] authors,
 			int year, String mainTopic, String phouse) throws SQLException{
@@ -386,6 +413,13 @@ public class LibraryManager {
 		}
 	}
 	
+	/*@
+	 @ ensures (user != null) ==> (\forall int i; i>=0 && i<\result.size();
+	 @	\result.get(i).getUser().getID() == user.getID()); 
+	 @ 
+	 @ ensures \result.size() >= 0;
+	 @
+	 @*/
 	public List<Consultation> getConsultationInProgressByUser(User user) throws SQLException{
 		List<Consultation> result = null;
 		if (user!=null){

@@ -291,7 +291,7 @@ public class DbManager {
 
 	}
 
-	public List<Seat> getAvailableSeats(LocalDate date) throws SQLException{
+	public /*@ pure @*/ List<Seat> getAvailableSeats(LocalDate date) throws SQLException{
 
 		String query = "select seat_number,table_number, free  from seat as s where not exists "+
 				"(select * from seat_reservation as sr where reservation_date = ? and "+
@@ -364,10 +364,6 @@ public class DbManager {
 //
 //		pstmt.execute();
 //	}
-
-	/*@
-	@ \requires startingIndex > 0;
-	@*/
 
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user,
 			boolean useDoneParam, boolean doneParam) throws SQLException{

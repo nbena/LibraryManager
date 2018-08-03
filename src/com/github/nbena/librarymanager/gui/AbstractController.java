@@ -250,7 +250,7 @@ public abstract class AbstractController {
 			result = LocalDate.of(year, Month.of(month), day);
 			
 			if (result.isBefore(LocalDate.now())){
-				throw new NumberFormatException("The date must be greater than today");
+				throw new NumberFormatException("La data deve essere successiva ad oggi");
 			}
 		}	
 		return result;
@@ -273,7 +273,7 @@ public abstract class AbstractController {
 			message = "Inserisci la data nel formato DD-MM-YYYY o DD/MM/YYYY";
 		}
 		
-		String date = JOptionPane.showInputDialog(parent, message, "Info",
+		String date = JOptionPane.showInputDialog(parent, message, "Input",
 				JOptionPane.QUESTION_MESSAGE);
 		
 		result = parseDate(date);

@@ -43,7 +43,7 @@ public class Seat {
 	public void setTableNumber(int tableNumber) {
 		this.tableNumber = tableNumber;
 	}
-	public boolean isFree() {
+	public /*@ pure @*/ boolean isFree() {
 		return free;
 	}
 	public void setFree(boolean free) {

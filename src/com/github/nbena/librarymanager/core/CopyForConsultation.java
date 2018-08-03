@@ -29,7 +29,7 @@ public class CopyForConsultation extends Copy {
 		this.inConsultation = false;
 	}
 
-	public boolean isInConsultation() {
+	public /*@ pure @*/ boolean isInConsultation() {
 		return inConsultation;
 	}
 

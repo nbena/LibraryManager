@@ -35,6 +35,12 @@ public class Loan implements IDble {
 	public Loan(User user, Copy copy){
 		this.user = user;
 		this.copy = copy;
+		
+		this.start = LocalDate.now();
+		this.end = LocalDate.now().plusMonths(MAX_MONTHS_SINGLE_LOAN_DURATION);
+		this.restitutionDate = null;
+		
+		this.renewAvailable = true;
 	}
 
 	public Loan(int ID, User user, Copy copy, LocalDate start, LocalDate end, boolean active, LocalDate restitutionDate,

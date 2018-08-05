@@ -809,8 +809,8 @@ public class DbManager {
 		ResultSet rs = pstmt.executeQuery();
 		if(rs.next()){
 			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
-			copy = CopyForConsultation.create(from);
-			copy.setID(from.getID());
+			copy = new CopyForConsultation(from);
+			// copy.setID(from.getID());
 		}
 
 		return copy;
@@ -837,8 +837,8 @@ public class DbManager {
 		CopyForConsultation returned = null;
 		if(rs.next()){
 			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
-			returned = CopyForConsultation.create(from);
-			returned.setID(from.getID());
+			returned = new CopyForConsultation(from);
+			// returned.setID(from.getID());
 		}
 		return returned;
 	}
@@ -1012,7 +1012,7 @@ public class DbManager {
     		Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
     		boolean forConsultation = rs.getBoolean(8);
     		if (forConsultation){
-    			CopyForConsultation otherCopy = CopyForConsultation.create(copy);
+    			CopyForConsultation otherCopy = new CopyForConsultation(copy);
     			copies.add(otherCopy);
     			// System.out.println(otherCopy.getID());
     		}else{
@@ -1065,7 +1065,7 @@ public class DbManager {
     	while(rs.next()){
     		
     		Copy copy = DbManagerHelper.getCopyFrom(rs, 4);
-    		CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
+    		CopyForConsultation copyForConsultation = new CopyForConsultation(copy);
     		
     		Consultation consultation = DbManagerHelper.getConsultationFrom(rs, 1, copyForConsultation, user);
     		
@@ -1089,7 +1089,7 @@ public class DbManager {
     	
     	while(rs.next()){
     		Copy copy = DbManagerHelper.getCopyFrom(rs, 4);
-    		CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
+    		CopyForConsultation copyForConsultation = new CopyForConsultation(copy);
     		
     		User user = DbManagerHelper.getUserFrom(rs, 11);
     		

@@ -137,7 +137,7 @@ public class DbManagerHelper {
 		int id = rs.getInt(startingIndex);
 
 		// Copy copy = DbManagerHelper.getCopyFrom(rs, startingIndex + 1);
-		CopyForConsultation copyForConsultation = CopyForConsultation.create(copy);
+		CopyForConsultation copyForConsultation = new CopyForConsultation(copy);
 		// Seat seat = DbManagerHelper.getSeatFrom(rs, startingIndex, false);
 
 		OffsetDateTime timestamp = (OffsetDateTime) rs.getObject(startingIndex + 1, OffsetDateTime.class);

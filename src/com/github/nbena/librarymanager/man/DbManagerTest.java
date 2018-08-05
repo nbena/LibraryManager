@@ -413,7 +413,8 @@ public class DbManagerTest {
 	  
 	  // test the renew change
 	  gotLoan.setRenewAvailable(false);
-	  this.db.updateLoan(gotLoan); 
+	  this.db.updateLoan(gotLoan);
+	  
 	  List<Loan> gotLoans = this.db.getLoansByUser(gotLoan.getUser(), false, false);
 	  for(Loan loan: gotLoans){
 		  if (loan.getID() == gotLoan.getID()){

@@ -24,10 +24,17 @@ public class CopyForConsultation extends Copy {
 
 	private boolean inConsultation;
 	
-	public CopyForConsultation(String title, String[] authors, int yearsOfPublishing, String mainTopic, String ID) {
-		super(title, authors, yearsOfPublishing, mainTopic, ID);
+	public CopyForConsultation(String title, String[] authors, int yearsOfPublishing, String mainTopic, String publishingHouse) {
+		super(title, authors, yearsOfPublishing, mainTopic, publishingHouse);
 		this.inConsultation = false;
 	}
+	
+	public CopyForConsultation(Copy c){
+		super(c.title, c.authors, c.yearOfPublishing, c.mainTopic, c.publishingHouse);
+		this.inConsultation = false;
+		this.ID = c.ID;
+	}
+
 
 	public /*@ pure @*/ boolean isInConsultation() {
 		return inConsultation;
@@ -37,17 +44,17 @@ public class CopyForConsultation extends Copy {
 		this.inConsultation = inConsultation;
 	}
 	
-	public static CopyForConsultation create(Copy c){
-		CopyForConsultation copy = new CopyForConsultation(
-				c.getTitle(),
-				c.getAuthors(),
-				c.getYearOfPublishing(),
-				c.getMainTopic(),
-				c.getPublishingHouse()
-				);
-		copy.setID(c.getID());
-		return copy;
-	}
+//	public static CopyForConsultation create(Copy c){
+//		CopyForConsultation copy = new CopyForConsultation(
+//				c.getTitle(),
+//				c.getAuthors(),
+//				c.getYearOfPublishing(),
+//				c.getMainTopic(),
+//				c.getPublishingHouse()
+//				);
+//		copy.setID(c.getID());
+//		return copy;
+//	}
 	
 	public Consultation startConsultation(User user){
 		this.inConsultation =  true;

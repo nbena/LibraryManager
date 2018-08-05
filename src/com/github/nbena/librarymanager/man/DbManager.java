@@ -397,114 +397,114 @@ public class DbManager {
 		return reservations;
 	}
 
-	public ConsultationReservation getConsultationReservationByUserCopy(
-			InternalUser user, LocalDate date, String title, String [] authors,
-			int year, String mainTopic, String phouse) throws SQLException{
+//	public ConsultationReservation getConsultationReservationByUserCopy(
+//			InternalUser user, LocalDate date, String title, String [] authors,
+//			int year, String mainTopic, String phouse) throws SQLException{
+//
+//		String query = DbManagerHelper.getConsultationReservationQuery(
+//				title, authors, year, mainTopic, phouse);
+//
+//		int lastUsedIndex = 1;
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//
+//		Object [] res = DbManagerHelper.searchPrepare(lastUsedIndex, pstmt,
+//				this.connection, title, authors, year, mainTopic, phouse);
+//
+//		// System.out.println(query);
+//
+//		pstmt = (PreparedStatement) res[0];
+//		lastUsedIndex = (int) res[1];
+//
+//		pstmt.setInt(lastUsedIndex, user.getID());
+//		pstmt.setObject(lastUsedIndex + 1, date);
+//
+//		ResultSet rs = pstmt.executeQuery();
+//
+//		ConsultationReservation reservation = null;
+//
+//		if(rs.next()){
+//
+//			reservation = DbManagerHelper.getFullConsultationReservationFrom(rs, 1, user);
+//		}
+//
+//		return reservation;
+//	}
 
-		String query = DbManagerHelper.getConsultationReservationQuery(
-				title, authors, year, mainTopic, phouse);
+//	public LoanReservation getLoanReservationByUserCopy(InternalUser user, String title, String [] authors,
+//			int year, String mainTopic, String phouse) throws SQLException{
+//
+//
+//		String query = DbManagerHelper.getLoanReservationQuery(title,
+//				authors, year, mainTopic, phouse);
+//
+//		int lastUsedIndex = 1;
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//    	Object [] res = DbManagerHelper.searchPrepare(lastUsedIndex, pstmt,
+//    			this.connection, title, authors, year, mainTopic, phouse);
+//
+//    	pstmt = (PreparedStatement) res[0];
+//    	lastUsedIndex = (int) res[1];
+//
+//    	pstmt.setInt(lastUsedIndex, user.getID());
+//
+//		ResultSet rs = pstmt.executeQuery();
+//
+//		LoanReservation reservation = null;
+//
+//		if(rs.next()){
+//
+//			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
+//			reservation = DbManagerHelper.getLoanReservation(rs, 9, copy, user);
+//
+//		}
+//		return reservation;
+//	}
 
-		int lastUsedIndex = 1;
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-
-		Object [] res = DbManagerHelper.searchPrepare(lastUsedIndex, pstmt,
-				this.connection, title, authors, year, mainTopic, phouse);
-
-		// System.out.println(query);
-
-		pstmt = (PreparedStatement) res[0];
-		lastUsedIndex = (int) res[1];
-
-		pstmt.setInt(lastUsedIndex, user.getID());
-		pstmt.setObject(lastUsedIndex + 1, date);
-
-		ResultSet rs = pstmt.executeQuery();
-
-		ConsultationReservation reservation = null;
-
-		if(rs.next()){
-
-			reservation = DbManagerHelper.getFullConsultationReservationFrom(rs, 1, user);
-		}
-
-		return reservation;
-	}
-
-	public LoanReservation getLoanReservationByUserCopy(InternalUser user, String title, String [] authors,
-			int year, String mainTopic, String phouse) throws SQLException{
-
-
-		String query = DbManagerHelper.getLoanReservationQuery(title,
-				authors, year, mainTopic, phouse);
-
-		int lastUsedIndex = 1;
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-    	Object [] res = DbManagerHelper.searchPrepare(lastUsedIndex, pstmt,
-    			this.connection, title, authors, year, mainTopic, phouse);
-
-    	pstmt = (PreparedStatement) res[0];
-    	lastUsedIndex = (int) res[1];
-
-    	pstmt.setInt(lastUsedIndex, user.getID());
-
-		ResultSet rs = pstmt.executeQuery();
-
-		LoanReservation reservation = null;
-
-		if(rs.next()){
-
-			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
-			reservation = DbManagerHelper.getLoanReservation(rs, 9, copy, user);
-
-		}
-		return reservation;
-	}
-
-	public LoanReservation getLoanReservationByUserCopy(InternalUser user, Copy copy) throws SQLException{
-
-		String query = "select id, time_stamp from loan_reservation "+
-						"where userid=? and copyid=? and done = false "+
-						"order by time_stamp desc limit 1";
-
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-		pstmt.setInt(1, user.getID());
-		pstmt.setInt(2, copy.getID());
-
-		LoanReservation reservation = null;
-		ResultSet rs = pstmt.executeQuery();
-		if(rs.next()){
-
-//			int id = rs.getInt(1);
-//			OffsetDateTime timestamp = rs.getObject(2, OffsetDateTime.class);
-//			reservation = new LoanReservation(id, user, copy, timestamp);
-			reservation = DbManagerHelper.getLoanReservation(rs, 1, copy, user);
-		}
-		return reservation;
-	}
+//	public LoanReservation getLoanReservationByUserCopy(InternalUser user, Copy copy) throws SQLException{
+//
+//		String query = "select id, time_stamp from loan_reservation "+
+//						"where userid=? and copyid=? and done = false "+
+//						"order by time_stamp desc limit 1";
+//
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//		pstmt.setInt(1, user.getID());
+//		pstmt.setInt(2, copy.getID());
+//
+//		LoanReservation reservation = null;
+//		ResultSet rs = pstmt.executeQuery();
+//		if(rs.next()){
+//
+////			int id = rs.getInt(1);
+////			OffsetDateTime timestamp = rs.getObject(2, OffsetDateTime.class);
+////			reservation = new LoanReservation(id, user, copy, timestamp);
+//			reservation = DbManagerHelper.getLoanReservation(rs, 1, copy, user);
+//		}
+//		return reservation;
+//	}
 	
-	public Loan getLoanByUserCopy(User user, String title, String [] authors,
-			int year, String mainTopic, String phouse) throws SQLException{
-		
-		String query = DbManagerHelper.getLoanByUserCopyQuery(title,
-				authors, year, mainTopic, phouse);
-		
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-		
-		Object [] res = DbManagerHelper.searchPrepare(1, pstmt,
-				this.connection, title, authors, year, mainTopic, phouse);
-		
-		pstmt = (PreparedStatement) res[0];
-		
-		Loan loan = null;
-		
-		ResultSet rs = pstmt.executeQuery();
-		
-		if(rs.next()){
-			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
-			loan = DbManagerHelper.getLoanFrom(rs, 9, copy, user);
-		}
-		return loan;
-	}
+//	public Loan getLoanByUserCopy(User user, String title, String [] authors,
+//			int year, String mainTopic, String phouse) throws SQLException{
+//		
+//		String query = DbManagerHelper.getLoanByUserCopyQuery(title,
+//				authors, year, mainTopic, phouse);
+//		
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//		
+//		Object [] res = DbManagerHelper.searchPrepare(1, pstmt,
+//				this.connection, title, authors, year, mainTopic, phouse);
+//		
+//		pstmt = (PreparedStatement) res[0];
+//		
+//		Loan loan = null;
+//		
+//		ResultSet rs = pstmt.executeQuery();
+//		
+//		if(rs.next()){
+//			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
+//			loan = DbManagerHelper.getLoanFrom(rs, 9, copy, user);
+//		}
+//		return loan;
+//	}
 
 
 //	@Deprecated
@@ -942,7 +942,7 @@ public class DbManager {
     
    
 
-    public List<Loan> getLoans(User user, boolean delivered, boolean checkDelivered) throws SQLException{
+    public List<Loan> getLoansByUser(User user, boolean delivered, boolean checkDelivered) throws SQLException{
 
 		String query = "select loan.id, start_date, end_date, restitution_date, renew_available, "+
 				"lm_copy.id, title, authors, year, main_topic, phouse, status "+
@@ -1049,7 +1049,7 @@ public class DbManager {
      * @throws SQLException
      */
     // TODO add tests for this
-    public List<Consultation> consultationInProgressByUser(User user) throws SQLException {
+    public List<Consultation> consultationsInProgressByUser(User user) throws SQLException {
     	
     	String query = DbManagerHelper.CONSULTATION_IN_PROGRESS_BY_USER_QUERY;
     	
@@ -1077,7 +1077,7 @@ public class DbManager {
     }
     
     
-    public List<Consultation> consultationInProgress() throws SQLException{
+    public List<Consultation> consultationsInProgress() throws SQLException{
     	
     	String query = DbManagerHelper.CONSULTATION_IN_PROGRESS_QUERY;
     	

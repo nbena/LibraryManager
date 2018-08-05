@@ -40,23 +40,31 @@ public class LibrarianModel extends AbstractModel {
 		super(manager);
 	}
 	
-	/**
-	 * Get the full user object from the given mail.
-	 * @param email the search param
-	 * @return the user with this email
-	 * @throws SQLException
-	 * @throws ReservationException if the user is not found
-	 */
-	public User getUser(String email) throws SQLException, ReservationException{
+//	/**
+//	 * Get the full user object from the given mail.
+//	 * @param email the search param
+//	 * @return the user with this email
+//	 * @throws SQLException
+//	 * @throws ReservationException if the user is not found
+//	 */
+//	public User getUser(String email) throws SQLException, ReservationException{
+//		User user = super.manager.getUserFromMail(email);
+//		if(user == null){
+//			throw new ReservationException("Utente non trovato");
+//		}
+//		return user;
+//	}
+//	
+	public User getUser(User u) throws SQLException, ReservationException{
+		return this.getUser(u.getEmail());
+	}
+	
+	public User getUser(String email) throws ReservationException, SQLException{
 		User user = super.manager.getUserFromMail(email);
 		if(user == null){
 			throw new ReservationException("Utente non trovato");
 		}
 		return user;
-	}
-	
-	public User getUser(User u) throws SQLException, ReservationException{
-		return this.getUser(u.getEmail());
 	}
 
 //	public void createUser(String name, String surname, String email, String password, boolean internal) throws SQLException{
@@ -86,8 +94,8 @@ public class LibrarianModel extends AbstractModel {
 		
 	}
 	
-	public List<Loan> getLoansInProgressByUser(InternalUser user) throws SQLException{
-		return super.manager.getLoanByUser(user, false);
+	public List<Loan> getLoansInProgressByUser(User user) throws SQLException{
+		return super.manager.getLoansByUser(user, false);
 	}
 	
 //	public void deliveryBook(User user, Copy copy) throws SQLException, ReservationException{
@@ -137,9 +145,9 @@ public class LibrarianModel extends AbstractModel {
 //		return super.manager.loanReserved(user, copy);
 //	}
 	
-	public boolean renewLoan(Loan loan) throws SQLException{
-		return super.manager.tryRenewLoan(loan);
-	}
+//	public boolean renewLoan(Loan loan) throws SQLException{
+//		return super.manager.tryRenewLoan(loan);
+//	}
 	
 	public Seat startNotReservedConsultation(User user, String title,
 			String [] authors, int year, String mainTopic, String phouse) throws SQLException, ReservationException{
@@ -180,7 +188,7 @@ public class LibrarianModel extends AbstractModel {
 	}
 	
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
-		return super.manager.getLoanReservationByUser(user, true, false);
+		return super.manager.getLoanReservationsByUser(user, true, false);
 	}
 	
 	// for this one we can have a list of the consultations in progress
@@ -191,12 +199,12 @@ public class LibrarianModel extends AbstractModel {
 		super.manager.deliveryConsultation(consultation);
 	}
 	
-	public List<User> users() throws SQLException{
-		return super.manager.users();
-	}
+//	public List<User> users() throws SQLException{
+//		return super.manager.users();
+//	}
 	
 	public List<Consultation> consultations(User user) throws SQLException{
-		return super.manager.getConsultationInProgressByUser(user);
+		return super.manager.getConsultationsInProgressByUser(user);
 	}
 	
 //	public User fillUser(String email) throws SQLException, ReservationException{

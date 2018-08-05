@@ -257,7 +257,7 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					List<ConsultationReservation> reservations = userModel.getConsultationReservation();
+					List<ConsultationReservation> reservations = userModel.getConsultationReservations();
 					displayTableItems(new ConsultationReservationTableModel(reservations),
 							genericTableView,
 							userView,
@@ -281,7 +281,7 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					List<Loan> loans = userModel.getActiveLoan();
+					List<Loan> loans = userModel.getActiveLoans();
 					displayTableItems(new LoanTableModel(loans), genericTableView, userView,
 							TITLE_VIEW_LOANS);
 					
@@ -302,7 +302,7 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					List<LoanReservation> reservations = userModel.getLoanReservation();
+					List<LoanReservation> reservations = userModel.getLoanReservations();
 					displayTableItems(new LoanReservationTableModel(reservations),
 							genericTableView, userView,
 							TITLE_VIEW_LOAN_RESERVATIONS

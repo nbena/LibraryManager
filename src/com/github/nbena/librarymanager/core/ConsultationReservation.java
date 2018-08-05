@@ -56,7 +56,7 @@ public class ConsultationReservation extends AbstractReservationWithBook {
 	}
 
 	@Override
-	public CopyForConsultation getCopy() {
+	public /*@ pure @*/ CopyForConsultation getCopy() {
 		return (CopyForConsultation) copy;
 	}
 	
@@ -66,7 +66,7 @@ public class ConsultationReservation extends AbstractReservationWithBook {
 	public void setSeat(Seat seat) {
 		this.seat = seat;
 	}
-	public LocalDate getReservationDate() {
+	public /*@ pure @*/ LocalDate getReservationDate() {
 		return reservationDate;
 	}
 	public void setReservationDate(LocalDate reservationDate) {

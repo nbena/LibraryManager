@@ -60,6 +60,8 @@ public class LibraryManager {
 
 	/*@ 
 	 @ requires user != null;
+	 @
+	 @ ensures authenticateUserWithError(user) != null;
 	 @ 
 	 @*/
 	public void saveUser(User user) throws SQLException{
@@ -82,7 +84,7 @@ public class LibraryManager {
 		return returned;
 	}
 	
-	public User authenticateUserWithError(Loginable user) throws SQLException{
+	public /*@ pure @*/ User authenticateUserWithError(Loginable user) throws SQLException{
 		User returned = null;
 		returned = this.dbManager.authenticateUser(user);
 		return returned;
@@ -127,6 +129,9 @@ public class LibraryManager {
 			return reservation;
 	}
 
+	/*@
+	 @ ensures \result.isFree() == false; 
+	 @*/
 	private Seat getAndSetSeatOccupied(LocalDate date) throws SQLException, ReservationException{
 		List<Seat> seats = this.dbManager.getAvailableSeats(date);
 		if (seats.size() <= 0){
@@ -139,6 +144,14 @@ public class LibraryManager {
 		return seat;
 	}
 
+	/*@
+	 @ requires user != null && copy != null && date !=null; 
+	 @ requires date.isAfter(LocalDate.now());
+	 @ 
+	 @ ensures \result.getCopy().getID() == copy.getID();
+	 @ ensures \result.getReservationDate().equals(date);
+	 @
+	 @*/
 	public ConsultationReservation tryReserveConsultation(InternalUser user, CopyForConsultation copy,
 			LocalDate date) throws ReservationException, SQLException{
 
@@ -209,6 +222,11 @@ public class LibraryManager {
 	}
 
 
+	/*@
+	 @ ensures \result.getEnd().equals(LocalDate.now().plusMonths(Loan.MAX_MONTHS_SINGLE_LOAN_DURATION)) &&
+	 @ \result.isRenewAvailable() == true;
+	 @ 
+	 @*/
 	public Loan loanNotReserved(User user, String title, String [] authors,
 			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
 
@@ -343,7 +361,7 @@ public class LibraryManager {
 		this.dbManager.endConsultation(consultation);
 	}
 
-	public List<SeatReservation> getSeatReservationByUser(InternalUser user) throws SQLException{
+	public List<SeatReservation> getSeatReservationsByUser(InternalUser user) throws SQLException{
 		return this.dbManager.getSeatsReservationByUser(user);
 	}
 
@@ -352,18 +370,18 @@ public class LibraryManager {
 		return this.dbManager.getConsultationReservationByUser(user, date, useDoneParam, doneParam);
 	}
 
-	public List<LoanReservation> getLoanReservationByUser(InternalUser user,
+	public List<LoanReservation> getLoanReservationsByUser(InternalUser user,
 			boolean useDoneParam, boolean doneParam) throws SQLException{
 		return this.dbManager.getLoanReservationsByUser(user, useDoneParam, doneParam);
 	}
 
-	public List<Loan> getLoanByUser(User user, boolean delivered) throws SQLException{
-		return this.dbManager.getLoans(user, delivered, true);
+	public List<Loan> getLoansByUser(User user, boolean delivered) throws SQLException{
+		return this.dbManager.getLoansByUser(user, delivered, true);
 	}
 
-	public List<Loan> getAllLoansByUser(User user) throws SQLException{
-		return this.dbManager.getLoans(user, false, false);
-	}
+//	public List<Loan> getAllLoansByUser(User user) throws SQLException{
+//		return this.dbManager.getLoansByUser(user, false, false);
+//	}
 
 	public List<Copy> search(String title, String [] authors, int year, String mainTopic,
 			String phouse) throws SQLException{
@@ -379,31 +397,31 @@ public class LibraryManager {
 	}
 
 
-	public LoanReservation getLoanReservationByUserCopy(InternalUser user,
-			String title, String [] authors,
-			int year, String mainTopic, String phouse) throws SQLException{
+//	public LoanReservation getLoanReservationByUserCopy(InternalUser user,
+//			String title, String [] authors,
+//			int year, String mainTopic, String phouse) throws SQLException{
+//
+//		return this.dbManager.getLoanReservationByUserCopy(user,
+//				title, authors, year, mainTopic, phouse);
+//	}
 
-		return this.dbManager.getLoanReservationByUserCopy(user,
-				title, authors, year, mainTopic, phouse);
-	}
-
-	public Loan getLoanByUserCopy(User user, String title, String [] authors,
-			int year, String mainTopic, String phouse) throws SQLException{
-
-		return this.dbManager.getLoanByUserCopy(user,
-				title, authors, year, mainTopic, phouse);
-	}
-
-	public ConsultationReservation getConsultationReservationByUserCopy(InternalUser user,
-			LocalDate date,
-			String title, String [] authors,
-			int year, String mainTopic,
-			String phouse
-			) throws SQLException{
-
-		return this.dbManager.getConsultationReservationByUserCopy(user, date,
-				title, authors, year, mainTopic, phouse);
-	}
+//	public Loan getLoanByUserCopy(User user, String title, String [] authors,
+//			int year, String mainTopic, String phouse) throws SQLException{
+//
+//		return this.dbManager.getLoanByUserCopy(user,
+//				title, authors, year, mainTopic, phouse);
+//	}
+//
+//	public ConsultationReservation getConsultationReservationByUserCopy(InternalUser user,
+//			LocalDate date,
+//			String title, String [] authors,
+//			int year, String mainTopic,
+//			String phouse
+//			) throws SQLException{
+//
+//		return this.dbManager.getConsultationReservationByUserCopy(user, date,
+//				title, authors, year, mainTopic, phouse);
+//	}
 
 	public void close(){
 		try {
@@ -420,12 +438,12 @@ public class LibraryManager {
 	 @ ensures \result.size() >= 0;
 	 @
 	 @*/
-	public List<Consultation> getConsultationInProgressByUser(User user) throws SQLException{
+	public List<Consultation> getConsultationsInProgressByUser(User user) throws SQLException{
 		List<Consultation> result = null;
 		if (user!=null){
-			result = this.dbManager.consultationInProgressByUser(user);
+			result = this.dbManager.consultationsInProgressByUser(user);
 		}else{
-			result = this.dbManager.consultationInProgress();
+			result = this.dbManager.consultationsInProgress();
 		}
 		return result;
 	}

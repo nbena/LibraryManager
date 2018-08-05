@@ -34,9 +34,15 @@ import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.man.LibraryManager;
 
 public class UserModel extends AbstractModel {
+	
+	private User user;
 
 	public UserModel(LibraryManager manager) {
 		super(manager);
+	}
+	
+	public void setUser(User u){
+		this.user = u;
 	}
 	
 	
@@ -44,18 +50,15 @@ public class UserModel extends AbstractModel {
 		User u = super.manager.authenticateUser(user);
 		boolean result = false;
 		if (u!=null){
-			super.setUser(user);
+			this.user = user;
 			result = true;
 		}
 		return result;
 	}
 	
-	public void setUser(User user){
-		super.setUser(user);
-	}
 	
 	public SeatReservation reserveSeat(LocalDate date) throws ReservationException, SQLException{
-		return super.manager.tryReserveSeat((InternalUser) super.user, date);
+		return super.manager.tryReserveSeat((InternalUser) user, date);
 	}
 	
 //	public ConsultationReservation reserveConsultation(Book book, LocalDate date) throws ReservationException, SQLException{
@@ -64,7 +67,7 @@ public class UserModel extends AbstractModel {
 //	
 	public ConsultationReservation reserveConsultation(CopyForConsultation copy,
 			LocalDate date) throws ReservationException, SQLException{
-		return super.manager.tryReserveConsultation((InternalUser) super.user, copy, date);
+		return super.manager.tryReserveConsultation((InternalUser) user, copy, date);
 	}
 	
 	public void cancelReservation(AbstractReservation reservation) throws SQLException{
@@ -72,11 +75,11 @@ public class UserModel extends AbstractModel {
 	}
 	
 	public LoanReservation reserveLoan(Copy copy) throws SQLException, ReservationException{
-		return super.manager.tryReserveLoan((InternalUser) super.user, copy);
+		return super.manager.tryReserveLoan((InternalUser) user, copy);
 	}
 	
 	public List<SeatReservation> getSeatsReservations() throws SQLException{
-		return super.manager.getSeatReservationByUser((InternalUser) super.user);
+		return super.manager.getSeatReservationsByUser((InternalUser) user);
 	}
 	
 	/**
@@ -84,16 +87,16 @@ public class UserModel extends AbstractModel {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<ConsultationReservation> getConsultationReservation() throws SQLException{
-		return super.manager.getConsultationReservationByUser((InternalUser) super.user, null, true, false);
+	public List<ConsultationReservation> getConsultationReservations() throws SQLException{
+		return super.manager.getConsultationReservationByUser((InternalUser) user, null, true, false);
 	}
 	
-	public List<LoanReservation> getLoanReservation() throws SQLException{
-		return super.manager.getLoanReservationByUser((InternalUser) super.user, true, true);
+	public List<LoanReservation> getLoanReservations() throws SQLException{
+		return super.manager.getLoanReservationsByUser((InternalUser) user, true, true);
 	}
 	
-	public List<Loan> getActiveLoan() throws SQLException{
-		return super.manager.getLoanByUser(super.user, false);
+	public List<Loan> getActiveLoans() throws SQLException{
+		return super.manager.getLoansByUser(user, false);
 	}
 	
 	public List<Copy> search(String title, String [] authors, int year, String mainTopic,

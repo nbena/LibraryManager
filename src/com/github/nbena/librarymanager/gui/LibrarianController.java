@@ -109,13 +109,13 @@ public class LibrarianController extends AbstractController {
 	private static final String TITLE_VIEW_LOANS = "Prestiti in corso";
 	
 	
-	private void showWithUsersView(boolean withUsers, String title) throws SQLException{
-		if (withUsers){
-			((SearchableBookUser)this.searchableBookView).setUsers(this.model.users());
-		}else{
+	private void showWithUsersView(/*boolean withUsers, */String title) throws SQLException{
+		// if (withUsers){
+		//	((SearchableBookUser)this.searchableBookView).setUsers(this.model.users());
+		// }else{
 			((SearchableBookUser)this.searchableBookView).setUserPanelEnabled(false);
-		}
-		this.isWithUser = withUsers;
+		// }
+		this.isWithUser = /*withUsers;*/false;
 		this.searchableBookView.setMainTitle(title);
 		this.searchableBookView.setVisible(true);
 	}
@@ -156,7 +156,7 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent arg0){
 				try {
 					action = new ActionNewNotReservedLoan(model);
-					showWithUsersView(true, TITLE_NEW_NOT_RESERVED_LOAN);
+					showWithUsersView(/*true, */TITLE_NEW_NOT_RESERVED_LOAN);
 				} catch (SQLException e) {
 					displayError(view, e);
 				}
@@ -205,7 +205,7 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					action = new ActionNewNotReservedConsultation(model);
-					showWithUsersView(true, TITLE_NEW_NOT_RESERVED_CONSULTATION);
+					showWithUsersView(/*true, */TITLE_NEW_NOT_RESERVED_CONSULTATION);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}
@@ -266,7 +266,7 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					action = new ActionAddBook(model);
-					showWithUsersView(false, TITLE_ADD_BOOK);
+					showWithUsersView(/*false, */TITLE_ADD_BOOK);
 				} catch (SQLException e1) {
 					displayError(view, e1);
 				}

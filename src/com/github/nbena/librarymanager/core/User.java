@@ -113,9 +113,6 @@ public class User extends Librarian implements IDble {
 //		this.hashedPassword = hashedPassword;
 //	}
 	
-	public void hashPassword(){
-		
-	}
 	
 	
 	

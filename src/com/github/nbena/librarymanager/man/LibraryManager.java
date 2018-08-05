@@ -22,6 +22,7 @@ package com.github.nbena.librarymanager.man;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.github.nbena.librarymanager.core.AbstractReservation;
@@ -245,7 +246,13 @@ public class LibraryManager {
 		SQLException{
 
 		Loan loan = reservation.createLoan();
+		
+		this.dbManager.autoSave(false);
+		reservation.setDone(true);
 		this.dbManager.addLoan(loan);
+		this.dbManager.setLoanReservationDone(reservation);
+		this.dbManager.commit(true);
+		
 		return loan;
 	}
 
@@ -299,7 +306,11 @@ public class LibraryManager {
 		Seat seat = seats.get(0);
 		seat.setFree(false);
 
-		Consultation consultation = copy.startConsultation(user);
+		// Consultation consultation = copy.startConsultation(user);
+		Consultation consultation = new Consultation(user, copy);
+		
+		consultation.setStart(OffsetDateTime.now());
+		copy.setInConsultation(true);
 
 		this.dbManager.startConsultation(consultation);
 		this.dbManager.setSeatOccupied(seat, true);
@@ -320,8 +331,10 @@ public class LibraryManager {
 
 		this.dbManager.autoSave(false);
 
-		Consultation consultation = reservation.getCopy()
-				.startConsultation(reservation.getUser());
+//		Consultation consultation = reservation.getCopy()
+//				.startConsultation(reservation.getUser());
+		Consultation consultation = reservation.createConsultation();
+		reservation.setDone(true);
 		
 		// consequently, we set the ConsultationReservation to be done.
 		this.dbManager.setConsultationReservationDone(reservation);

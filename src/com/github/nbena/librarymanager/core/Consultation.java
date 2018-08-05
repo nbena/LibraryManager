@@ -29,7 +29,7 @@ public class Consultation implements IDble{
 	private int ID;
 	
 	
-	public Consultation( User user, CopyForConsultation copy) {
+	public Consultation(User user, CopyForConsultation copy) {
 		this.copy = copy;
 		this.user = user;
 	}

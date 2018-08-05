@@ -73,6 +73,13 @@ public class ConsultationReservation extends AbstractReservationWithBook {
 		this.reservationDate = reservationDate;
 	}
 	
+	public Consultation createConsultation(){
+		Consultation consultation = new Consultation(this.getUser(), this.getCopy());
+		consultation.setStart(OffsetDateTime.now());
+		this.getCopy().setInConsultation(true);
+		return consultation;
+	}
+	
 //	public boolean isDone(){
 //		return this.reservationDate.isAfter(LocalDate.now());
 //	}

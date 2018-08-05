@@ -137,11 +137,11 @@ public class Loan implements IDble {
 		this.start = start;
 	}
 
-	@Override
-	public /*@ pure @*/ String toString() {
-		return "Loan [user=" + user + ", copy=" + copy + ", start=" + start + ", end=" + end + ", active=" + active
-				+ ", restitutionDate=" + restitutionDate + ", renewAvailable=" + renewAvailable + "]";
-	}
+//	@Override
+//	public /*@ pure @*/ String toString() {
+//		return "Loan [user=" + user + ", copy=" + copy + ", start=" + start + ", end=" + end + ", active=" + active
+//				+ ", restitutionDate=" + restitutionDate + ", renewAvailable=" + renewAvailable + "]";
+//	}
 
 
 }

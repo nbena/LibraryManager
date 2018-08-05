@@ -18,7 +18,6 @@
 
 package com.github.nbena.librarymanager.core;
 
-import java.time.OffsetDateTime;
 
 public class CopyForConsultation extends Copy {
 
@@ -56,11 +55,11 @@ public class CopyForConsultation extends Copy {
 //		return copy;
 //	}
 	
-	public Consultation startConsultation(User user){
-		this.inConsultation =  true;
-		Consultation consultation = new Consultation(user, this);
-		consultation.setStart(OffsetDateTime.now());
-		return consultation;
-	}
+//	public Consultation startConsultation(User user){
+//		this.inConsultation =  true;
+//		Consultation consultation = new Consultation(user, this);
+//		consultation.setStart(OffsetDateTime.now());
+//		return consultation;
+//	}
 
 }

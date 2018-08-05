@@ -500,6 +500,21 @@ public class DbManagerTest {
 	  // trigger will be raised
 	  this.db.addLoanReservation(expected);
 	  
+	  this.db.setLoanReservationDone(expected);
+	  
+	  List<LoanReservation> reservations = this.db.getLoanReservationsByUser(
+			  expected.getUser(), true, true);
+	  
+	  found = true;
+	  for(int i =0;i<reservations.size();i++){
+		  if(reservations.get(i).getID() == expected.getID()){
+			  found = true;
+			  i = reservations.size();
+		  }
+	  }
+	  
+	  assertTrue(found);
+	  
 	  boolean thrown = false;
 	 
 	  try{

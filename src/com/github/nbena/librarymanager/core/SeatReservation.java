@@ -65,10 +65,4 @@ public class SeatReservation extends AbstractReservation {
 	}
 
 	
-	public boolean isDone(){
-		return this.reservationDate.isBefore(LocalDate.now());
-	}
-	
-	
-
 }

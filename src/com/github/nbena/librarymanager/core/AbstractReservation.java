@@ -24,8 +24,8 @@ public abstract class AbstractReservation implements IDble{
 	protected OffsetDateTime timestamp;
 	protected int ID;
 	protected InternalUser user;
+	protected boolean done;
 	
-	public abstract boolean isDone();
 
 	protected AbstractReservation(int iD, InternalUser user, OffsetDateTime timestamp) {
 		ID = iD;
@@ -63,6 +63,15 @@ public abstract class AbstractReservation implements IDble{
 	public void setUser(InternalUser user) {
 		this.user = user;
 	}
+	
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
+	}
+
 	
 	
 	

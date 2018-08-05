@@ -245,6 +245,17 @@ public class DbManager {
 		return reservation;
 
 	}
+	
+	public void setLoanReservationDone(LoanReservation reservation) throws SQLException{
+		
+		String query = "update loan_reservation set done = true where id = ?";
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+		
+		pstmt.setInt(1, reservation.getID());
+		
+		pstmt.execute();
+	
+	}	
 
 	public LoanReservation addLoanReservation(LoanReservation reservation) throws SQLException{
 

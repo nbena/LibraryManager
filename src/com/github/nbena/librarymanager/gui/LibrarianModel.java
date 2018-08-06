@@ -113,20 +113,20 @@ public class LibrarianModel extends AbstractModel {
 		super.manager.deliveryLoan(loan);
 	}
 	
-	public Loan loanNotReserved(User user, String title, String [] authors, int year,
-			String mainTopic, String phouse) throws ReservationException, SQLException{
-//		Copy copy = super.manager.getOneAvailableCopyForLoan(title, authors,
-//				year, mainTopic);
-//		Loan loan = null;
-//		if (copy!=null){
-//			loan = super.manager.loanNotReserved(user, copy);
-//		}else{
-//			throw new ReservationException("Non sono state trovate copie con questi " +
-//					"con questi parametri");
-//		}
-//		return loan;
-		return super.manager.loanNotReserved(user, title, authors, year, mainTopic, phouse);
-	}
+//	public Loan loanNotReserved(User user, String title, String [] authors, int year,
+//			String mainTopic, String phouse) throws ReservationException, SQLException{
+////		Copy copy = super.manager.getOneAvailableCopyForLoan(title, authors,
+////				year, mainTopic);
+////		Loan loan = null;
+////		if (copy!=null){
+////			loan = super.manager.loanNotReserved(user, copy);
+////		}else{
+////			throw new ReservationException("Non sono state trovate copie con questi " +
+////					"con questi parametri");
+////		}
+////		return loan;
+//		return super.manager.loanNotReserved(user, title, authors, year, mainTopic, phouse);
+//	}
 	
 	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
 		return super.manager.loanNotReserved(user, copy);
@@ -155,11 +155,11 @@ public class LibrarianModel extends AbstractModel {
 //		return super.manager.tryRenewLoan(loan);
 //	}
 	
-	public Seat startNotReservedConsultation(User user, String title,
-			String [] authors, int year, String mainTopic, String phouse) throws SQLException, ReservationException{
-		return super.manager.startNotReservedConsultation(user, title,
-				authors, year, mainTopic, phouse);
-	}
+//	public Seat startNotReservedConsultation(User user, String title,
+//			String [] authors, int year, String mainTopic, String phouse) throws SQLException, ReservationException{
+//		return super.manager.startNotReservedConsultation(user, title,
+//				authors, year, mainTopic, phouse);
+//	}
 	
 	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws ReservationException, SQLException{
 		return super.manager.startNotReservedConsultation(user, copy);

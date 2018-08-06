@@ -223,25 +223,25 @@ public class LibraryManager {
 	}
 
 
+//	public Loan loanNotReserved(User user, String title, String [] authors,
+//			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
+//
+//		Copy copy = this.dbManager.getOneAvailableCopyForLoan(title,
+//				authors, year, mainTopic, phouse);
+//		if (copy == null){
+//			throw new ReservationException(NO_COPIES);
+//		}
+//
+//		Loan loan = new Loan(user, copy);
+//		this.dbManager.addLoan(loan);
+//		return loan;
+//	}
+	
 	/*@
 	 @ ensures \result.getEnd().equals(LocalDate.now().plusMonths(Loan.MAX_MONTHS_SINGLE_LOAN_DURATION)) &&
 	 @ \result.isRenewAvailable() == true;
 	 @ 
 	 @*/
-	public Loan loanNotReserved(User user, String title, String [] authors,
-			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
-
-		Copy copy = this.dbManager.getOneAvailableCopyForLoan(title,
-				authors, year, mainTopic, phouse);
-		if (copy == null){
-			throw new ReservationException(NO_COPIES);
-		}
-
-		Loan loan = new Loan(user, copy);
-		this.dbManager.addLoan(loan);
-		return loan;
-	}
-	
 	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
 		Loan loan = new Loan(user, copy);
 		this.dbManager.addLoan(loan);
@@ -292,38 +292,39 @@ public class LibraryManager {
 		return possible;
 	}
 
+
+//	public Seat startNotReservedConsultation(User user, String title, String [] authors,
+//			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
+//		// CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, LocalDate.now());
+//		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(
+//				LocalDate.now(), title, authors, year, mainTopic, phouse);
+//		if (copy == null){
+//			throw new ReservationException(NO_COPIES);
+//		}
+//		List<Seat> seats = this.dbManager.getAvailableSeats(LocalDate.now());
+//		if (seats.size() <= 0){
+//			throw new ReservationException(NO_SEATS);
+//		}
+//		Seat seat = seats.get(0);
+//		seat.setFree(false);
+//
+//		// Consultation consultation = copy.startConsultation(user);
+//		Consultation consultation = new Consultation(user, copy);
+//		
+//		consultation.setStart(OffsetDateTime.now());
+//		copy.setInConsultation(true);
+//
+//		this.dbManager.startConsultation(consultation);
+//		this.dbManager.setSeatOccupied(seat, true);
+//
+//		return seat;
+//	}
+	
 	// NOT REALLY IMPLEMENTED
 	/*@
 	 @ ensures this.dbManager.getAvailableSeats(LocalDate.now()).size() > 0 ==> \result != null;
 	 @ ensures \result.isFree() == false;
 	 @*/
-	public Seat startNotReservedConsultation(User user, String title, String [] authors,
-			int year, String mainTopic, String phouse) throws SQLException, ReservationException{
-		// CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, LocalDate.now());
-		CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(
-				LocalDate.now(), title, authors, year, mainTopic, phouse);
-		if (copy == null){
-			throw new ReservationException(NO_COPIES);
-		}
-		List<Seat> seats = this.dbManager.getAvailableSeats(LocalDate.now());
-		if (seats.size() <= 0){
-			throw new ReservationException(NO_SEATS);
-		}
-		Seat seat = seats.get(0);
-		seat.setFree(false);
-
-		// Consultation consultation = copy.startConsultation(user);
-		Consultation consultation = new Consultation(user, copy);
-		
-		consultation.setStart(OffsetDateTime.now());
-		copy.setInConsultation(true);
-
-		this.dbManager.startConsultation(consultation);
-		this.dbManager.setSeatOccupied(seat, true);
-
-		return seat;
-	}
-	
 	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws ReservationException, SQLException{
 		List<Seat> seats = this.dbManager.getAvailableSeats(LocalDate.now());
 		if (seats.size() <= 0){

@@ -38,9 +38,7 @@ import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionGetAvailableCopiesForConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionGetAvailableCopiesForLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation;
-import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation2;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan;
-import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan2;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionSendMail;
@@ -49,7 +47,6 @@ import com.github.nbena.librarymanager.gui.view.BookTableView;
 import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.LoansInLateView;
 import com.github.nbena.librarymanager.gui.view.RegisterUserView;
-import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.table.BookCopiesNumberTableModel;
 import com.github.nbena.librarymanager.gui.view.table.BookTableModel;
@@ -189,20 +186,9 @@ public class LibrarianController extends AbstractController {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0){
-				// try {
-				
-					action = new ActionNewNotReservedLoan(model);
 					
-					action = new ActionGetAvailableCopiesForLoan(model);
-					
-					// showWithUsersView(/*true, */TITLE_NEW_NOT_RESERVED_LOAN);
-//					searchableBookView = new SearchableBookView();
-//					searchableBookView.setMainTitle(TITLE_NEW_NOT_RESERVED_LOAN);
-//					searchableBookView.setVisible(true);
-//				} catch (SQLException e) {
-//					displayError(view, e);
-//				}
-					showAskUserBook(TITLE_NEW_NOT_RESERVED_LOAN);
+				action = new ActionGetAvailableCopiesForLoan(model);
+				showAskUserBook(TITLE_NEW_NOT_RESERVED_LOAN);
 			}
 		});
 		
@@ -246,31 +232,8 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				try {
-				
-				
-					action = new ActionNewNotReservedConsultation(model);
 					
-					action = new ActionGetAvailableCopiesForConsultation(model);
-//					User u = null;
-//					
-//					try {
-//						u = askAndFillUser();
-//					} catch (SQLException | ReservationException e1) {
-//						displayError(view, e1);
-//					}
-//					
-//					if(u != null){
-//						((AbstractActionWithUser) action).setUser(u);
-//					}
-//					
-//					// showWithUsersView(/*true, */TITLE_NEW_NOT_RESERVED_CONSULTATION);
-//					searchableBookView = new SearchableBookView();
-//					searchableBookView.setMainTitle(TITLE_NEW_NOT_RESERVED_CONSULTATION);
-//					searchableBookView.setVisible(true);
-//				} catch (SQLException e1) {
-//					displayError(view, e1);
-//				}
+				action = new ActionGetAvailableCopiesForConsultation(model);
 				showAskUserBook(TITLE_NEW_NOT_RESERVED_CONSULTATION);
 			}
 			
@@ -638,14 +601,14 @@ public class LibrarianController extends AbstractController {
 					if(action instanceof ActionGetAvailableCopiesForLoan){
 						@SuppressWarnings("unchecked")
 						List<Copy> result = (List<Copy>) action.getResult();
-						action = new ActionNewNotReservedLoan2(model);
-						((ActionNewNotReservedLoan2) action).setUser(old);
+						action = new ActionNewNotReservedLoan(model);
+						((ActionNewNotReservedLoan) action).setUser(old);
 						showAvailableCopiesForLoan(result);
 					}else if(action instanceof ActionGetAvailableCopiesForConsultation){
 						@SuppressWarnings("unchecked")
 						List<CopyForConsultation> result = (List<CopyForConsultation>) action.getResult();
-						action = new ActionNewNotReservedConsultation2(model);
-						((ActionNewNotReservedConsultation2) action).setUser(old);
+						action = new ActionNewNotReservedConsultation(model);
+						((ActionNewNotReservedConsultation) action).setUser(old);
 						showAvailableCopiesForConsultation(result);
 					}
 					

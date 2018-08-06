@@ -34,7 +34,7 @@ import java.awt.event.ActionListener;
  * @author nicola
  *
  */
-public class LibrarianConsultationsTableView extends AbstractTableView implements VisibleView,
+public class LibrarianGenericTableView extends AbstractTableView implements VisibleView,
 	Popupable {
 
 	// private final JPanel contentPanel = new JPanel();
@@ -82,7 +82,7 @@ public class LibrarianConsultationsTableView extends AbstractTableView implement
 	 */
 	public static void main(String[] args) {
 		try {
-			LibrarianConsultationsTableView dialog = new LibrarianConsultationsTableView();
+			LibrarianGenericTableView dialog = new LibrarianGenericTableView();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -93,7 +93,7 @@ public class LibrarianConsultationsTableView extends AbstractTableView implement
 	/**
 	 * Create the dialog.
 	 */
-	public LibrarianConsultationsTableView() {
+	public LibrarianGenericTableView() {
 //		setBounds(100, 100, 450, 300);
 //		getContentPane().setLayout(new BorderLayout());
 //		contentPanel.setLayout(new FlowLayout());

@@ -42,7 +42,7 @@ import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionSendMail;
-import com.github.nbena.librarymanager.gui.view.LibrarianConsultationsTableView;
+import com.github.nbena.librarymanager.gui.view.LibrarianGenericTableView;
 import com.github.nbena.librarymanager.gui.view.BookTableView;
 import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.LoansInLateView;
@@ -90,7 +90,7 @@ public class LibrarianController extends AbstractController {
 	private Action action;
 	
 	private RegisterUserView userView;
-	private LibrarianConsultationsTableView genericBooksListView;
+	private LibrarianGenericTableView genericBooksListView;
 	private LoansInLateView loansInLateView;
 	private BookTableView bookView;
 	
@@ -160,7 +160,7 @@ public class LibrarianController extends AbstractController {
 		// this.searchableBookView = new SearchableBookUserView();
 		this.searchableBookView = new SearchableBookView();
 		this.userView = new RegisterUserView();
-		this.genericBooksListView = new LibrarianConsultationsTableView();
+		this.genericBooksListView = new LibrarianGenericTableView();
 		this.loansInLateView = new LoansInLateView();
 		this.bookView = new BookTableView();
 		

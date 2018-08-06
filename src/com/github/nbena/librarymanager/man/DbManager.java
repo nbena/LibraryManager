@@ -753,7 +753,7 @@ public class DbManager {
 		return returned;
 	}
 
-	public User authenticateUser(Loginable user)throws SQLException{
+	public User authenticateUser(Librarian user)throws SQLException{
 		String query = "select id, name, surname, email, internal "+
 						" from lm_user where email=? and password=?";
 
@@ -772,30 +772,30 @@ public class DbManager {
 		return returned;
 	}
 
-	public Copy getOneAvailableCopyForLoan(String title, String [] authors, int year,
-			String mainTopic, String phouse) throws SQLException{
-
-		String query = DbManagerHelper.getSearchQuery(
-				title, authors, year, mainTopic, phouse);
-
-		query += "and status = \'free\' and for_consultation = false limit 1";
-
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-
-		pstmt = (PreparedStatement)(DbManagerHelper.searchPrepare(
-				1, pstmt, this.connection,
-				title, authors, year, mainTopic, phouse)[0]);
-
-		Copy copy = null;
-
-		ResultSet rs = pstmt.executeQuery();
-
-		if(rs.next()){
-			copy = DbManagerHelper.getCopyFrom(rs, 1);
-		}
-
-		return copy;
-	}
+//	public Copy getOneAvailableCopyForLoan(String title, String [] authors, int year,
+//			String mainTopic, String phouse) throws SQLException{
+//
+//		String query = DbManagerHelper.getSearchQuery(
+//				title, authors, year, mainTopic, phouse);
+//
+//		query += "and status = \'free\' and for_consultation = false limit 1";
+//
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//
+//		pstmt = (PreparedStatement)(DbManagerHelper.searchPrepare(
+//				1, pstmt, this.connection,
+//				title, authors, year, mainTopic, phouse)[0]);
+//
+//		Copy copy = null;
+//
+//		ResultSet rs = pstmt.executeQuery();
+//
+//		if(rs.next()){
+//			copy = DbManagerHelper.getCopyFrom(rs, 1);
+//		}
+//
+//		return copy;
+//	}
 	
 	public List<Copy> getAvailableCopiesForLoan(String title, String [] authors, int year,
 			String mainTopic, String phouse) throws SQLException{
@@ -823,35 +823,35 @@ public class DbManager {
 		return copies;
 	}
 
-	public CopyForConsultation getOneAvailableCopyForConsultation(LocalDate date,
-						String title,
-						String [] authors, int year, String mainTopic,
-						String phouse) throws SQLException{
-
-		String query = DbManagerHelper.getOneAvailableCopyForConsultationQuery(
-			title, authors, year, mainTopic, phouse);
-
-
-		PreparedStatement pstmt = this.connection.prepareStatement(query);
-
-		Object [] res = DbManagerHelper.searchPrepare(1, pstmt, this.connection,
-				title, authors, year, mainTopic, phouse);
-
-		pstmt = (PreparedStatement) res[0];
-		int lastUsedIndex = (int) res[1];
-
-		pstmt.setObject(lastUsedIndex, date);
-
-		CopyForConsultation copy = null;
-		ResultSet rs = pstmt.executeQuery();
-		if(rs.next()){
-			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
-			copy = new CopyForConsultation(from);
-			// copy.setID(from.getID());
-		}
-
-		return copy;
-	}
+//	public CopyForConsultation getOneAvailableCopyForConsultation(LocalDate date,
+//						String title,
+//						String [] authors, int year, String mainTopic,
+//						String phouse) throws SQLException{
+//
+//		String query = DbManagerHelper.getOneAvailableCopyForConsultationQuery(
+//			title, authors, year, mainTopic, phouse);
+//
+//
+//		PreparedStatement pstmt = this.connection.prepareStatement(query);
+//
+//		Object [] res = DbManagerHelper.searchPrepare(1, pstmt, this.connection,
+//				title, authors, year, mainTopic, phouse);
+//
+//		pstmt = (PreparedStatement) res[0];
+//		int lastUsedIndex = (int) res[1];
+//
+//		pstmt.setObject(lastUsedIndex, date);
+//
+//		CopyForConsultation copy = null;
+//		ResultSet rs = pstmt.executeQuery();
+//		if(rs.next()){
+//			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
+//			copy = new CopyForConsultation(from);
+//			// copy.setID(from.getID());
+//		}
+//
+//		return copy;
+//	}
 	
 	
 	public List<CopyForConsultation> getAvailableCopiesForConsultation(LocalDate date,
@@ -886,7 +886,6 @@ public class DbManager {
 	}
 
 
-	// TODO see this
 	public CopyForConsultation getIfAvailableForConsultation(CopyForConsultation copy, LocalDate date) throws SQLException{
 
 		String query = "select lm_copy.id, title, authors, year, main_topic, "+
@@ -1118,7 +1117,6 @@ public class DbManager {
      * @return
      * @throws SQLException
      */
-    // TODO add tests for this
     public List<Consultation> consultationsInProgressByUser(User user) throws SQLException {
     	
     	String query = DbManagerHelper.CONSULTATION_IN_PROGRESS_BY_USER_QUERY;

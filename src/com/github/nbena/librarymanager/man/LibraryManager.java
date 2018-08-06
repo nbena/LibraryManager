@@ -74,7 +74,8 @@ public class LibraryManager {
 
 	}
 
-	public User authenticateUser(Loginable user){
+	// using a librarian here because it has enough info
+	public User authenticateUser(Librarian user){
 
 		User returned = null;
 		try {
@@ -85,7 +86,7 @@ public class LibraryManager {
 		return returned;
 	}
 	
-	public /*@ pure @*/ User authenticateUserWithError(Loginable user) throws SQLException{
+	public /*@ pure @*/ User authenticateUserWithError(User user) throws SQLException{
 		User returned = null;
 		returned = this.dbManager.authenticateUser(user);
 		return returned;

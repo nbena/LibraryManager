@@ -527,12 +527,16 @@ public class DbManagerTest {
 	  assertTrue(thrown);
 	  
 	  
-	  Copy available = this.db.getOneAvailableCopyForLoan("Title1", null, 0, null, null);
+	  // Copy available = this.db.getOneAvailableCopyForLoan("Title1", null, 0, null, null);
+	  List<Copy> forLoan = this.db.getAvailableCopiesForLoan("Title1", null, 0, null, null);
 	  found = false;
 	  for (int i=0;i<this.copies.length;i++){
-		  if (this.copies[i].getID() == available.getID()){
-			  found = true;
-			  i = this.copies.length;
+		  for(int j=0;j<forLoan.size();i++){
+			  if (this.copies[i].getID() == forLoan.get(j).getID()){
+				  found = true;
+				  i = this.copies.length;
+				  j = forLoan.size();
+		  	}
 		  }
 	  }
 	  assertTrue(found);
@@ -651,15 +655,32 @@ public class DbManagerTest {
 	  CopyForConsultation c = this.db.getIfAvailableForConsultation(this.copiesForConsultation[0], LocalDate.now().plusDays(4));
 	  assertTrue(this.copiesForConsultation[0].getID() == c.getID());
 	  
-	  c = this.db.getOneAvailableCopyForConsultation(LocalDate.now().plusDays(4),
+//	  c = this.db.getOneAvailableCopyForConsultation(LocalDate.now().plusDays(4),
+//			  this.copiesForConsultation[0].getTitle(),
+//			  this.copiesForConsultation[0].getAuthors(),
+//			  this.copiesForConsultation[0].getYearOfPublishing(),
+//			  this.copiesForConsultation[0].getMainTopic(),
+//			  this.copiesForConsultation[0].getPublishingHouse()
+//			  );
+	  List<CopyForConsultation> forConsultations = this.db.getAvailableCopiesForConsultation(
+			  LocalDate.now().plusDays(4),
 			  this.copiesForConsultation[0].getTitle(),
 			  this.copiesForConsultation[0].getAuthors(),
 			  this.copiesForConsultation[0].getYearOfPublishing(),
 			  this.copiesForConsultation[0].getMainTopic(),
 			  this.copiesForConsultation[0].getPublishingHouse()
 			  );
+			  
+	  // assertTrue(this.copiesForConsultation[0].getID() == c.getID());
+	  boolean found = false;
+	  for(int i=0;i<forConsultations.size();i++){
+		  if(forConsultations.get(i).getID() == this.copiesForConsultation[0].getID()){
+			  found = true;
+			  i = forConsultations.size();
+		  }
+	  }
 	  
-	  assertTrue(this.copiesForConsultation[0].getID() == c.getID());
+	  assertTrue(found);
 	  
   }
   

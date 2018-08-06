@@ -4,7 +4,6 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.Librarian;
-import com.github.nbena.librarymanager.core.Loginable;
 
 // import javax.swing.UIManager;
 
@@ -58,7 +57,7 @@ public class Main {
 	}
 	
 	private Object[] authenticate(boolean librarian) throws NoSuchAlgorithmException{
-		Loginable user = null;
+		Librarian user = null;
 		boolean loop = true;
 		boolean authenticated = false;
 		String [] credentials;
@@ -68,12 +67,16 @@ public class Main {
 			if (credentials == null){
 				loop = false;
 			}else{
-				user = new Librarian();
-				user.setEmail(credentials[0]);
-				user.setHashedPassword(Hash.hash(credentials[1]));
+						
 				if (librarian){
+					user = new Librarian();
+					user.setEmail(credentials[0]);
+					user.setHashedPassword(Hash.hash(credentials[1]));
 					user = this.manager.authenticateLibrarian(user);
 				}else{
+					user = new User();
+					user.setEmail(credentials[0]);
+					user.setHashedPassword(Hash.hash(credentials[1]));
 					user = this.manager.authenticateUser(user);
 				}
 		

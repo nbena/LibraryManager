@@ -40,7 +40,6 @@ import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
-import com.github.nbena.librarymanager.core.Loginable;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.core.User;
@@ -732,7 +731,7 @@ public class DbManager {
 //		return user;
 //	}
 
-	public Librarian authenticateLibrarian(Loginable librarian) throws SQLException{
+	public Librarian authenticateLibrarian(Librarian librarian) throws SQLException{
 		String query =  "select id, email from librarian where "+
 						"email=? and password=?";
 

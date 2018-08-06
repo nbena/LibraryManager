@@ -37,7 +37,6 @@ import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
-import com.github.nbena.librarymanager.core.Loginable;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
@@ -67,6 +66,8 @@ public class LibraryManager {
 	 @*/
 	public void saveUser(User user) throws SQLException{
 		this.dbManager.addUser(user);
+		
+		this.printBadge(user);
 	}
 
 
@@ -96,7 +97,7 @@ public class LibraryManager {
 		this.dbManager.deleteItem(user);
 	}
 
-	public Librarian authenticateLibrarian(Loginable librarian){
+	public Librarian authenticateLibrarian(Librarian librarian){
 		Librarian returned = null;
 		try{
 			returned = this.dbManager.authenticateLibrarian(librarian);
@@ -145,6 +146,7 @@ public class LibraryManager {
 		this.dbManager.setSeatOccupied(seat, true);
 		return seat;
 	}
+	
 
 	/*@
 	 @ requires user != null && copy != null && date !=null; 
@@ -185,7 +187,7 @@ public class LibraryManager {
 
 		Loan loan = this.dbManager.getActiveLoanByCopy(copy);
 		if(loan != null){
-			if (!loan.isRenewAvailable()){
+			if (loan.isRenewAvailable()){
 				loan.setRenewAvailable(false);
 				this.dbManager.updateLoan(loan);
 			}
@@ -255,10 +257,11 @@ public class LibraryManager {
 		Loan loan = reservation.createLoan();
 		
 		this.dbManager.autoSave(false);
-		reservation.setDone(true);
 		this.dbManager.addLoan(loan);
 		this.dbManager.setLoanReservationDone(reservation);
 		this.dbManager.commit(true);
+		
+		reservation.setDone(true);
 		
 		return loan;
 	}
@@ -384,12 +387,16 @@ public class LibraryManager {
 		Seat seat = null;
 		if (user instanceof InternalUser){
 			seat = this.dbManager.getReservedSeatOrNothing((InternalUser) user, LocalDate.now());
-			if(seat == null){
+			if(seat != null){
+				seat.setFree(false);
+				this.dbManager.setSeatOccupied(seat, true);
+			}else{
 				seat = this.getAndSetSeatOccupied(LocalDate.now());
 			}
 		}else{
 			seat = this.getAndSetSeatOccupied(LocalDate.now());
 		}
+
 		return seat;
 	}
 

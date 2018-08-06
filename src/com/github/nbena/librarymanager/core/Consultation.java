@@ -75,6 +75,7 @@ public class Consultation implements IDble{
 
 	public void setStart(OffsetDateTime start) {
 		this.start = start;
+		this.copy.setInConsultation(true);
 	}
 
 	public OffsetDateTime getEnd() {
@@ -83,6 +84,7 @@ public class Consultation implements IDble{
 
 	public void setEnd(OffsetDateTime end) {
 		this.end = end;
+		this.copy.setInConsultation(false);
 	}
 
 }

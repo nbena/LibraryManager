@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
+@Deprecated
 public class ActionNewNotReservedLoan extends AbstractActionWithBookUser implements Action {
 
 	public ActionNewNotReservedLoan(LibrarianModel model){

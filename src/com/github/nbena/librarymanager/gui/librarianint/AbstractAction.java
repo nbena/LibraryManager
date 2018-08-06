@@ -31,6 +31,11 @@ public abstract class AbstractAction implements Action {
 		return this.resultMessage;
 	}
 	
+	public Object getResult(){
+		return null;
+	}
+	
+	
 	
 
 //	@Override

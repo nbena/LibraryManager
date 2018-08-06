@@ -241,6 +241,12 @@ public class LibraryManager {
 		this.dbManager.addLoan(loan);
 		return loan;
 	}
+	
+	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
+		Loan loan = new Loan(user, copy);
+		this.dbManager.addLoan(loan);
+		return loan;
+	}
 
 	public Loan loanReserved(LoanReservation reservation) throws /*ReservationException, */
 		SQLException{
@@ -316,6 +322,26 @@ public class LibraryManager {
 		this.dbManager.setSeatOccupied(seat, true);
 
 		return seat;
+	}
+	
+	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws ReservationException, SQLException{
+		List<Seat> seats = this.dbManager.getAvailableSeats(LocalDate.now());
+		if (seats.size() <= 0){
+			throw new ReservationException(NO_SEATS);
+		}
+		Seat seat = seats.get(0);
+		seat.setFree(false);
+
+		// Consultation consultation = copy.startConsultation(user);
+		Consultation consultation = new Consultation(user, copy);
+		
+		consultation.setStart(OffsetDateTime.now());
+		copy.setInConsultation(true);
+
+		this.dbManager.startConsultation(consultation);
+		this.dbManager.setSeatOccupied(seat, true);
+
+		return seat;		
 	}
 
 	/*@
@@ -485,7 +511,22 @@ public class LibraryManager {
 	public void addCopies(Book book, int number, boolean forConsultation) throws SQLException{
 		this.dbManager.addSomeCopies(book, number, forConsultation);
 	}
-
+	
+	public List<Copy> getAvailableCopiesForLoan(String title,
+			String [] authors, int year,
+			String topic, String phouse) throws SQLException{
+		return this.dbManager.getAvailableCopiesForLoan(title, authors,
+				year, topic, phouse);
+	}
+	
+	public List<CopyForConsultation> getAvailableCopiesForConsultation(
+			LocalDate date,
+			String title,
+			String [] authors, int year,
+			String topic, String phouse) throws SQLException{
+		return this.dbManager.getAvailableCopiesForConsultation(date, title, authors,
+				year, topic, phouse);
+	}
 
 
 }

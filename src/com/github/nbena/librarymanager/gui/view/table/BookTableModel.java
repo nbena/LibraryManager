@@ -29,9 +29,9 @@ public class BookTableModel extends AbstractTableModel implements SelectableItem
 
 
 	private final String [] columns = {"Titolo", "Autori", "Anno", "Casa ed.", "Argomento"};
-	private List<Book> items;
+	private List<? extends Book> items;
 	
-	public BookTableModel(List<Book> items) {
+	public BookTableModel(List<? extends Book> items) {
 		this.items = items;
 	}
 	

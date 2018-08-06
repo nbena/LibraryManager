@@ -1,11 +1,10 @@
 package com.github.nbena.librarymanager.gui.librarianint;
 
-import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public abstract class AbstractActionWithBookUser extends AbstractAction {
+public abstract class AbstractActionWithBookUser extends AbstractActionWithUser {
 	
-	protected User user;
+	
 	protected String title;
 	protected String [] authors;
 	protected int year;
@@ -17,17 +16,17 @@ public abstract class AbstractActionWithBookUser extends AbstractAction {
 	}
 	
 	/*@
-	 @ \requires args.length == 6;
-	 */
+	 @ requires args.length == 5;
+	 @*/
 	@Override
 	public void setArgs(Object... args) {
 		
-		this.user = (User) args[0];
-		this.title = (String) args[1];
-		this.authors = (String[]) args[2];
-		this.year = (int) args[3];
-		this.topic = (String) args[4];
-		this.phouse  = (String) args[5];
+		// this.user = (User) args[0];
+		this.title = (String) args[0];
+		this.authors = (String[]) args[1];
+		this.year = (int) args[2];
+		this.topic = (String) args[3];
+		this.phouse  = (String) args[4];
 		
 	}
 

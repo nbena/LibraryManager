@@ -7,6 +7,7 @@ import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionNewNotReservedConsultation extends AbstractActionWithBookUser {
 
+	@Deprecated
 	public ActionNewNotReservedConsultation(LibrarianModel model){
 		super(model);
 		super.ask = true;

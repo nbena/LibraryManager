@@ -796,6 +796,32 @@ public class DbManager {
 
 		return copy;
 	}
+	
+	public List<Copy> getAvailableCopiesForLoan(String title, String [] authors, int year,
+			String mainTopic, String phouse) throws SQLException{
+
+		String query = DbManagerHelper.getSearchQuery(
+				title, authors, year, mainTopic, phouse);
+
+		query += "and status = \'free\' and for_consultation = false";
+
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+
+		pstmt = (PreparedStatement)(DbManagerHelper.searchPrepare(
+				1, pstmt, this.connection,
+				title, authors, year, mainTopic, phouse)[0]);
+
+		List<Copy> copies = new LinkedList<Copy>();
+
+		ResultSet rs = pstmt.executeQuery();
+
+		while(rs.next()){
+			Copy copy = DbManagerHelper.getCopyFrom(rs, 1);
+			copies.add(copy);
+		}
+
+		return copies;
+	}
 
 	public CopyForConsultation getOneAvailableCopyForConsultation(LocalDate date,
 						String title,
@@ -826,6 +852,39 @@ public class DbManager {
 
 		return copy;
 	}
+	
+	
+	public List<CopyForConsultation> getAvailableCopiesForConsultation(LocalDate date,
+			String title,
+			String [] authors, int year, String mainTopic,
+			String phouse) throws SQLException{
+
+		String query = DbManagerHelper.getOneAvailableCopyForConsultationQuery(
+				title, authors, year, mainTopic, phouse);
+
+
+		PreparedStatement pstmt = this.connection.prepareStatement(query);
+
+		Object [] res = DbManagerHelper.searchPrepare(1, pstmt, this.connection,
+				title, authors, year, mainTopic, phouse);
+
+		pstmt = (PreparedStatement) res[0];
+		int lastUsedIndex = (int) res[1];
+
+		pstmt.setObject(lastUsedIndex, date);
+
+		List<CopyForConsultation> copies = new LinkedList<CopyForConsultation>();
+		ResultSet rs = pstmt.executeQuery();
+		while(rs.next()){
+			Copy from = DbManagerHelper.getCopyFrom(rs, 1);
+			CopyForConsultation copy = new CopyForConsultation(from);
+			copies.add(copy);
+			// copy.setID(from.getID());
+		}
+
+		return copies;
+	}
+
 
 	// TODO see this
 	public CopyForConsultation getIfAvailableForConsultation(CopyForConsultation copy, LocalDate date) throws SQLException{

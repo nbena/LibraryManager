@@ -15,5 +15,7 @@ public interface Action {
 	public String getConfirmationMessage();
 	
 	public String getResultMessage();
+	
+	public Object getResult();
 
 }

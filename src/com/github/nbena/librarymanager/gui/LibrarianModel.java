@@ -25,6 +25,8 @@ import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
+import com.github.nbena.librarymanager.core.Copy;
+import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
@@ -126,6 +128,10 @@ public class LibrarianModel extends AbstractModel {
 		return super.manager.loanNotReserved(user, title, authors, year, mainTopic, phouse);
 	}
 	
+	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
+		return super.manager.loanNotReserved(user, copy);
+	}
+	
 	
 //	public Loan loanNotReserved(User user, Copy copy) throws SQLException{
 //		return super.manager.loanNotReserved(user, copy);
@@ -153,6 +159,10 @@ public class LibrarianModel extends AbstractModel {
 			String [] authors, int year, String mainTopic, String phouse) throws SQLException, ReservationException{
 		return super.manager.startNotReservedConsultation(user, title,
 				authors, year, mainTopic, phouse);
+	}
+	
+	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws ReservationException, SQLException{
+		return super.manager.startNotReservedConsultation(user, copy);
 	}
 
 	
@@ -237,6 +247,21 @@ public class LibrarianModel extends AbstractModel {
 	
 	public void addCopies(Book book, int number, boolean forConsultation) throws SQLException{
 		super.manager.addCopies(book, number, forConsultation);
+	}
+	
+	public List<Copy> getAvailableCopiesForLoan(String title, String [] authors, int year,
+			String topic, String phouse) throws SQLException{
+		return this.manager.getAvailableCopiesForLoan(title, authors, year,
+				topic, phouse);
+	}
+	
+	public List<CopyForConsultation> getAvailableCopiesForConsultation(
+			LocalDate date,
+			String title, String [] authors, int year,
+			String topic, String phouse) throws SQLException{
+		return this.manager.getAvailableCopiesForConsultation(date,
+				title, authors, year,
+				topic, phouse);
 	}
 
 

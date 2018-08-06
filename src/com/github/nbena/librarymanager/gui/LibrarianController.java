@@ -24,9 +24,9 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.github.nbena.librarymanager.core.User;
+import com.github.nbena.librarymanager.gui.librarianint.AbstractActionWithUser;
 import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddCopies;
@@ -35,8 +35,12 @@ import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteCopies;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryLoan;
+import com.github.nbena.librarymanager.gui.librarianint.ActionGetAvailableCopiesForConsultation;
+import com.github.nbena.librarymanager.gui.librarianint.ActionGetAvailableCopiesForLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation;
+import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedConsultation2;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan;
+import com.github.nbena.librarymanager.gui.librarianint.ActionNewNotReservedLoan2;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedConsultation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionNewReservedLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionSendMail;
@@ -46,17 +50,20 @@ import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.LoansInLateView;
 import com.github.nbena.librarymanager.gui.view.RegisterUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookUserView;
+import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.table.BookCopiesNumberTableModel;
+import com.github.nbena.librarymanager.gui.view.table.BookTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
-import com.github.nbena.librarymanager.gui.view.SearchableBookUser;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
+import com.github.nbena.librarymanager.core.Copy;
+import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
@@ -86,11 +93,11 @@ public class LibrarianController extends AbstractController {
 	private Action action;
 	
 	private RegisterUserView userView;
-	private LibrarianConsultationsTableView consultationsView;
+	private LibrarianConsultationsTableView genericBooksListView;
 	private LoansInLateView loansInLateView;
 	private BookTableView bookView;
 	
-	private boolean isWithUser = false;
+	// private boolean isWithUser = false;
 	
 	private static final String TITLE_NEW_NOT_RESERVED_LOAN = "Nuovo prestito non prenotato";
 	// private static final String TITLE_NEW_RESERVED_LOAN = "Nuovo prestito prenotato";
@@ -108,16 +115,43 @@ public class LibrarianController extends AbstractController {
 	private static final String TITLE_VIEW_LOAN_RESERVATIONS = "Prestiti prenotati";
 	private static final String TITLE_VIEW_LOANS = "Prestiti in corso";
 	
+	private static final String TITLE_AVAILABLE_COPIES_LOANS = "Copie per prestito";
+	private static final String TITLE_AVAILABLE_COPIES_CONSULTATIONS = "Copie per consultazioni";
 	
-	private void showWithUsersView(/*boolean withUsers, */String title) throws SQLException{
-		// if (withUsers){
-		//	((SearchableBookUser)this.searchableBookView).setUsers(this.model.users());
-		// }else{
-			((SearchableBookUser)this.searchableBookView).setUserPanelEnabled(false);
-		// }
-		this.isWithUser = /*withUsers;*/false;
-		this.searchableBookView.setMainTitle(title);
-		this.searchableBookView.setVisible(true);
+	
+//	private void showWithUsersView(/*boolean withUsers, */String title) throws SQLException{
+//		// if (withUsers){
+//		//	((SearchableBookUser)this.searchableBookView).setUsers(this.model.users());
+//		// }else{
+//			((SearchableBookUser)this.searchableBookView).setUserPanelEnabled(false);
+//		// }
+//		this.isWithUser = /*withUsers;*/false;
+//		this.searchableBookView.setMainTitle(title);
+//		this.searchableBookView.setVisible(true);
+//	}
+	
+	/**
+	 * This method replaces the old showWithUserView with a better flow:
+	 * 	- the librarian insert the user email
+	 *  - then it inserts the book
+	 * @param title
+	 */
+	private void showAskUserBook(String title){
+		User u = null;
+		
+		try {
+			u = askAndFillUser();
+		} catch (SQLException | ReservationException e1) {
+			displayError(view, e1);
+		}
+		
+		if(u != null){
+			((AbstractActionWithUser) action).setUser(u);
+			/*searchableBookView = new SearchableBookView();*/
+			this.searchableBookView.reset();
+			this.searchableBookView.setMainTitle(title);
+			this.searchableBookView.setVisible(true);
+		}
 	}
 	
 	
@@ -126,9 +160,10 @@ public class LibrarianController extends AbstractController {
 		this.model = model;
 		this.view = view;
 		
-		this.searchableBookView = new SearchableBookUserView();
+		// this.searchableBookView = new SearchableBookUserView();
+		this.searchableBookView = new SearchableBookView();
 		this.userView = new RegisterUserView();
-		this.consultationsView = new LibrarianConsultationsTableView();
+		this.genericBooksListView = new LibrarianConsultationsTableView();
 		this.loansInLateView = new LoansInLateView();
 		this.bookView = new BookTableView();
 		
@@ -154,12 +189,20 @@ public class LibrarianController extends AbstractController {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0){
-				try {
+				// try {
+				
 					action = new ActionNewNotReservedLoan(model);
-					showWithUsersView(/*true, */TITLE_NEW_NOT_RESERVED_LOAN);
-				} catch (SQLException e) {
-					displayError(view, e);
-				}
+					
+					action = new ActionGetAvailableCopiesForLoan(model);
+					
+					// showWithUsersView(/*true, */TITLE_NEW_NOT_RESERVED_LOAN);
+//					searchableBookView = new SearchableBookView();
+//					searchableBookView.setMainTitle(TITLE_NEW_NOT_RESERVED_LOAN);
+//					searchableBookView.setVisible(true);
+//				} catch (SQLException e) {
+//					displayError(view, e);
+//				}
+					showAskUserBook(TITLE_NEW_NOT_RESERVED_LOAN);
 			}
 		});
 		
@@ -203,12 +246,32 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
+//				try {
+				
+				
 					action = new ActionNewNotReservedConsultation(model);
-					showWithUsersView(/*true, */TITLE_NEW_NOT_RESERVED_CONSULTATION);
-				} catch (SQLException e1) {
-					displayError(view, e1);
-				}
+					
+					action = new ActionGetAvailableCopiesForConsultation(model);
+//					User u = null;
+//					
+//					try {
+//						u = askAndFillUser();
+//					} catch (SQLException | ReservationException e1) {
+//						displayError(view, e1);
+//					}
+//					
+//					if(u != null){
+//						((AbstractActionWithUser) action).setUser(u);
+//					}
+//					
+//					// showWithUsersView(/*true, */TITLE_NEW_NOT_RESERVED_CONSULTATION);
+//					searchableBookView = new SearchableBookView();
+//					searchableBookView.setMainTitle(TITLE_NEW_NOT_RESERVED_CONSULTATION);
+//					searchableBookView.setVisible(true);
+//				} catch (SQLException e1) {
+//					displayError(view, e1);
+//				}
+				showAskUserBook(TITLE_NEW_NOT_RESERVED_CONSULTATION);
 			}
 			
 		});
@@ -264,12 +327,15 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
+//				try {
 					action = new ActionAddBook(model);
-					showWithUsersView(/*false, */TITLE_ADD_BOOK);
-				} catch (SQLException e1) {
-					displayError(view, e1);
-				}
+//					showWithUsersView(/*false, */TITLE_ADD_BOOK);
+					searchableBookView = new SearchableBookView();
+					searchableBookView.setMainTitle(TITLE_ADD_BOOK);
+					searchableBookView.setVisible(true);
+//				} catch (SQLException e1) {
+//					displayError(view, e1);
+//				}
 			}
 			
 		});
@@ -331,13 +397,13 @@ public class LibrarianController extends AbstractController {
 				try {
 					List<Consultation> consultations = model.consultations(null);
 					
-					consultationsView.setItemsToConsultation();
+					genericBooksListView.setItemsToConsultation();
 					
-					consultationsView.setMenuItemDeliveryEnabled(false);
-					consultationsView.setMenuItemStartEnabled(false);
+					genericBooksListView.setMenuItemDeliveryEnabled(false);
+					genericBooksListView.setMenuItemStartEnabled(false);
 					
 					displayTableItems(new ConsultationInProgressTableModel(consultations),
-							consultationsView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
+							genericBooksListView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
 				} catch (SQLException e) {
 					displayError(view, e);
 				}
@@ -425,13 +491,13 @@ public class LibrarianController extends AbstractController {
 		if (user!=null){
 			List<Consultation> consultations = model.consultations(user);
 			
-			consultationsView.setItemsToConsultation();
+			genericBooksListView.setItemsToConsultation();
 			
-			consultationsView.setMenuItemDeliveryEnabled(true);
-			consultationsView.setMenuItemStartEnabled(false);
+			genericBooksListView.setMenuItemDeliveryEnabled(true);
+			genericBooksListView.setMenuItemStartEnabled(false);
 			
 			super.displayTableItems(new ConsultationInProgressTableModel(consultations),
-					consultationsView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
+					genericBooksListView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
 		}
 	}
 	
@@ -449,13 +515,13 @@ public class LibrarianController extends AbstractController {
 		if(user!=null){
 			List<ConsultationReservation> reservations = model.getConsultationReservationsByUserToday(user);
 			
-			consultationsView.setItemsToConsultation();
+			genericBooksListView.setItemsToConsultation();
 			
-			consultationsView.setMenuItemStartEnabled(true);
-			consultationsView.setMenuItemDeliveryEnabled(false);
+			genericBooksListView.setMenuItemStartEnabled(true);
+			genericBooksListView.setMenuItemDeliveryEnabled(false);
 			
 			super.displayTableItems(new ConsultationReservationTableModel(reservations),
-					consultationsView, view, TITLE_VIEW_CONSULTATION_RESERVATIONS);
+					genericBooksListView, view, TITLE_VIEW_CONSULTATION_RESERVATIONS);
 		}
 	}
 	
@@ -464,13 +530,13 @@ public class LibrarianController extends AbstractController {
 		if (user!=null){
 			List<LoanReservation> reservations = model.getLoanReservationsByUser(user);
 			
-			consultationsView.setItemsToLoan();
+			genericBooksListView.setItemsToLoan();
 			
-			consultationsView.setMenuItemStartEnabled(true);
-			consultationsView.setMenuItemDeliveryEnabled(false);
+			genericBooksListView.setMenuItemStartEnabled(true);
+			genericBooksListView.setMenuItemDeliveryEnabled(false);
 			
 			super.displayTableItems(new LoanReservationTableModel(reservations),
-					consultationsView, view, TITLE_VIEW_LOAN_RESERVATIONS);
+					genericBooksListView, view, TITLE_VIEW_LOAN_RESERVATIONS);
 		}
 	}
 	
@@ -479,15 +545,16 @@ public class LibrarianController extends AbstractController {
 		if (user!=null){
 			List<Loan> loans = model.getLoansInProgressByUser(user);
 			
-			consultationsView.setItemsToLoan();
+			genericBooksListView.setItemsToLoan();
 			
-			consultationsView.setMenuItemDeliveryEnabled(true);
-			consultationsView.setMenuItemStartEnabled(false);
+			genericBooksListView.setMenuItemDeliveryEnabled(true);
+			genericBooksListView.setMenuItemStartEnabled(false);
 			
 			super.displayTableItems(new LoanTableModel(loans),
-					consultationsView, view, TITLE_VIEW_LOANS);
+					genericBooksListView, view, TITLE_VIEW_LOANS);
 		}
 	}
+	
 	
 	
 	
@@ -497,18 +564,18 @@ public class LibrarianController extends AbstractController {
 	 */
 	private void addConsultationsListListeners(){
 		
-		super.addPopupListenerToTable(this.consultationsView);
+		super.addPopupListenerToTable(this.genericBooksListView);
 		
-		this.consultationsView.setPopupEnabled(true);
+		this.genericBooksListView.setPopupEnabled(true);
 		
-		this.consultationsView.addMenuItemDeliveryListener(new ActionListener(){
+		this.genericBooksListView.addMenuItemDeliveryListener(new ActionListener(){
 
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
 				// this is set here.
-				Object arg = consultationsView.getSelectedItem();
+				Object arg = genericBooksListView.getSelectedItem();
 				// action = new ActionDeliveryConsultation(model);
 				
 				// Consultation arg = (Consultation) consultationsView.getSelectedItem();
@@ -522,7 +589,7 @@ public class LibrarianController extends AbstractController {
 		/**
 		 * 
 		 */
-		this.consultationsView.addMenuItemStartListener(new ActionListener(){
+		this.genericBooksListView.addMenuItemStartListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -533,8 +600,11 @@ public class LibrarianController extends AbstractController {
 //				}else if (action instanceof ActionNewReservedLoan){
 //					arg = (LoanReservation) consultationsView.getSelectedItem();
 //				}
-				Object arg = consultationsView.getSelectedItem();
-				askConfirmationAndExecuteAction(arg);
+				Object arg = genericBooksListView.getSelectedItem();
+				boolean [] res = askConfirmationAndExecuteAction(arg);
+				if (res[0]){
+					genericBooksListView.setVisible(false);
+				}
 			}
 			
 		});
@@ -551,21 +621,69 @@ public class LibrarianController extends AbstractController {
 				searchableBookView.setVisible(false);
 				
 				Object [] res = searchableBookViewResults();
-				Object [] args;
+				// Object [] args;
 				
-				if (isWithUser){
-					User user = ((SearchableBookUserView)searchableBookView).getSelectedUser();
-					args = ArrayUtils.addAll(new Object[]{user}, res);
-				}else{
-					args = res;
+				// if (isWithUser){
+				//	User user = ((SearchableBookUserView)searchableBookView).getSelectedUser();
+				//	args = ArrayUtils.addAll(new Object[]{user}, res);
+				// }else{
+				//	args = res;
+				// }
+				
+				action.setArgs(res);
+				try {
+					action.execute();
+					User old = ((AbstractActionWithUser) action).getUser();
+					
+					if(action instanceof ActionGetAvailableCopiesForLoan){
+						@SuppressWarnings("unchecked")
+						List<Copy> result = (List<Copy>) action.getResult();
+						action = new ActionNewNotReservedLoan2(model);
+						((ActionNewNotReservedLoan2) action).setUser(old);
+						showAvailableCopiesForLoan(result);
+					}else if(action instanceof ActionGetAvailableCopiesForConsultation){
+						@SuppressWarnings("unchecked")
+						List<CopyForConsultation> result = (List<CopyForConsultation>) action.getResult();
+						action = new ActionNewNotReservedConsultation2(model);
+						((ActionNewNotReservedConsultation2) action).setUser(old);
+						showAvailableCopiesForConsultation(result);
+					}
+					
+				} catch (SQLException | ReservationException e) {
+					displayError(view, e);
 				}
 				
-				askConfirmationAndExecuteAction(args);
+				
+				// askConfirmationAndExecuteAction(args);
 			}
 			
 			
 		});
 		
+	}
+	
+	private void showAvailableCopiesForConsultation(List<CopyForConsultation> copies){
+		this.genericBooksListView.setItemsToLoan();
+		
+		this.genericBooksListView.setMenuItemDeliveryEnabled(false);
+		this.genericBooksListView.setMenuItemStartEnabled(true);
+		
+		this.genericBooksListView.setItemsToConsultation();
+		
+		super.displayTableItems(new BookTableModel(copies),
+				genericBooksListView, view, TITLE_AVAILABLE_COPIES_CONSULTATIONS);
+	}
+	
+	private void showAvailableCopiesForLoan(List<Copy> copies){
+		this.genericBooksListView.setItemsToLoan();
+		
+		this.genericBooksListView.setMenuItemDeliveryEnabled(false);
+		this.genericBooksListView.setMenuItemStartEnabled(true);
+		
+		this.genericBooksListView.setItemsToLoan();
+		
+		super.displayTableItems(new BookTableModel(copies),
+				genericBooksListView, view, TITLE_AVAILABLE_COPIES_LOANS);
 	}
 	
 	private void addLateLoansListeners(){

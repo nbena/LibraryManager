@@ -64,9 +64,13 @@ create table consultation (
 	copyid integer not null,
 	start_date timestamp with time zone not null default current_timestamp,
 	end_date timestamp with time zone default null,
+	seat_number integer not null,
+	table_number integer not null,
 	primary key (id),
 	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
-	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade
+	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade,
+	foreign key (seat_number, table_number) references
+		seat(seat_number, table_number) on update cascade on delete cascade
 );
 
 create table seat_reservation (
@@ -137,7 +141,8 @@ begin
 end
 $$ language plpgsql;  
 
-create or replace function trigger_function_update_copy_status_after_ins_loan_res () returns trigger as $$
+-- function run when a new loan reservation is inserted. The copy is marked as reserved.
+create or replace function trigger_function_update_copy_status_after_ins_res () returns trigger as $$
 begin
 	update lm_copy set status = 'reserved'
 	where id = new.copyid;
@@ -146,11 +151,61 @@ begin
 end
 $$ language plpgsql;
 
+-- set a copy status to free when the consultation is finished (end date is not null)
+create or replace function trigger_function_update_copy_status_after_consultation_completed() returns trigger as $$
+begin
+	update lm_copy set status = 'free'
+	where id = old.copyid
+	and new.end_date is not null;
 
-create or replace function trigger_function_update_copy_status_after_delete_loan_res() returns trigger as $$
+	return new;
+end
+$$ language plpgsql;
+
+
+-- set a copy status to free when the loan is finished (restitution date is not null)
+create or replace function trigger_function_update_copy_status_after_loan_completed() returns trigger as $$
+begin
+	update lm_copy set status = 'free'
+	where id = old.copyid
+	and new.restitution_date is not null;
+
+	return new;
+end
+$$ language plpgsql;
+
+-- when the reservation is cancelled, update the copy status too.
+create or replace function trigger_function_update_copy_status_after_res_deleted() returns trigger as $$
 begin
 	update lm_copy set status = 'free'
 	where id = old.copyid;
+
+	return new;
+end
+$$ language plpgsql;
+
+
+-- when a consultation starts, grab the seat and mark it as reserved.
+create or replace function trigger_function_update_seat_status_on_consultation_start() returns trigger as $$
+begin
+	update seat set free = false
+	where seat.seat_number = new.seat_number and
+	seat.table_number = new.table_number;
+
+	return new;
+end
+$$ language plpgsql;
+
+
+-- when it ends, we free the seat.
+create or replace function trigger_function_update_seat_status_on_consultation_end() returns trigger as $$
+begin
+	update seat set free = true
+	where seat.seat_number = old.seat_number and
+	seat.table_number = old.table_number
+	-- end_date is not null is the only way we can
+	-- see if it's finished.
+	and new.end_date is not null;
 
 	return new;
 end
@@ -167,15 +222,49 @@ before insert on loan_reservation
 for each row
 execute procedure trigger_function_check_copy_can_be_reserved();
 
-create trigger trigger_update_copy_status_after_ins
+create trigger trigger_update_copy_status_after_ins_loan
 after insert on loan_reservation
 for each row
-execute procedure trigger_function_update_copy_status_after_ins_loan_res();
+execute procedure trigger_function_update_copy_status_after_ins_res();
 
-create trigger trigger_update_copy_status_after_del
+create trigger trigger_update_copy_status_after_loan_end
+after update on loan
+for each row
+execute procedure trigger_function_update_copy_status_after_loan_completed();
+
+-- same as the triggers after, but they are executed on consultation_reservation
+create trigger trigger_update_copy_status_after_ins_consultation
+after insert on consultation_reservation
+for each row
+execute procedure trigger_function_update_copy_status_after_ins_res();
+
+create trigger trigger_update_copy_status_after_consultation_end
+after update on consultation
+for each row
+execute procedure trigger_function_update_copy_status_after_consultation_completed();
+
+create trigger trigger_update_copy_status_after_cons_res_delete
+after delete on consultation_reservation
+for each row
+execute procedure trigger_function_update_copy_status_after_res_deleted();
+
+
+create trigger trigger_update_copy_status_after_loan_res_delete
 after delete on loan_reservation
 for each row
-execute procedure trigger_function_update_copy_status_after_delete_loan_res();
+execute procedure trigger_function_update_copy_status_after_res_deleted();
+
+
+create trigger trigger_update_seat_on_consultation_start
+after insert on consultation
+for each row
+execute procedure trigger_function_update_seat_status_on_consultation_start();
+
+create trigger trigger_update_seat_on_consultation_end
+after update on consultation
+for each row
+execute procedure trigger_function_update_seat_status_on_consultation_end();
+
 
 -- this function add more copies for a given book.
 create or replace function add_more_copies (bookid integer, change integer, for_consultation boolean) returns void as $$

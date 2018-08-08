@@ -341,19 +341,19 @@ public class LibraryManager {
 		if (seats.size() <= 0){
 			throw new ReservationException(NO_SEATS);
 		}
-		Seat seat = seats.get(0);
-		seat.setFree(false);
+//		Seat seat = seats.get(0);
+//		seat.setFree(false);
 
 		// Consultation consultation = copy.startConsultation(user);
-		Consultation consultation = new Consultation(user, copy);
+		Consultation consultation = new Consultation(user, copy, seats.get(0));
 		
 		consultation.setStart(OffsetDateTime.now());
 		copy.setInConsultation(true);
 
 		this.dbManager.startConsultation(consultation);
-		this.dbManager.setSeatOccupied(seat, true);
+//		this.dbManager.setSeatOccupied(seat, true);
 
-		return seat;		
+		return seats.get(0);		
 	}
 
 	/*@
@@ -377,16 +377,16 @@ public class LibraryManager {
 		// consequently, we set the ConsultationReservation to be done.
 		this.dbManager.setConsultationReservationDone(reservation);
 
-		Seat seat = reservation.getSeat();
-		seat.setFree(false);
+		// Seat seat = reservation.getSeat();
+		// seat.setFree(false);
 
 		this.dbManager.startConsultation(consultation);
-		this.dbManager.setSeatOccupied(seat, false);
+		// this.dbManager.setSeatOccupied(seat, false);
 		
 		this.dbManager.commit(true);
 		
 
-		return seat;
+		return consultation.getSeat();
 
 	}
 
@@ -404,6 +404,7 @@ public class LibraryManager {
 			seat = this.getAndSetSeatOccupied(LocalDate.now());
 		}
 
+		
 		return seat;
 	}
 
@@ -413,6 +414,7 @@ public class LibraryManager {
 	 @*/
 	public void deliveryConsultation(Consultation consultation) throws SQLException{
 		consultation.getCopy().setInConsultation(false);
+		consultation.getSeat().setFree(true);
 		this.dbManager.endConsultation(consultation);
 	}
 

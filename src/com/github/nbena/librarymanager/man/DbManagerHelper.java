@@ -55,12 +55,23 @@ public class DbManagerHelper {
 	static Consultation getConsultationFrom(ResultSet rs, int startingIndex, CopyForConsultation copy, User user) throws SQLException{
 		
 		Consultation consultation = new Consultation();
+		
+		Seat seat = new Seat();
+		
 		consultation.setCopy(copy);
 		consultation.setUser(user);
 		
 		int id = rs.getInt(startingIndex);
 		OffsetDateTime start = rs.getObject(startingIndex+1, OffsetDateTime.class);
 		OffsetDateTime end = rs.getObject(startingIndex+2, OffsetDateTime.class);
+		
+		int seatNumber = rs.getInt(startingIndex + 3);
+		int tableNumber = rs.getInt(startingIndex + 3);
+		
+		seat.setNumber(seatNumber);
+		seat.setTableNumber(tableNumber);
+		
+		consultation.setSeat(seat);
 		
 		consultation.setID(id);
 		consultation.setStart(start);
@@ -315,7 +326,7 @@ public class DbManagerHelper {
 	}
 	
 	final static String CONSULTATION_IN_PROGRESS_QUERY =
-			"select consultation.id, start_date, end_date, "+
+			"select consultation.id, start_date, end_date, seat_number, table_number, "+
 			"copyid, title, authors, year, main_topic, phouse, status, "+
 			"lm_user.id, email, name, surname, internal "+
 			"from lm_user join consultation on lm_user.id = consultation.userid "+
@@ -324,7 +335,8 @@ public class DbManagerHelper {
 			"where end_date is null";
 	
 	static String CONSULTATION_IN_PROGRESS_BY_USER_QUERY = 
-			"select consultation.id, start_date, end_date, copyid, title, authors, "+
+			"select consultation.id, start_date, end_date, seat_number, table_number, "+
+			"copyid, title, authors, "+
 			"year, main_topic, phouse, status "+
 			"from consultation join lm_copy on consultation.copyid = lm_copy.id "+
 			"join book on lm_copy.bookid = book.id "+

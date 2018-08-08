@@ -77,10 +77,7 @@ public class DbManager {
 		if (rs.next()){
 			int id = rs.getInt(1);
 			user.setID(id);
-		}else{
-			throw new SQLException("User: cannot return id");
 		}
-
 		return user;
 	}
 
@@ -100,8 +97,6 @@ public class DbManager {
 		if (rs.next()){
 			int id = rs.getInt(1);
 			book.setID(id);
-		}else{
-			throw new SQLException("Book: cannot return id");
 		}
 		return book;
 	}
@@ -269,8 +264,6 @@ public class DbManager {
 		if(rs.next()){
 			int id = rs.getInt(1);
 			reservation.setID(id);
-		}else{
-			throw new SQLException("LoanReservation: cannot get id");
 		}
 
 		return reservation;
@@ -293,12 +286,8 @@ public class DbManager {
 		if(rs.next()){
 			int id = rs.getInt(1);
 			reservation.setID(id);
-		}else{
-			throw new SQLException("ConsultationReservation: cannot get id");
 		}
-
 		return reservation;
-
 	}
 
 	public /*@ pure @*/ List<Seat> getAvailableSeats(LocalDate date) throws SQLException{
@@ -656,12 +645,15 @@ public class DbManager {
 //	}
 
 	public Consultation startConsultation(Consultation consultation)throws SQLException{
-		String query = "insert into consultation (userid, copyid) values (?,?) returning id";
+		String query = "insert into consultation (userid, copyid, seat_number, table_number) "+
+						"values (?, ?, ?, ?) returning id";
 
 		PreparedStatement pstmt = connection.prepareStatement(query);
 
 		pstmt.setInt(1, consultation.getUser().getID());
 		pstmt.setInt(2, consultation.getCopy().getID());
+		pstmt.setInt(3, consultation.getSeat().getNumber());
+		pstmt.setInt(4, consultation.getSeat().getTableNumber());
 
 		ResultSet rs = pstmt.executeQuery();
 		if (rs.next()){
@@ -1132,7 +1124,7 @@ public class DbManager {
     	
     	while(rs.next()){
     		
-    		Copy copy = DbManagerHelper.getCopyFrom(rs, 4);
+    		Copy copy = DbManagerHelper.getCopyFrom(rs, 6);
     		CopyForConsultation copyForConsultation = new CopyForConsultation(copy);
     		
     		Consultation consultation = DbManagerHelper.getConsultationFrom(rs, 1, copyForConsultation, user);
@@ -1156,10 +1148,10 @@ public class DbManager {
     	ResultSet rs = stat.executeQuery(query);
     	
     	while(rs.next()){
-    		Copy copy = DbManagerHelper.getCopyFrom(rs, 4);
+    		Copy copy = DbManagerHelper.getCopyFrom(rs, 6);
     		CopyForConsultation copyForConsultation = new CopyForConsultation(copy);
     		
-    		User user = DbManagerHelper.getUserFrom(rs, 11);
+    		User user = DbManagerHelper.getUserFrom(rs, 13);
     		
     		Consultation consultation = DbManagerHelper.getConsultationFrom(rs, 1, copyForConsultation, user);
     		

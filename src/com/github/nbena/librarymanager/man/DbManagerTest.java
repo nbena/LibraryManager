@@ -172,7 +172,8 @@ public class DbManagerTest {
 		this.consultations = new Consultation[]{
 				new Consultation(
 						  this.consultationReservations[1].getUser(),
-						  this.consultationReservations[1].getCopy()
+						  this.consultationReservations[1].getCopy(),
+						  new Seat(5, 5, false)
 						  )			
 		};
 		
@@ -389,6 +390,7 @@ public class DbManagerTest {
 	  assertTrue(found);
   }
   
+  
   public void loanOps() throws SQLException{
 	  this.addCopies();
 	  
@@ -490,7 +492,7 @@ public class DbManagerTest {
 	  // got = this.db.getLoanReservationByUserCopy(expected.getUser(), expected.getCopy());
 	  // assertTrue(got.getID() ==  expected.getID());
 	  
-	  // this.db.cancelLoanReservation(got);
+	  
 	  this.db.deleteItem(got);
 	  
 	  count = getCountOf("select count (*) from loan_reservation where ", new LoanReservation[]{got});

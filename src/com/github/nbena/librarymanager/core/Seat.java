@@ -31,6 +31,9 @@ public class Seat {
 		this.free = free;
 	}
 	
+	public Seat() {
+	}
+
 	public int getNumber() {
 		return number;
 	}

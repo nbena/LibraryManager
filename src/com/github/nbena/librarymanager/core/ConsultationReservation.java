@@ -74,7 +74,9 @@ public class ConsultationReservation extends AbstractReservationWithBook {
 	}
 	
 	public Consultation createConsultation(){
-		Consultation consultation = new Consultation(this.getUser(), this.getCopy());
+		// calling this.getCopy() because it casts to ConultationReservation
+		Consultation consultation = new Consultation(this.user, this.getCopy(),
+				this.seat);
 		consultation.setStart(OffsetDateTime.now());
 		// this.getCopy().setInConsultation(true);
 		return consultation;

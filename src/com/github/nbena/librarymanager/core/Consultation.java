@@ -27,11 +27,18 @@ public class Consultation implements IDble{
 	private OffsetDateTime start;
 	private OffsetDateTime end;
 	private int ID;
+	private Seat seat;
 	
 	
 	public Consultation(User user, CopyForConsultation copy) {
 		this.copy = copy;
 		this.user = user;
+	}
+	
+	public Consultation(User user, CopyForConsultation copy, Seat seat) {
+		this.copy = copy;
+		this.user = user;
+		this.seat = seat;
 	}
 
 	public Consultation(int ID, CopyForConsultation copy, User user, OffsetDateTime start, OffsetDateTime end) {
@@ -76,6 +83,7 @@ public class Consultation implements IDble{
 	public void setStart(OffsetDateTime start) {
 		this.start = start;
 		this.copy.setInConsultation(true);
+		this.seat.setFree(false);
 	}
 
 	public OffsetDateTime getEnd() {
@@ -85,6 +93,15 @@ public class Consultation implements IDble{
 	public void setEnd(OffsetDateTime end) {
 		this.end = end;
 		this.copy.setInConsultation(false);
+		this.seat.setFree(true);
+	}
+
+	public Seat getSeat() {
+		return seat;
+	}
+
+	public void setSeat(Seat seat) {
+		this.seat = seat;
 	}
 
 }

@@ -26,6 +26,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.github.nbena.librarymanager.core.AbstractReservation;
+import com.github.nbena.librarymanager.core.AbstractReservationWithBook;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
@@ -160,6 +161,7 @@ public class LibraryManager {
 			LocalDate date) throws ReservationException, SQLException{
 
 		// CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, date);
+		// need to check if it's valid, we can't know where this copy comes from.
 		CopyForConsultation returned = this.dbManager.getIfAvailableForConsultation(copy, date);
 		if (returned == null){
 			throw new ReservationException(NO_COPIES);
@@ -176,7 +178,8 @@ public class LibraryManager {
 	}
 
 	/*@ 
-	 @ ensures copy.getStatus() != CopyStatus.RESERVED;
+	 @ requires copy.getStatus() != CopyStatus.RESERVED;
+	 @ ensures \result.getCopy().getStatus() == CopyStatus.RESERVED;
 	 @ 
 	 @*/
 	public LoanReservation tryReserveLoan(InternalUser user, Copy copy) throws SQLException, ReservationException{
@@ -212,6 +215,9 @@ public class LibraryManager {
 	}
 
 	public void cancelReservation(AbstractReservation reservation) throws SQLException{
+		if (reservation instanceof AbstractReservationWithBook){
+			((AbstractReservationWithBook) reservation).getCopy().setStatus(CopyStatus.FREE);
+		}
 		this.dbManager.deleteItem(reservation);
 	}
 
@@ -324,9 +330,10 @@ public class LibraryManager {
 //		return seat;
 //	}
 	
+	// 	 @ ensures this.dbManager.getAvailableSeats(LocalDate.now()).size() > 0 ==> \result != null;
 	// NOT REALLY IMPLEMENTED
 	/*@
-	 @ ensures this.dbManager.getAvailableSeats(LocalDate.now()).size() > 0 ==> \result != null;
+	 @ 
 	 @ ensures \result.isFree() == false;
 	 @*/
 	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws ReservationException, SQLException{

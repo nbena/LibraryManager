@@ -1048,10 +1048,11 @@ public class DbManager {
      * @param mainTopic
      * @return
      * @throws SQLException
-     *
-     @ \requires !(title == null && author == null && year == 0 && mainTopic == null) &&
-     @  (authors != null) ==> authors.length > 0);
      */
+    /*@
+     @ requires !(title == null && authors == null && year == 0 && mainTopic == null && phouse == null) &&
+     @  (authors != null) ==> authors.length > 0);
+     @*/
     public List<Copy> search(String title, String [] authors, int year,
     		String mainTopic, String phouse) throws SQLException{
 

@@ -18,14 +18,13 @@ public class ActionAddBook extends AbstractAction implements Action {
 	}
 
 	/*@
-	 @ \requires args.length == 5;
-	 @ \ensures this.book.getTitle().equals((String)args[0])
-	 @	\ensures \forall int i = 0; i < this.book.getAuthors().length; \exists int j; j = 0;
-	 @	j < ((String[]) args[1]).length
-	 @	\ensures book.getAuthors[i].equals(((String[]) args[1])[j]);
-	 @  \ensures this.book.getYearOfPublishing() == (int)args[2];
-	 @	\ensures this.book.getMainTopic().equals((String)args[3]);
-	 @	\ensures this.book.getPublishingHouse().equals((String)args[4]);
+	 @ requires args.length == 5;
+	 @ ensures this.book.getTitle().equals((String)args[0]);
+	 @ ensures this.book.getAuthors().length == ((String[])args[1]).length;
+	 @ ensures \forall int i; i >= 0 && i < (((String[])args[1]).length); (\exists int j; j>=0 && j < this.book.getAuthors().length; this.book.getAuthors()[j].equals(((String[])args[1])[i]));
+	 @ ensures this.book.getYearOfPublishing() == (int)args[2];
+	 @ ensures this.book.getMainTopic().equals((String)args[3]);
+	 @ ensures this.book.getPublishingHouse().equals((String)args[4]);
 	 @*/
 	@Override
 	public void setArgs(Object... args) {
@@ -40,7 +39,7 @@ public class ActionAddBook extends AbstractAction implements Action {
 	}
 
 	/*@
-	 @ \requires this.book != null;
+	 @ requires this.book != null;
 	 @*/
 	@Override
 	public void execute() throws SQLException, ReservationException {

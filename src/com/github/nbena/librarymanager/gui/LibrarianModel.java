@@ -96,6 +96,11 @@ public class LibrarianModel extends AbstractModel {
 		
 	}
 	
+	/*@
+	 @ ensures (\forall int i; i>=0 && i<\result.size();
+	 @	\result.get(i).getUser().getID() == user.getID()); 
+	 @ 
+	 @*/
 	public List<Loan> getLoansInProgressByUser(User user) throws SQLException{
 		return super.manager.getLoansByUser(user, false);
 	}
@@ -192,11 +197,21 @@ public class LibrarianModel extends AbstractModel {
 	 * @return
 	 * @throws SQLException
 	 */
+	/*@
+	 @ ensures (\forall int i; i>=0 && i<\result.size();
+	 @	\result.get(i).getUser().getID() == user.getID()); 
+	 @ 
+	 @*/
 	public List<ConsultationReservation> getConsultationReservationsByUserToday(InternalUser user) throws SQLException{
 		
 		return super.manager.getConsultationReservationByUser(user, LocalDate.now(), true, false);
 	}
 	
+	/*@
+	 @ ensures (\forall int i; i>=0 && i<\result.size();
+	 @	\result.get(i).getUser().getID() == user.getID()); 
+	 @ 
+	 @*/
 	public List<LoanReservation> getLoanReservationsByUser(InternalUser user) throws SQLException{
 		return super.manager.getLoanReservationsByUser(user, true, false);
 	}
@@ -213,6 +228,11 @@ public class LibrarianModel extends AbstractModel {
 //		return super.manager.users();
 //	}
 	
+	/*@
+	 @ ensures user != null ==> (\forall int i; i>=0 && i<\result.size();
+	 @	\result.get(i).getUser().getID() == user.getID()); 
+	 @ 
+	 @*/
 	public List<Consultation> consultations(User user) throws SQLException{
 		return super.manager.getConsultationsInProgressByUser(user);
 	}

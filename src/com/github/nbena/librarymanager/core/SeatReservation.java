@@ -20,7 +20,7 @@ package com.github.nbena.librarymanager.core;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-public class SeatReservation extends AbstractReservation {
+public class SeatReservation extends AbstractReservation implements StudyCreatable {
 	
 	// private int ID;
 	// private OffsetDateTime timestamp;

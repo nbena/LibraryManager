@@ -45,6 +45,7 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.core.Study;
 import com.github.nbena.librarymanager.core.User;
 
 public class DbManagerTest {
@@ -728,6 +729,27 @@ public class DbManagerTest {
 	  assertTrue(expected.getSeat().equals(got));
 	  
 	  // this.db.cancelSeatReservation(got);
+	  
+	  Study study = this.seatReservations[0].createStudy();
+	  study = this.db.addStudy(study);
+	  
+	  boolean found = false;
+	  List<Study> studies = this.db.getStudies();
+	  for(int i=0;i< studies.size();i++){
+		  if(studies.get(i).getID() == study.getID()){
+			  found = true;
+			  i = studies.size();
+		  }
+	  }
+	  assertTrue(found);
+	  
+	  Study gotStudy = this.db.getStudyByUser(study.getUser());
+	  assertTrue(gotStudy.getID() == study.getID());
+	  
+	  this.db.deleteStudyByUser(study.getUser());
+	  
+	  assertTrue(this.db.getStudies().size() == 0);
+	  
 	  this.db.deleteItem(expected);
 
 	  count = getCountOf("select count (*) from seat_reservation where ", new SeatReservation[]{expected});
@@ -736,7 +758,9 @@ public class DbManagerTest {
 	  int newAvailableSeats = this.db.getAvailableSeats(LocalDate.now()).size();
 	  assertTrue(availableSeats + 1 == newAvailableSeats);
 	  
-	  }
+	  // now it's time to start a reservation
+	  
+	 }
   
   
   private void searchEmptyTitle() throws SQLException{

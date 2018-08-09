@@ -19,7 +19,7 @@ package com.github.nbena.librarymanager.core;
 
 import java.time.OffsetDateTime;
 
-public class Consultation implements IDble{
+public class Consultation implements IDble, StudyCreatable {
 	
 
 	private CopyForConsultation copy;
@@ -102,6 +102,12 @@ public class Consultation implements IDble{
 
 	public void setSeat(Seat seat) {
 		this.seat = seat;
+	}
+	
+	public Study createStudy(){
+		Study study = new Study(this.user, this.seat);
+		study.getSeat().setFree(false);
+		return study;
 	}
 
 }

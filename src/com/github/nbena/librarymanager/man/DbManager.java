@@ -293,13 +293,16 @@ public class DbManager {
 
 	public /*@ pure @*/ List<Seat> getAvailableSeats(LocalDate date) throws SQLException{
 
-		String query = "select seat_number,table_number, free  from seat as s where not exists "+
+		// with the new addiction is very easy to find out a free seat.
+		// TODO ADD A STUDY ALMOST EVERYWHERE.
+		String query = "select seat_number,table_number, free from seat "+
+				 "as s where not exists "+
 				"(select * from seat_reservation as sr where reservation_date = ? and "+
 				"s.seat_number = sr.seat_number and s.table_number = sr.table_number)"+
 				/* "union select * from study "+ */
 				/* "where study.seat_number = s.seat_number and study.table_number = s.table_number)";*/
-				"and free = true";
-
+				 "and free = true ";
+		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		pstmt.setObject(1, date);
 
@@ -1326,9 +1329,9 @@ public class DbManager {
     	return studies;
     }
     
-    public Study getStudyByUser(User user) throws SQLException {
+    public /*@ pure @*/ Study getStudyByUser(User user) throws SQLException {
     	
-    	String query = "select study.id "+
+    	String query = "select study.id, "+
     			"seat_number, table_number "+
     			"from study where userid=?";
     	
@@ -1364,6 +1367,18 @@ public class DbManager {
     	study.setID(id);
     	
     	return study;
+    }
+    
+    
+    public void deleteStudyByUser(User user) throws SQLException{
+    	
+    	String query = "delete from study where userid=?";
+    	
+    	PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	
+    	pstmt.setInt(1, user.getID());
+    	
+    	pstmt.execute();
     }
 
 

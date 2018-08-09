@@ -41,6 +41,7 @@ import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.core.Study;
 import com.github.nbena.librarymanager.core.User;
 
 public class LibraryManager {
@@ -136,15 +137,15 @@ public class LibraryManager {
 	/*@
 	 @ ensures \result.isFree() == false; 
 	 @*/
-	private Seat getAndSetSeatOccupied(LocalDate date) throws SQLException, ReservationException{
+	private Seat getSeatOrException(LocalDate date) throws SQLException, ReservationException{
 		List<Seat> seats = this.dbManager.getAvailableSeats(date);
 		if (seats.size() <= 0){
 			throw new ReservationException(NO_SEATS);
 		}
 
 		Seat seat = seats.get(0);
-		seat.setFree(false);
-		this.dbManager.setSeatOccupied(seat, true);
+		// seat.setFree(false);
+		// this.dbManager.setSeatOccupied(seat, true);
 		return seat;
 	}
 	
@@ -337,23 +338,30 @@ public class LibraryManager {
 	 @ ensures \result.isFree() == false;
 	 @*/
 	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws ReservationException, SQLException{
+		this.dbManager.autoSave(false);
+		
 		List<Seat> seats = this.dbManager.getAvailableSeats(LocalDate.now());
 		if (seats.size() <= 0){
 			throw new ReservationException(NO_SEATS);
 		}
-//		Seat seat = seats.get(0);
-//		seat.setFree(false);
+		Seat seat = seats.get(0);
+		// seat.setFree(false);
 
 		// Consultation consultation = copy.startConsultation(user);
-		Consultation consultation = new Consultation(user, copy, seats.get(0));
+		Consultation consultation = new Consultation(user, copy, seat);
+		Study study = consultation.createStudy();
 		
 		consultation.setStart(OffsetDateTime.now());
 		copy.setInConsultation(true);
 
 		this.dbManager.startConsultation(consultation);
+		this.dbManager.addStudy(study);
+		
 //		this.dbManager.setSeatOccupied(seat, true);
+		
+		this.dbManager.commit(true);
 
-		return seats.get(0);		
+		return seat;		
 	}
 
 	/*@
@@ -372,8 +380,9 @@ public class LibraryManager {
 //		Consultation consultation = reservation.getCopy()
 //				.startConsultation(reservation.getUser());
 		Consultation consultation = reservation.createConsultation();
-		reservation.setDone(true);
+		Study study = consultation.createStudy();
 		
+		reservation.setDone(true);
 		// consequently, we set the ConsultationReservation to be done.
 		this.dbManager.setConsultationReservationDone(reservation);
 
@@ -381,14 +390,15 @@ public class LibraryManager {
 		// seat.setFree(false);
 
 		this.dbManager.startConsultation(consultation);
+		this.dbManager.addStudy(study);
 		// this.dbManager.setSeatOccupied(seat, false);
 		
 		this.dbManager.commit(true);
 		
 
 		return consultation.getSeat();
-
 	}
+	
 
 	public Seat getOrAssignSeat(User user) throws SQLException, ReservationException{
 		Seat seat = null;
@@ -398,10 +408,17 @@ public class LibraryManager {
 				seat.setFree(false);
 				this.dbManager.setSeatOccupied(seat, true);
 			}else{
-				seat = this.getAndSetSeatOccupied(LocalDate.now());
+				// seat = this.getAndSetSeatOccupied(LocalDate.now());
+				seat = this.getSeatOrException(LocalDate.now());
 			}
 		}else{
-			seat = this.getAndSetSeatOccupied(LocalDate.now());
+			seat = this.getSeatOrException(LocalDate.now());
+		}
+		
+		if(seat != null){
+			seat.setFree(false);
+			Study study = new Study(user, seat);
+			this.dbManager.addStudy(study);
 		}
 
 		
@@ -410,12 +427,21 @@ public class LibraryManager {
 
 	/*@ 
 	 @ ensures consultation.getCopy().isInConsultation() == false;
-	 @
 	 @*/
 	public void deliveryConsultation(Consultation consultation) throws SQLException{
 		consultation.getCopy().setInConsultation(false);
 		consultation.getSeat().setFree(true);
+		
+		// now need to end the consultation
+		// AND delete the study.
+		this.dbManager.autoSave(false);
 		this.dbManager.endConsultation(consultation);
+		this.dbManager.deleteStudyByUser(consultation.getUser());
+		this.dbManager.commit(true);
+	}
+	
+	public void userExit(User user) throws SQLException{
+		this.dbManager.deleteStudyByUser(user);
 	}
 
 	public List<SeatReservation> getSeatReservationsByUser(InternalUser user) throws SQLException{

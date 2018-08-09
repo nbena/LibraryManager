@@ -34,13 +34,22 @@ public class Turnstile {
 		this.state = IdleState.IDLE_STATE;
 	}
 	
+	
+	//=======================================================
+	// EVENTS
 	public Seat userArrive(User user) throws Exception{
-		return this.state.userArrive(this, user);
+		return this.state.userEnter(this, user);
 	}
 	
-	public void userPass(){
+	public void userPass() {
 		this.state.userPass(this);
 	}
+	
+	public void userExits(User user) throws Exception{
+		this.state.userExit(this, user);
+	}
+	
+	//=======================================================
 
 	public TurnstileState getState() {
 		return state;
@@ -61,6 +70,10 @@ public class Turnstile {
 	
 	public String showNoSeats(){
 		return this.controller.showNoSeats();
+	}
+	
+	void sendRequestForExit(User user) throws SQLException{
+		this.controller.userExits(user);
 	}
 	
 	

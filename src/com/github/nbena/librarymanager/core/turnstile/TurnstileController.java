@@ -45,5 +45,9 @@ public class TurnstileController {
 	Seat sendRequestForUser(User user) throws SQLException, ReservationException{
 		return this.manager.getOrAssignSeat(user);
 	}
+	
+	void userExits(User user) throws SQLException{
+		this.manager.userExit(user);
+	}
 
 }

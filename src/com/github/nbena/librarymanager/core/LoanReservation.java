@@ -45,7 +45,7 @@ public class LoanReservation extends AbstractReservationWithBook {
 	}
 
 
-	public Copy getCopy() {
+	public /*@ pure @*/ Copy getCopy() {
 		return copy;
 	}
 

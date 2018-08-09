@@ -22,8 +22,11 @@ import com.github.nbena.librarymanager.core.User;
 
 public interface TurnstileState {
 	
-	public Seat userArrive(Turnstile turnstile, User user) throws Exception;
+	public Seat userEnter(Turnstile turnstile, User user) throws Exception;
 	
+	// this when the user effectively pass the turnstile
 	public void userPass(Turnstile turnstile);
+	
+	public void userExit(Turnstile turnstile, User user) throws Exception;
 	
 }

@@ -44,7 +44,7 @@ public class TurnstileViewController {
 	 * @throws SQLException
 	 * @throws NullPointerException if the user has choosen to cancel
 	 */
-	private User getCredential() throws SQLException, NullPointerException{
+	private User getCredential(){
 		StartupLogin login = new StartupLogin();
 		String [] cred = login.getCredentials("Inserisci email e password");
 		User user = null;
@@ -52,9 +52,12 @@ public class TurnstileViewController {
 			user = new User();
 			user.setEmail(cred[0]);
 			user.setHashedPassword(Hash.hash(cred[1]));
-			user = manager.authenticateUserWithError(user);
-		}else{
-			throw new NullPointerException();
+			try{
+				user = manager.authenticateUserWithError(user);
+			}catch(SQLException e){
+				AbstractController.displayError(view, e);
+				user = null;
+			}		
 		}
 		return user;
 	}
@@ -76,21 +79,21 @@ public class TurnstileViewController {
 		}
 	}
 	
-	private User getUserOrError(){
-		User user = null;
-		try {
-			user = this.getCredential();
-
-			AbstractController.displayMessage(view,
-						"Non è stato trovato nessun match",
-						"Errore",
-						JOptionPane.ERROR_MESSAGE);
-			
-		} catch (SQLException e) {
-			AbstractController.displayError(view, e);
-		} catch(NullPointerException e){}
-		return user;
-	}
+//	private User getUserOrError(){
+//		User user = null;
+//		try {
+//			user = this.getCredential();
+//			
+//		} catch (SQLException e) {
+//			AbstractController.displayError(view, e);
+//		} catch(NullPointerException e){
+//			AbstractController.displayMessage(view,
+//					"Non è stato trovato nessun match",
+//					"Errore",
+//					JOptionPane.ERROR_MESSAGE);
+//		}
+//		return user;
+//	}
 	
 	public TurnstileViewController(LibraryManager manager, TurnstileView view){
 		this.manager = manager;
@@ -123,7 +126,7 @@ public class TurnstileViewController {
 			public void actionPerformed(ActionEvent arg0) {
 				setMainButtonEnabled(false);
 
-				User user = getUserOrError();
+				User user = getCredential();
 				if(user!=null){
 					try {
 						Seat seat = turnstile.userArrive(user);
@@ -147,9 +150,15 @@ public class TurnstileViewController {
 			public void actionPerformed(ActionEvent e) {
 				setMainButtonEnabled(false);
 
-				User user = getUserOrError();
+				User user = getCredential();
 				if(user!=null){
-					view.open();
+					try {
+						turnstile.userExits(user);
+						view.open();
+					} catch (Exception e1) {
+						AbstractController.displayError(view, e1);
+					}
+					
 				}else{
 					setMainButtonEnabled(true);
 				}
@@ -163,9 +172,9 @@ public class TurnstileViewController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				view.close();
 				turnstile.userPass();
-
 				setMainButtonEnabled(true);
 			}
 			

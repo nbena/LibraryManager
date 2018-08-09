@@ -1050,7 +1050,7 @@ public class DbManager {
      */
     /*@
      @ requires !(title == null && authors == null && year == 0 && mainTopic == null && phouse == null) &&
-     @  (authors != null) ==> authors.length > 0);
+     @  (authors != null) ==> authors.length > 0;
      @*/
     public List<Copy> search(String title, String [] authors, int year,
     		String mainTopic, String phouse) throws SQLException{

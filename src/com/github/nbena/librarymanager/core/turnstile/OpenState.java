@@ -17,6 +17,8 @@
 
 package com.github.nbena.librarymanager.core.turnstile;
 
+import java.sql.SQLException;
+
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 
@@ -24,12 +26,17 @@ public class OpenState implements TurnstileState {
 	
 	public static OpenState OPEN_STATE = new OpenState();
 	
-	public Seat userArrive(Turnstile turnstile, User user) throws Exception{
+	public Seat userEnter(Turnstile turnstile, User user) throws Exception{
 		return null;
 	}
 	
-	public void userPass(Turnstile turnstile){
+	public void userPass(Turnstile turnstile) {
+		// turnstile.pass(user);
 		turnstile.setState(IdleState.IDLE_STATE);
 	}
+
+	// nothing happens here
+	@Override
+	public void userExit(Turnstile turnstile, User user) throws Exception {}
 	
 }

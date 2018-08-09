@@ -27,7 +27,8 @@ public class IdleState implements TurnstileState {
 	
 	public static IdleState IDLE_STATE = new IdleState();
 	
-	public Seat userArrive(Turnstile turnstile, User user) throws SQLException, ReservationException{
+	@Override
+	public Seat userEnter(Turnstile turnstile, User user) throws SQLException, ReservationException{
 		Seat seat = turnstile.sendRequestForUser(user);
 		// turnstile.setState(RequestState.REQUEST_STATE);
 		
@@ -41,6 +42,17 @@ public class IdleState implements TurnstileState {
 		return seat;
 	}
 	
+	@Override
 	public void userPass(Turnstile turnstile){}
+
+	@Override
+	public void userExit(Turnstile turnstile, User user) throws Exception {
+		turnstile.sendRequestForExit(user);
+		
+		turnstile.setState(OpenState.OPEN_STATE);
+	}
+	
+	
+
 
 }

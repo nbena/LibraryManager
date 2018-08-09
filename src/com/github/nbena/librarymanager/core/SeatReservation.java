@@ -63,6 +63,12 @@ public class SeatReservation extends AbstractReservation {
 	public void setSeat(Seat seat) {
 		this.seat = seat;
 	}
+	
+	public Study createStudy(){
+		Study s = new Study(this.user, this.seat);
+		s.getSeat().setFree(false);
+		return s;
+	}
 
 	
 }

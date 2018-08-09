@@ -36,6 +36,7 @@ import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.Seat;
+import com.github.nbena.librarymanager.core.Study;
 import com.github.nbena.librarymanager.core.User;
 
 public class DbManagerHelper {
@@ -442,6 +443,20 @@ public class DbManagerHelper {
 		}
 	
 		return pstmt;
+	}
+	
+	static Study getStudyFrom(ResultSet rs, int startIndex, User u) throws SQLException{
+		
+		Seat s = new Seat();
+		int id = rs.getInt(startIndex);
+		int seatNumber = rs.getInt(startIndex + 1);
+		int tableNumber = rs.getInt(startIndex + 2);
+		s.setNumber(seatNumber);
+		s.setTableNumber(tableNumber);
+		
+		Study study = new Study(id, u, s);
+		
+		return study;
 	}
 			
 }

@@ -42,6 +42,7 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.core.Study;
 import com.github.nbena.librarymanager.core.User;
 
 public class DbManager {
@@ -294,7 +295,10 @@ public class DbManager {
 
 		String query = "select seat_number,table_number, free  from seat as s where not exists "+
 				"(select * from seat_reservation as sr where reservation_date = ? and "+
-				"s.seat_number = sr.seat_number and s.table_number = sr.table_number)";
+				"s.seat_number = sr.seat_number and s.table_number = sr.table_number)"+
+				/* "union select * from study "+ */
+				/* "where study.seat_number = s.seat_number and study.table_number = s.table_number)";*/
+				"and free = true";
 
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		pstmt.setObject(1, date);
@@ -1297,5 +1301,70 @@ public class DbManager {
     	
     	pstmt.execute();
     }
+    
+    
+    public List<Study> getStudies() throws SQLException {
+    	
+    	String query = "select lm_user.id, email, name, surname, internal, "+
+    			"study.id, seat_number, table_number "+
+    			"from study join lm_user on userid=lm_user.id";
+    	
+    	Statement stat = this.connection.createStatement();
+    	
+    	ResultSet rs = stat.executeQuery(query);
+    	
+    	List<Study> studies = new LinkedList<Study>();
+    	
+    	while(rs.next()){
+    		User user = DbManagerHelper.getUserFrom(rs, 1);
+    		
+    		Study study = DbManagerHelper.getStudyFrom(rs, 6, user);
+    		
+    		studies.add(study);
+    	}
+    	
+    	return studies;
+    }
+    
+    public Study getStudyByUser(User user) throws SQLException {
+    	
+    	String query = "select study.id "+
+    			"seat_number, table_number "+
+    			"from study where userid=?";
+    	
+    	PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	
+    	pstmt.setInt(1, user.getID());
+    	
+    	ResultSet rs = pstmt.executeQuery();
+    	
+    	rs.next();
+    		
+    	Study study = DbManagerHelper.getStudyFrom(rs, 1, user);
+    	
+    	return study;
+    }
+    
+    public Study addStudy(Study study) throws SQLException{
+    	
+    	String query = "insert into study(userid, seat_number, table_number)"
+    			+ "values (?,?,?) returning id";
+    	
+    	PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	
+    	pstmt.setInt(1, study.getUser().getID());
+    	pstmt.setInt(2, study.getSeat().getNumber());
+    	pstmt.setInt(3, study.getSeat().getTableNumber());
+    	
+    	ResultSet rs = pstmt.executeQuery();
+    	
+    	rs.next();
+    	
+    	int id = rs.getInt(1);
+    	study.setID(id);
+    	
+    	return study;
+    }
+
 
 }

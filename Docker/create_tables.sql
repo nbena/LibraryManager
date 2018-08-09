@@ -86,6 +86,18 @@ create table seat_reservation (
 		seat(seat_number, table_number) on update cascade on delete cascade
 );
 
+create table study(
+	id serial,
+	userid integer,
+	seat_number integer not null,
+	table_number integer not null,
+	primary key(id),
+	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
+	foreign key (seat_number, table_number) references
+		seat(seat_number, table_number) on update cascade on delete cascade,
+	unique(userid, seat_number, table_number)	
+);
+
 create table loan_reservation (
 	id serial,
 	userid integer,
@@ -114,6 +126,30 @@ create table consultation_reservation (
 	foreign key (seat_number, table_number) references
 		seat(seat_number, table_number) on update cascade on delete cascade
 );
+
+-- when a new study begins the seat is occupied
+create or replace function trigger_function_after_ins_study () returns trigger as $$
+begin
+	update seat
+	set free = false
+	where seat.seat_number = new.seat_number and
+	seat.table_number = new.table_number;
+
+	return new;
+end
+$$ language plpgsql;
+
+-- when a new study ends the seat is not occupied
+create or replace function trigger_function_after_del_study () returns trigger as $$
+begin
+	update seat
+	set free = true
+	where seat.seat_number = old.seat_number and
+	seat.table_number = old.table_number;
+
+	return old;
+end
+$$ language plpgsql;
 
 create or replace function trigger_function_set_end_loans () returns trigger as $$
 begin
@@ -180,7 +216,7 @@ begin
 	update lm_copy set status = 'free'
 	where id = old.copyid;
 
-	return new;
+	return old;
 end
 $$ language plpgsql;
 
@@ -211,6 +247,15 @@ begin
 end
 $$ language plpgsql;
 
+create trigger trigger_study_start
+after insert on study
+for each row
+execute procedure trigger_function_after_ins_study();
+
+create trigger trigger_study_end
+after delete on study
+for each row
+execute procedure trigger_function_after_del_study();
 
 create trigger trigger_set_end_loans
 before insert on loan

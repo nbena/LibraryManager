@@ -55,6 +55,7 @@ import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTab
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
+import com.github.nbena.librarymanager.gui.view.table.StudyTableModel;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.BookCopiesNumber;
 import com.github.nbena.librarymanager.core.Consultation;
@@ -65,6 +66,7 @@ import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.Study;
 
 public class LibrarianController extends AbstractController {
 	
@@ -114,6 +116,8 @@ public class LibrarianController extends AbstractController {
 	
 	private static final String TITLE_AVAILABLE_COPIES_LOANS = "Copie per prestito";
 	private static final String TITLE_AVAILABLE_COPIES_CONSULTATIONS = "Copie per consultazioni";
+	
+	private static final String TITLE_VIEW_SEATS_SITUTATION = "Situazione aula studio";
 	
 	
 //	private void showWithUsersView(/*boolean withUsers, */String title) throws SQLException{
@@ -391,6 +395,30 @@ public class LibrarianController extends AbstractController {
 			}
 			
 		});
+		
+		this.view.addActionListenerViewSeatsSituation(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				showSeatsSituation();
+			}
+			
+		});
+	}
+	
+	private void showSeatsSituation(){
+		try{
+			List<Study> studies = model.getStudies();
+			
+			this.genericBooksListView.setMenuItemDeliveryEnabled(false);
+			this.genericBooksListView.setMenuItemStartEnabled(false);
+			
+			displayTableItems(new StudyTableModel(studies),
+					/* stil using this table view... */
+					genericBooksListView, view, TITLE_VIEW_SEATS_SITUTATION);
+		}catch(SQLException e1){
+			displayError(view, e1);
+		}
 	}
 
 	private String askUser() {

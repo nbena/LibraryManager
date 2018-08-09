@@ -1,3 +1,21 @@
+/*  LibraryManager
+    Copyright (C) 2018 nbena
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    */
+
+
 package com.github.nbena.librarymanager.gui.view;
 
 import java.awt.EventQueue;
@@ -8,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class LibrarianView extends JFrame {
@@ -24,9 +44,9 @@ public class LibrarianView extends JFrame {
 	private JButton btnAddBook;
 	private JButton btnDeleteBook;
 	private JButton btnChangeCopiesNumber;
-	
 	private JButton btnViewConsultationsInProgress;
 	private JButton btnViewLoansInLate;
+	private JButton btnViewSeatsSituation;
 	
 	
 	public void addActionListenerNewNotReservedLoan(ActionListener listener){
@@ -77,6 +97,10 @@ public class LibrarianView extends JFrame {
 		this.btnViewLoansInLate.addActionListener(listener);
 	}
 	
+	public void addActionListenerViewSeatsSituation(ActionListener listener){
+		this.btnViewSeatsSituation.addActionListener(listener);
+	}
+	
 	/**
 	 * Launch the application.
 	 */
@@ -107,7 +131,7 @@ public class LibrarianView extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Utenti", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(12, 204, 271, 136);
+		panel.setBounds(12, 280, 271, 60);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -176,5 +200,15 @@ public class LibrarianView extends JFrame {
 		btnDeleteBook = new JButton("Rimuovi libro");
 		btnDeleteBook.setBounds(12, 94, 185, 24);
 		panel_3.add(btnDeleteBook);
+		
+		JPanel panel_4 = new JPanel();
+		panel_4.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Altro", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel_4.setBounds(12, 204, 271, 64);
+		contentPane.add(panel_4);
+		panel_4.setLayout(null);
+		
+		btnViewSeatsSituation = new JButton("Vedi situazione aula studio");
+		btnViewSeatsSituation.setBounds(12, 28, 247, 24);
+		panel_4.add(btnViewSeatsSituation);
 	}
 }

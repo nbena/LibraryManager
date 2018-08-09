@@ -558,17 +558,17 @@ public class DbManager {
 		return loan;
 	}
 
-	public void setSeatOccupied(Seat seat, boolean occupied) throws SQLException{
-		String query = "update seat set free=? where table_number=? and seat_number=?";
-
-		PreparedStatement pstmt = connection.prepareStatement(query);
-
-		pstmt.setBoolean(1, !occupied);
-		pstmt.setInt(2, seat.getTableNumber());
-		pstmt.setInt(3, seat.getNumber());
-
-		pstmt.execute();
-	}
+//	public void setSeatOccupied(Seat seat, boolean occupied) throws SQLException{
+//		String query = "update seat set free=? where table_number=? and seat_number=?";
+//
+//		PreparedStatement pstmt = connection.prepareStatement(query);
+//
+//		pstmt.setBoolean(1, !occupied);
+//		pstmt.setInt(2, seat.getTableNumber());
+//		pstmt.setInt(3, seat.getNumber());
+//
+//		pstmt.execute();
+//	}
 
 //	public SeatReservation getSeatReservationOrNothing(InternalUser user, LocalDate date)throws SQLException{
 //		String query = "select id, seat_number, table_number, time_stamp, reservation_date from seat_reservation where userid=? and reservation_date=?";
@@ -595,9 +595,13 @@ public class DbManager {
 		String query = "select seat_number, table_number "+
 						"from seat_reservation where reservation_date = ? "+
 						"and userid=? "+
-						"union select seat_number, table_number "+
+						"union "+
+						"select seat_number, table_number "+
 						"from consultation_reservation where reservation_date = ? "+
-						"and userid=?";
+						"and userid=? "+
+						"union "+
+						"select seat_number, table_number "+
+						"from study where userid=?";
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);
 
@@ -605,6 +609,7 @@ public class DbManager {
 		pstmt.setInt(2, user.getID());
 		pstmt.setObject(3, date);
 		pstmt.setInt(4, user.getID());
+		pstmt.setInt(5, user.getID());
 
 		Seat seat = null;
 		ResultSet rs = pstmt.executeQuery();
@@ -1310,7 +1315,8 @@ public class DbManager {
     	
     	String query = "select lm_user.id, email, name, surname, internal, "+
     			"study.id, seat_number, table_number "+
-    			"from study join lm_user on userid=lm_user.id";
+    			"from study join lm_user on userid=lm_user.id "+
+    			"order by table_number, seat_number";
     	
     	Statement stat = this.connection.createStatement();
     	
@@ -1348,10 +1354,9 @@ public class DbManager {
     	return study;
     }
     
-    public Study addStudy(Study study) throws SQLException{
+    public void tryAddStudy(Study study) throws SQLException{
     	
-    	String query = "insert into study(userid, seat_number, table_number)"
-    			+ "values (?,?,?) returning id";
+    	String query = "select try_add_study(?, ?, ?)";
     	
     	PreparedStatement pstmt = this.connection.prepareStatement(query);
     	
@@ -1359,14 +1364,16 @@ public class DbManager {
     	pstmt.setInt(2, study.getSeat().getNumber());
     	pstmt.setInt(3, study.getSeat().getTableNumber());
     	
-    	ResultSet rs = pstmt.executeQuery();
+    	pstmt.execute();
     	
-    	rs.next();
+    	// ResultSet rs = pstmt.executeQuery();
     	
-    	int id = rs.getInt(1);
-    	study.setID(id);
+    	// rs.next();
     	
-    	return study;
+    	// int id = rs.getInt(1);
+    	// study.setID(id);
+    	
+    	// return study;
     }
     
     

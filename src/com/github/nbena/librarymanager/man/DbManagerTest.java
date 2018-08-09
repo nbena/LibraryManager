@@ -731,20 +731,27 @@ public class DbManagerTest {
 	  // this.db.cancelSeatReservation(got);
 	  
 	  Study study = this.seatReservations[0].createStudy();
-	  study = this.db.addStudy(study);
+	  /*study = */this.db.tryAddStudy(study);
 	  
+	  Study gotStudy;
 	  boolean found = false;
 	  List<Study> studies = this.db.getStudies();
 	  for(int i=0;i< studies.size();i++){
-		  if(studies.get(i).getID() == study.getID()){
+		  gotStudy = studies.get(i);
+		  if(gotStudy.getSeat().getNumber() == study.getSeat().getNumber() &&
+				  gotStudy.getSeat().getTableNumber() == study.getSeat().getTableNumber() &&
+				  gotStudy.getUser().getID() == study.getUser().getID()){
 			  found = true;
 			  i = studies.size();
 		  }
 	  }
 	  assertTrue(found);
 	  
-	  Study gotStudy = this.db.getStudyByUser(study.getUser());
-	  assertTrue(gotStudy.getID() == study.getID());
+	  gotStudy = this.db.getStudyByUser(study.getUser());
+	  // assertTrue(gotStudy.getID() == study.getID());
+	  assertTrue(gotStudy.getSeat().getNumber() == study.getSeat().getNumber() &&
+				  gotStudy.getSeat().getTableNumber() == study.getSeat().getTableNumber() &&
+				  gotStudy.getUser().getID() == study.getUser().getID());
 	  
 	  this.db.deleteStudyByUser(study.getUser());
 	  

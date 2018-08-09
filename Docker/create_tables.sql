@@ -330,6 +330,25 @@ end;
 
 $$ language plpgsql;
 
+-- have to change:
+-- userid -> user_id
+-- seat_number -> seatnumber
+-- table_number -> tablenumber
+create or replace function try_add_study(user_id integer, seatnumber integer,
+	tablenumber integer) returns void as $$
+declare
+	counter integer;
+begin
+	counter := (select count (*) from study where userid=$1);
+
+	if counter = 0 then
+		insert into study(userid, seat_number, table_number)
+		values ($1, $2, $3);
+	end if;
+
+end; 
+$$ language plpgsql;
+
 
 create or replace function delete_copies (bookid integer, change integer) returns integer as $$
 declare

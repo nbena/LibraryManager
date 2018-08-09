@@ -355,7 +355,7 @@ public class LibraryManager {
 		copy.setInConsultation(true);
 
 		this.dbManager.startConsultation(consultation);
-		this.dbManager.addStudy(study);
+		this.dbManager.tryAddStudy(study);
 		
 //		this.dbManager.setSeatOccupied(seat, true);
 		
@@ -390,7 +390,7 @@ public class LibraryManager {
 		// seat.setFree(false);
 
 		this.dbManager.startConsultation(consultation);
-		this.dbManager.addStudy(study);
+		this.dbManager.tryAddStudy(study);
 		// this.dbManager.setSeatOccupied(seat, false);
 		
 		this.dbManager.commit(true);
@@ -406,7 +406,7 @@ public class LibraryManager {
 			seat = this.dbManager.getReservedSeatOrNothing((InternalUser) user, LocalDate.now());
 			if(seat != null){
 				seat.setFree(false);
-				this.dbManager.setSeatOccupied(seat, true);
+				// this.dbManager.setSeatOccupied(seat, true);
 			}else{
 				// seat = this.getAndSetSeatOccupied(LocalDate.now());
 				seat = this.getSeatOrException(LocalDate.now());
@@ -418,7 +418,9 @@ public class LibraryManager {
 		if(seat != null){
 			seat.setFree(false);
 			Study study = new Study(user, seat);
-			this.dbManager.addStudy(study);
+			// we add the study, if already there (for a consultation)
+			// who cares.
+			this.dbManager.tryAddStudy(study);
 		}
 
 		
@@ -570,6 +572,10 @@ public class LibraryManager {
 			String topic, String phouse) throws SQLException{
 		return this.dbManager.getAvailableCopiesForConsultation(date, title, authors,
 				year, topic, phouse);
+	}
+	
+	public List<Study> getStudies() throws SQLException{
+		return this.dbManager.getStudies();
 	}
 
 

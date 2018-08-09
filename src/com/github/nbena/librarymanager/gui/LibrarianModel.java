@@ -32,6 +32,7 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.Seat;
+import com.github.nbena.librarymanager.core.Study;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.man.LibraryManager;
 
@@ -282,6 +283,10 @@ public class LibrarianModel extends AbstractModel {
 		return this.manager.getAvailableCopiesForConsultation(date,
 				title, authors, year,
 				topic, phouse);
+	}
+	
+	public List<Study> getStudies() throws SQLException{
+		return this.manager.getStudies();
 	}
 
 

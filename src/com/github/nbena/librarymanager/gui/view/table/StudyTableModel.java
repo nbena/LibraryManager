@@ -17,75 +17,63 @@
 
 package com.github.nbena.librarymanager.gui.view.table;
 
-import java.util.Arrays;
-
 import javax.swing.table.AbstractTableModel;
 
-import com.github.nbena.librarymanager.core.Copy;
-import com.github.nbena.librarymanager.core.CopyForConsultation;
+import com.github.nbena.librarymanager.core.Study;
 
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class CopyTableModel extends AbstractTableModel
-	implements SelectableItem {
+public class StudyTableModel extends AbstractTableModel
+implements SelectableItem {
 	
-	private List<Copy> items;
-	private final String [] columns = { "Titolo", "Autori", "Anno", "Stato",
-			"Consultabile"};
+	private List<Study> items;
+	private static final String [] columns = {
+			"Tavolo", "Posto", "Mail utente" };
 	
-	public CopyTableModel(List<Copy> items){
+	public StudyTableModel(List<Study> items){
 		this.items = items;
 	}
-	
+
 	@Override
-	public int getColumnCount(){
-		return 5;
+	public int getColumnCount() {
+		return StudyTableModel.columns.length;
 	}
-	
+
 	@Override
-	public int getRowCount(){
+	public int getRowCount() {
 		return this.items.size();
 	}
 	
 	@Override
 	public String getColumnName(int col) {
-		  return this.columns[col];
+		  return StudyTableModel.columns[col];
 	}
 
+
 	@Override
-	public Object getValueAt(int rowIndex, int columnIndex){
-		Copy copy = this.items.get(rowIndex);
+	public Object getValueAt(int arg0, int arg1) {
+		Study study = this.items.get(arg0);
 		Object value = null;
-		switch(columnIndex){
+		switch(arg1){
 		case 0:
-			value = copy.getTitle(); break;
+			value = study.getSeat().getTableNumber(); break;
 		case 1:
-			value = Arrays.toString(copy.getAuthors()); break;
+			value = study.getSeat().getNumber(); break;
 		case 2:
-			value = copy.getYearOfPublishing(); break;
-		case 3:
-			value = copy.getStatus(); break;
-		case 4:
-			if (copy instanceof CopyForConsultation){
-				value = true;
-			}else{
-				value = false;
-			}
-			break;
+			value = study.getUser().getEmail(); break;
 		}
 		return value;
 	}
-	
+
 	@Override
-	public Copy getSelectedItem(int row){
+	public Object getSelectedItem(int row) {
 		return this.items.get(row);
 	}
-	
+
 	@Override
-	public int getItemsCount(){
+	public int getItemsCount() {
 		return this.items.size();
 	}
-	
 
 }

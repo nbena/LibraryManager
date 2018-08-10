@@ -1,3 +1,20 @@
+  	-- LibraryManager a toy library manager
+    -- Copyright (C) 2018 nbena
+
+    -- This program is free software: you can redistribute it and/or modify
+    -- it under the terms of the GNU General Public License as published by
+    -- the Free Software Foundation, either version 3 of the License, or
+    -- (at your option) any later version.
+
+    -- This program is distributed in the hope that it will be useful,
+    -- but WITHOUT ANY WARRANTY; without even the implied warranty of
+    -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    -- GNU General Public License for more details.
+
+    -- You should have received a copy of the GNU General Public License
+    -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 create table seat (
 	seat_number integer not null
 		constraint seat_number_positive check (seat_number > 0),
@@ -83,7 +100,8 @@ create table seat_reservation (
 	primary key (id),
 	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
 	foreign key (seat_number, table_number) references
-		seat(seat_number, table_number) on update cascade on delete cascade
+		seat(seat_number, table_number) on update cascade on delete cascade,
+	constraint cr_date_gte check (reservation_date >= current_date)
 );
 
 create table study(
@@ -120,6 +138,7 @@ create table consultation_reservation (
 	done boolean not null default false,
 	constraint cr_unique_1 unique(reservation_date, seat_number, table_number),
 	constraint cr_unique_2 unique(reservation_date, userid, copyid),
+	constraint cr_date_gte check(reservation_date >= current_date),
 	primary key (id),
 	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
 	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade,

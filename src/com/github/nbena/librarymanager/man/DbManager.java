@@ -1313,7 +1313,7 @@ public class DbManager {
     
     public List<Study> getStudies() throws SQLException {
     	
-    	String query = "select lm_user.id, email, name, surname, internal, "+
+    	String query = "select lm_user.id, name, surname, email, internal, "+
     			"study.id, seat_number, table_number "+
     			"from study join lm_user on userid=lm_user.id "+
     			"order by table_number, seat_number";

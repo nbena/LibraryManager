@@ -250,7 +250,7 @@ public abstract class AbstractController {
 			result = LocalDate.of(year, Month.of(month), day);
 			
 			if (result.isBefore(LocalDate.now())){
-				throw new NumberFormatException("La data deve essere successiva ad oggi");
+				throw new NumberFormatException("La data non può essere minore di oggi");
 			}
 		}	
 		return result;
@@ -264,7 +264,7 @@ public abstract class AbstractController {
 	 * 					it's set to "Inserisci la data nel formato
 	 * 					DD-MM-YYYY o DD/MM/YYYY"
 	 * @return the date that the suer inserted, null if the inserted date is ''
-	 * @throws NumberFormatException if the date is not valid
+	 * @throws NumberFormatException if the date is not valid (date.isBefore(today))
 	 */
 	protected static LocalDate datePicker(Component parent, String message)  throws NumberFormatException{
 		LocalDate result = null;

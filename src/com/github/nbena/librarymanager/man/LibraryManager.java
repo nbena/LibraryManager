@@ -118,7 +118,7 @@ public class LibraryManager {
 	 * @throws SQLException
 	 */
 	/*@
-	 @ ensures date.isAfter(LocalDate.now());
+	 @ ensures date.isAfter(LocalDate.now()) || date.isEqual(LocalDate.now());
 	 @ ensures user != null;
 	 @
 	 @*/
@@ -152,7 +152,7 @@ public class LibraryManager {
 
 	/*@
 	 @ requires user != null && copy != null && date !=null; 
-	 @ requires date.isAfter(LocalDate.now());
+	 @ requires date.isAfter(LocalDate.now()) || date.isEqual(LocalDate.now());
 	 @ 
 	 @ ensures \result.getCopy().getID() == copy.getID();
 	 @ ensures \result.getReservationDate().equals(date);

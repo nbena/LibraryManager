@@ -48,6 +48,7 @@ import com.github.nbena.librarymanager.gui.view.LibrarianView;
 import com.github.nbena.librarymanager.gui.view.LoansInLateView;
 import com.github.nbena.librarymanager.gui.view.RegisterUserView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
+import com.github.nbena.librarymanager.gui.view.SeatsSitutationTableView;
 import com.github.nbena.librarymanager.gui.view.table.BookCopiesNumberTableModel;
 import com.github.nbena.librarymanager.gui.view.table.BookTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
@@ -410,12 +411,13 @@ public class LibrarianController extends AbstractController {
 		try{
 			List<Study> studies = model.getStudies();
 			
-			this.genericBooksListView.setMenuItemDeliveryEnabled(false);
-			this.genericBooksListView.setMenuItemStartEnabled(false);
+			// this.genericBooksListView.setMenuItemDeliveryEnabled(false);
+			// this.genericBooksListView.setMenuItemStartEnabled(false);
+			SeatsSitutationTableView tableView = new SeatsSitutationTableView();
 			
 			displayTableItems(new StudyTableModel(studies),
 					/* stil using this table view... */
-					genericBooksListView, view, TITLE_VIEW_SEATS_SITUTATION);
+					tableView, view, TITLE_VIEW_SEATS_SITUTATION);
 		}catch(SQLException e1){
 			displayError(view, e1);
 		}

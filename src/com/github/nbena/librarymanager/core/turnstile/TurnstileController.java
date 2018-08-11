@@ -35,7 +35,7 @@ public class TurnstileController {
 	void enablePass(){}
 	
 	String showSeat(Seat seat){
-		return String.format("Il tuo posto è: [%d,%d]\n", seat.getNumber(), seat.getTableNumber());
+		return String.format("Il tuo posto è: tavolo: %d posto: %d\n", seat.getTableNumber(), seat.getNumber());
 	}
 	
 	String showNoSeats(){

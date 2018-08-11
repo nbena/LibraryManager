@@ -352,7 +352,7 @@ public class LibraryManager {
 		Study study = consultation.createStudy();
 		
 		consultation.setStart(OffsetDateTime.now());
-		copy.setInConsultation(true);
+		// copy.setInConsultation(true);
 
 		this.dbManager.startConsultation(consultation);
 		this.dbManager.tryAddStudy(study);

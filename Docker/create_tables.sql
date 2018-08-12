@@ -502,8 +502,9 @@ begin
 	where lm_copy.id not in
 	(
 		-- these first two are very unlikely to happen
+		-- the first is indeed prohibited
 		select copyid
-		from loan where reservation_date is not null
+		from loan where restitution_date is not null
 		union
 		select copyid
 		from consultation where end_date is not null

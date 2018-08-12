@@ -56,7 +56,7 @@ public abstract class AbstractReservation implements IDble{
 		this.ID = ID;
 	}
 
-	public InternalUser getUser() {
+	public /*@ pure @*/InternalUser getUser() {
 		return user;
 	}
 

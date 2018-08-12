@@ -31,6 +31,7 @@ import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddCopies;
 import com.github.nbena.librarymanager.gui.librarianint.ActionAddUser;
+import com.github.nbena.librarymanager.gui.librarianint.ActionCleanup;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteBook;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeleteCopies;
 import com.github.nbena.librarymanager.gui.librarianint.ActionDeliveryConsultation;
@@ -405,6 +406,16 @@ public class LibrarianController extends AbstractController {
 			}
 			
 		});
+		
+		this.view.addActionListenerCleanup(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				action = new ActionCleanup(model);
+				askConfirmationAndExecuteAction(new Object[]{});
+			}
+			
+		});
 	}
 	
 	private void showSeatsSituation(){
@@ -714,7 +725,9 @@ public class LibrarianController extends AbstractController {
 		
 		if (ok == JOptionPane.OK_OPTION){
 			try {
-				action.setArgs(args);
+				if (args != null){
+					action.setArgs(args);
+				}
 				action.execute();
 				this.showActionResult();
 			} catch (SQLException | ReservationException e) {

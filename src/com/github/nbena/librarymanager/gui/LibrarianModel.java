@@ -288,6 +288,10 @@ public class LibrarianModel extends AbstractModel {
 	public List<Study> getStudies() throws SQLException{
 		return this.manager.getStudies();
 	}
+	
+	public void cleanup() throws SQLException{
+		this.manager.cleanup();
+	}
 
 
 }

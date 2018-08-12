@@ -47,6 +47,7 @@ public class LibrarianView extends JFrame {
 	private JButton btnViewConsultationsInProgress;
 	private JButton btnViewLoansInLate;
 	private JButton btnViewSeatsSituation;
+	private JButton btnCleanup;
 	
 	
 	public void addActionListenerNewNotReservedLoan(ActionListener listener){
@@ -101,6 +102,10 @@ public class LibrarianView extends JFrame {
 		this.btnViewSeatsSituation.addActionListener(listener);
 	}
 	
+	public void addActionListenerCleanup(ActionListener listener){
+		this.btnCleanup.addActionListener(listener);
+	}
+	
 	/**
 	 * Launch the application.
 	 */
@@ -123,7 +128,7 @@ public class LibrarianView extends JFrame {
 	public LibrarianView() {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 384);
+		setBounds(100, 100, 600, 428);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -131,7 +136,7 @@ public class LibrarianView extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Utenti", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(12, 280, 271, 60);
+		panel.setBounds(12, 327, 271, 60);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -163,7 +168,7 @@ public class LibrarianView extends JFrame {
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Consultazioni", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(295, 12, 293, 186);
+		panel_2.setBounds(295, 12, 293, 208);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -172,20 +177,20 @@ public class LibrarianView extends JFrame {
 		panel_2.add(btnNewNotReservedConsultation);
 		
 		btnNewReservedConsultation = new JButton("Nuova consultazione prenotata");
-		btnNewReservedConsultation.setBounds(12, 58, 269, 24);
+		btnNewReservedConsultation.setBounds(12, 73, 269, 24);
 		panel_2.add(btnNewReservedConsultation);
 		
 		btnDeliveryConsultation = new JButton("Registra consegna consultazione");
-		btnDeliveryConsultation.setBounds(12, 101, 269, 24);
+		btnDeliveryConsultation.setBounds(12, 120, 269, 24);
 		panel_2.add(btnDeliveryConsultation);
 		
 		btnViewConsultationsInProgress = new JButton("Vedi consultazioni in corso");
-		btnViewConsultationsInProgress.setBounds(12, 144, 269, 24);
+		btnViewConsultationsInProgress.setBounds(12, 170, 269, 24);
 		panel_2.add(btnViewConsultationsInProgress);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(null, "Libri", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_3.setBounds(295, 204, 293, 136);
+		panel_3.setBounds(295, 232, 293, 155);
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
 		
@@ -194,21 +199,25 @@ public class LibrarianView extends JFrame {
 		panel_3.add(btnAddBook);
 		
 		btnChangeCopiesNumber = new JButton("Modifica numero copie");
-		btnChangeCopiesNumber.setBounds(12, 58, 187, 24);
+		btnChangeCopiesNumber.setBounds(12, 68, 187, 24);
 		panel_3.add(btnChangeCopiesNumber);
 		
 		btnDeleteBook = new JButton("Rimuovi libro");
-		btnDeleteBook.setBounds(12, 94, 185, 24);
+		btnDeleteBook.setBounds(12, 119, 185, 24);
 		panel_3.add(btnDeleteBook);
 		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Altro", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		panel_4.setBounds(12, 204, 271, 64);
+		panel_4.setBounds(12, 204, 271, 111);
 		contentPane.add(panel_4);
 		panel_4.setLayout(null);
 		
 		btnViewSeatsSituation = new JButton("Vedi situazione aula studio");
 		btnViewSeatsSituation.setBounds(12, 28, 247, 24);
 		panel_4.add(btnViewSeatsSituation);
+		
+		btnCleanup = new JButton("Pulisci il database");
+		btnCleanup.setBounds(12, 64, 247, 24);
+		panel_4.add(btnCleanup);
 	}
 }

@@ -286,7 +286,7 @@ begin
 
 	if ref1 > 0 then
 		raise exception 'You have to deliver your loans before';
-	elsif ref2 > o then
+	elsif ref2 > 0 then
 	 	raise exception 'You have to deliver your consultations before';
 	end if;
 

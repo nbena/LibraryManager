@@ -577,6 +577,10 @@ public class LibraryManager {
 	public List<Study> getStudies() throws SQLException{
 		return this.dbManager.getStudies();
 	}
+	
+	public void cleanup() throws SQLException{
+		this.dbManager.cleanup();
+	}
 
 
 }

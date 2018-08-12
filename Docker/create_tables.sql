@@ -570,13 +570,16 @@ where title='Title0'
  where title = 'Title3' and for_consultation = false;
 
  update loan set start_date = current_date,
- end_date = current_date + interval '2 month', restitution_date = null
+ -- end_date = current_date + interval '2 month',
+ end_date = current_date - interval '1 day',
+ restitution_date = null
  where userid = 1 and copyid in
  (
 	 select lm_copy.id
 	 from lm_copy join book on lm_copy.bookid = book.id
 	 where title = 'Title3' and for_consultation = false
  );
+ -- end late loan
 
 insert into seat (table_number, seat_number)  values
 (1, 1),

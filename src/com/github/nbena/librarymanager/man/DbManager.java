@@ -1387,6 +1387,16 @@ public class DbManager {
     	
     	pstmt.execute();
     }
+    
+    
+    public void cleanup() throws SQLException{
+    	
+    	String query = "select cleanup_reservation()";
+    	
+    	Statement stat = this.connection.createStatement();
+    	
+    	stat.execute(query);
+    }
 
 
 }

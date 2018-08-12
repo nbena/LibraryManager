@@ -478,6 +478,19 @@ public class DbManagerTest {
 	  assertTrue(found);
 	  assertTrue(loansByUser.size() == 1);
 	  
+	  // now we try to delete a user and we'll see that it's not
+	  // possible.
+	  boolean thrown = false;
+	  try{
+		  this.db.deleteItem(gotLoan.getUser());
+	  }catch(SQLException e){
+		  if(e.getMessage().contains("before")){
+			  thrown = true;
+		  }
+	  }
+	  
+	  assertTrue(thrown);
+	  
 //	  gotLoan = this.db.getActiveLoanByCopy(this.loans[1].getCopy());
 //	  assertTrue(gotLoan.getID() == this.loans[1].getID());
 	  
@@ -536,13 +549,16 @@ public class DbManagerTest {
 	  
 	  assertTrue(found);
 	  
-	  boolean thrown = false;
+	  thrown = false;
 	 
 	  try{
 		  this.db.addLoanReservation(expected);
 	  }catch(SQLException e){
-		  thrown = true;
-		  assertTrue(e.getMessage().contains("this copy is already reserved"));
+		  // thrown = true;
+		  // assertTrue(e.getMessage().contains("this copy is already reserved"));
+		  if (e.getMessage().contains("already reserved")){
+			  thrown = true;
+		  }
 	  }
 	  // db.addLoanReservation(expected);
 	  assertTrue(thrown);

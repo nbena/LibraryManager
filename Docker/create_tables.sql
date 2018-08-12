@@ -70,6 +70,7 @@ create table loan (
 	end_date date,
 	renew_available boolean not null default true,
 	restitution_date date default null,
+	constraint cr_date_gte check (start_date >= current_date),
 	primary key (id),
 	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
 	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade
@@ -345,7 +346,7 @@ begin
 		counter := counter + 1;
 	end loop;
 
-end;
+end
 
 $$ language plpgsql;
 
@@ -365,7 +366,7 @@ begin
 		values ($1, $2, $3);
 	end if;
 
-end; 
+end
 $$ language plpgsql;
 
 
@@ -432,6 +433,73 @@ begin
 $$ language plpgsql;
 
 
+create or replace function cleanup_reservation() returns void as $$
+declare
+
+	-- consultations reservation to delete
+	consultation_res_to_delete integer[];
+
+	-- copies to delete
+	copy_to_delete integer[];
+
+begin
+
+	-- getting the consultation resevation we can
+	-- delete 
+	consultation_res_to_delete := (select array_agg(id) from (
+		select id
+		from consultation_reservation
+		where reservation_date < current_date
+		and done = false) as to_delete
+	);
+
+	-- list of copies we can set to free
+	copy_to_delete := (select array_agg(copyid) from (
+		select copyid
+		from consultation_reservation
+		where id = any(consultation_res_to_delete)) as to_delete
+	);
+
+	-- update copies
+	update lm_copy
+	set status = 'free'
+	where lm_copy.id = any(copy_to_delete);
+
+	-- now delete those consultations reservation
+	delete from consultation_reservation
+	where id = any(consultation_res_to_delete);
+
+	-- next we update all the copies that are currently
+	-- reserved but are not referenced by loan, consultation
+	-- or a reservation for them.
+	-- it means that they are related to a deleted user
+	update lm_copy
+	set status = 'free'
+	where lm_copy.id not in
+	(
+		-- these first two are very unlikely to happen
+		select copyid
+		from loan where reservation_date is not null
+		union
+		select copyid
+		from consultation where end_date is not null
+		union
+		select copyid
+		from loan_reservation
+		where userid is null
+		union
+		select copyid
+		from consultation_reservation
+		where userid is null
+	);
+
+end
+$$ language plpgsql;
+
+
+-- todo user_can_be_deleted
+
+
 -- hash of 'password' ;)
 insert into lm_user(name, surname, email, internal, password) values
 ('user1', 'user1', 'user1@example.com', true,
@@ -480,8 +548,8 @@ where title='Title0'
  from lm_copy join book on lm_copy.bookid = book.id
  where title = 'Title3' and for_consultation = false;
 
- update loan set start_date = current_date  - interval '3 month',
- end_date = current_date - interval '1 day', restitution_date = null
+ update loan set start_date = current_date,
+ end_date = current_date + interval '2 month', restitution_date = null
  where userid = 1 and copyid in
  (
 	 select lm_copy.id

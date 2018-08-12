@@ -360,7 +360,7 @@ public class UserController extends AbstractController {
 						userView.dispose();
 					} catch (SQLException e) {
 						if (e.getMessage().contains("loans before")){
-							displayError(userView, "Devi restituire i tuoi prestiti prima");
+							displayError(userView, "Devi restituire i tuoi prestiti/consultazioni prima");
 						}else{
 							displayError(userView, e);
 						}

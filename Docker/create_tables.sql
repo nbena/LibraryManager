@@ -270,16 +270,24 @@ $$ language plpgsql;
 -- if the user has a loan, then he cannot delete itself.
 create or replace function trigger_function_user_can_delete() returns trigger as $$
 declare
-	ref integer;
+	ref1 integer;
+	ref2 integer;
 begin
-	ref :=
+	ref1 :=
 			(select count(*)
 			from loan where restitution_date is null
 			and userid = old.id
 			);
+	ref2 :=
+			(select count(*)
+			from consultation where end_date is null
+			and userid = old.id
+			);
 
-	if ref > 0 then
+	if ref1 > 0 then
 		raise exception 'You have to deliver your loans before';
+	elsif ref2 > o then
+	 	raise exception 'You have to deliver your consultations before';
 	end if;
 
 	return old;

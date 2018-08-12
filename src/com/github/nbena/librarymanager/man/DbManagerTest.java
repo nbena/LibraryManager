@@ -892,6 +892,8 @@ public class DbManagerTest {
 	  this.deleteUsers = true;
 	  this.deleteConsultationReservations = true;
 	  this.deleteConsultations = true;
+	  
+	  this.db.cleanup();
   }
   
 //  @Test

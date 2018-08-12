@@ -359,7 +359,11 @@ public class UserController extends AbstractController {
 						userView.setVisible(false);
 						userView.dispose();
 					} catch (SQLException e) {
-						displayError(userView, e);
+						if (e.getMessage().contains("loans before")){
+							displayError(userView, "Devi restituire i tuoi prestiti prima");
+						}else{
+							displayError(userView, e);
+						}
 					}
 				}
 			}

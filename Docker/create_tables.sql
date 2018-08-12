@@ -274,7 +274,7 @@ declare
 begin
 	ref :=
 			(select count(*)
-			from loan where restitution_date is not null
+			from loan where restitution_date is null
 			and userid = old.id
 			);
 

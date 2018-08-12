@@ -267,6 +267,25 @@ begin
 end
 $$ language plpgsql;
 
+-- if the user has a loan, then he cannot delete itself.
+create or replace function trigger_function_user_can_delete() returns trigger as $$
+declare
+	ref integer;
+begin
+	ref :=
+			(select count(*)
+			from loan where restitution_date is not null
+			and userid = old.id
+			);
+
+	if ref > 0 then
+		raise exception 'You have to deliver your loans before';
+	end if;
+
+	return old;
+end
+$$ language plpgsql;
+
 create trigger trigger_study_start
 after insert on study
 for each row
@@ -329,6 +348,11 @@ create trigger trigger_update_seat_on_consultation_end
 after update on consultation
 for each row
 execute procedure trigger_function_update_seat_status_on_consultation_end();
+
+create trigger trigger_delete_user
+before delete on lm_user
+for each row
+execute procedure trigger_function_user_can_delete();
 
 
 -- this function add more copies for a given book.
@@ -495,9 +519,6 @@ begin
 
 end
 $$ language plpgsql;
-
-
--- todo user_can_be_deleted
 
 
 -- hash of 'password' ;)

@@ -1261,11 +1261,19 @@ public class DbManager {
     	
     	// Pg allows this not-perfect query recognizing that we group by a 
     	// primary key.
+    	
+    	// a left join is not enough because the count is evaluated to 1
     	String query = "select book.id, title, authors, year, main_topic, phouse, " +
-    				   "'free', count(*) "+
-    				   "from book join lm_copy on book.id = lm_copy.bookid "+
+    				   "'free', count(*) as c "+
+    				   "from book left outer join lm_copy on book.id = lm_copy.bookid "+
     				   "group by book.id "+
-    				   "order by title, authors";
+    				   //"order by title, authors "+
+    				   "union "+
+    				   "select book.id, title, authors, year, main_topic, phouse, " +
+    				   "'free', 0 as c "+
+    				   "from book where book.id not in ( "+
+    				   "select bookid from lm_copy) "+
+    				   "order by c desc, title, authors asc";
     	
     	Statement stat = this.connection.createStatement();
     	

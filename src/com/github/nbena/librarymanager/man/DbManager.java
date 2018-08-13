@@ -1028,6 +1028,8 @@ public class DbManager {
 				query += " and restitution_date is null";
 			}
 		}
+		
+		System.out.println(query);;
 
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);

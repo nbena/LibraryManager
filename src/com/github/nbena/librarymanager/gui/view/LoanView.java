@@ -59,7 +59,7 @@ public class LoanView extends BasicBookView implements MainableView, ResettableV
 		lblStart.setBounds(12, 175, 97, 14);
 		super.contentPanel.add(lblStart);
 		
-		JLabel lblEnd = new JLabel("Fine");
+		JLabel lblEnd = new JLabel("Max fine");
 		lblEnd.setBounds(12, 195, 97, 14);
 		super.contentPanel.add(lblEnd);
 		

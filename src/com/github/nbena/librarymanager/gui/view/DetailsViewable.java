@@ -15,41 +15,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
+package com.github.nbena.librarymanager.gui.view;
 
-package com.github.nbena.librarymanager.gui.userint;
-
-import com.github.nbena.librarymanager.gui.UserModel;
-import com.github.nbena.librarymanager.gui.view.DetailsViewable;
+import java.awt.event.ActionListener;
 
 /**
- * Mini controller for calling DetailsViewable classes.
- * @author nicola
- *
+ * GUIs must implement this interface to show item details
  */
-public abstract class AbstractDetails implements Details {
+public interface DetailsViewable extends MainableView, VisibleView {
 	
-	protected Object item;
-	protected UserModel model;
-	// children need to initialize this.
-	protected DetailsViewable view;
+	public void addActionListenerOk(ActionListener listener);
 	
-	protected AbstractDetails(UserModel model){
-		this.model = model;
-	}
-
-	// @Override
-	public void setItem(Object item) {
-		this.item = item;
-	}
+	// public Object getItem();
 	
-	@Override
-	public void setMainTitle(String title){
-		this.view.setMainTitle(title);
-	}
-	
-	@Override
-	public void show(){
-		this.view.setVisible(true);
-	}
+	public void setItem(Object item);
 
 }

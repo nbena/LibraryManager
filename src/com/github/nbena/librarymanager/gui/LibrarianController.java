@@ -52,8 +52,9 @@ import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.SeatsSitutationTableView;
 import com.github.nbena.librarymanager.gui.view.table.BookCopiesNumberTableModel;
 import com.github.nbena.librarymanager.gui.view.table.BookTableModel;
-import com.github.nbena.librarymanager.gui.view.table.ConsultationInProgressTableModel;
+import com.github.nbena.librarymanager.gui.view.table.ConsultationsInProgressTableModel;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
+import com.github.nbena.librarymanager.gui.view.table.ConsultationsInProgressByUserTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoansInLateTableModel;
@@ -371,7 +372,7 @@ public class LibrarianController extends AbstractController {
 					genericBooksListView.setMenuItemDeliveryEnabled(false);
 					genericBooksListView.setMenuItemStartEnabled(false);
 					
-					displayTableItems(new ConsultationInProgressTableModel(consultations),
+					displayTableItems(new ConsultationsInProgressTableModel(consultations),
 							genericBooksListView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
 				} catch (SQLException e) {
 					displayError(view, e);
@@ -500,7 +501,7 @@ public class LibrarianController extends AbstractController {
 			genericBooksListView.setMenuItemDeliveryEnabled(true);
 			genericBooksListView.setMenuItemStartEnabled(false);
 			
-			super.displayTableItems(new ConsultationInProgressTableModel(consultations),
+			super.displayTableItems(new ConsultationsInProgressByUserTableModel(consultations),
 					genericBooksListView, view, TITLE_VIEW_CONSULTATIONS_IN_PROGRESS);
 		}
 	}

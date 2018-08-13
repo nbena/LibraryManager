@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 
 @SuppressWarnings("serial")
@@ -36,7 +37,6 @@ public class BasicUserView extends JDialog implements ResettableView, MainableVi
 	protected JRadioButton rdbtnExternalUser;
 	
 	protected JButton btnOk;
-	protected JButton btnCancel;
 	
 	protected JLabel lblMain;
 	protected JTextField textFieldEmail;
@@ -52,9 +52,9 @@ public class BasicUserView extends JDialog implements ResettableView, MainableVi
 		this.btnOk.addActionListener(listener);
 	}
 	
-	public void addActionListenerCancel(ActionListener listener){
-		this.btnCancel.addActionListener(listener);
-	}
+//	public void addActionListenerCancel(ActionListener listener){
+//		this.btnCancel.addActionListener(listener);
+//	}
 	
 	public void setMainLabel(String main){
 		this.lblMain.setText(main);
@@ -109,12 +109,8 @@ public class BasicUserView extends JDialog implements ResettableView, MainableVi
 		buttonPane.setLayout(null);
 		
 		btnOk = new JButton("OK");
-		btnOk.setBounds(178, 12, 51, 24);
+		btnOk.setBounds(199, 12, 51, 24);
 		buttonPane.add(btnOk);
-		
-		btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(251, 12, 73, 24);
-		buttonPane.add(btnCancel);
 		
 		JLabel lblUserMail = new JLabel("Email");
 		lblUserMail.setBounds(12, 36, 80, 14);
@@ -132,7 +128,7 @@ public class BasicUserView extends JDialog implements ResettableView, MainableVi
 		lblPassword.setBounds(12, 117, 80, 14);
 		contentPanel.add(lblPassword);
 		
-		lblMain = new JLabel("");
+		lblMain = new JLabel("", SwingConstants.CENTER);
 		lblMain.setBounds(12, 12, 426, 14);
 		contentPanel.add(lblMain);
 		

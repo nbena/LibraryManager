@@ -752,15 +752,15 @@ public class LibrarianController extends AbstractController {
 			
 		});
 		
-		this.userView.addActionListenerCancel(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				userView.setVisible(false);
-				userView.reset();
-			}
-			
-		});
+//		this.userView.addActionListenerCancel(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				userView.setVisible(false);
+//				userView.reset();
+//			}
+//			
+//		});
 	}
 	
 	

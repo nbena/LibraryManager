@@ -21,7 +21,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public abstract class ActionChangeCopiesNumber extends AbstractAction {
+public abstract class ActionChangeCopiesNumber extends AbstractLibrarianAction {
 	
 
 	

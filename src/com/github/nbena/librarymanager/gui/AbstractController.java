@@ -18,6 +18,7 @@
 package com.github.nbena.librarymanager.gui;
 
 import java.awt.Component;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -26,6 +27,8 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 
+import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.view.AbstractTableView;
 import com.github.nbena.librarymanager.gui.view.SearchableBook;
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
@@ -339,6 +342,38 @@ public abstract class AbstractController {
 			}
 			
 		});
+	}
+	
+	public static int askActionConfirmation(Action action, Component view){
+		return JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Conferma",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+	}
+	
+	public static void showActionResult(Action action, Component view){
+		JOptionPane.showMessageDialog(view, action.getResultMessage(), "Info",
+				JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public static boolean[] askConfirmationAndExecuteAction(Action action, Component view, Object... args){
+		boolean thrown = false;
+		int ok = JOptionPane.OK_OPTION;
+		if (action.askConfirmation()){
+			ok = askActionConfirmation(action, view);
+		}
+		
+		if (ok == JOptionPane.OK_OPTION){
+			try {
+				if (args != null){
+					action.setArgs(args);
+				}
+				action.execute();
+				showActionResult(action, view);
+			} catch (SQLException | ReservationException e) {
+				displayError(view, e);
+				thrown = true;
+			}
+		}
+		return new boolean[]{ok == JOptionPane.OK_OPTION, thrown};
 	}
 	
 

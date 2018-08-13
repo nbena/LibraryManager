@@ -18,43 +18,54 @@
 
 package com.github.nbena.librarymanager.gui.userint;
 
-import com.github.nbena.librarymanager.gui.UserController;
+import com.github.nbena.librarymanager.gui.AbstractController;
+import com.github.nbena.librarymanager.gui.librarianint.ActionRenewLoan;
 import com.github.nbena.librarymanager.gui.view.LoanView;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import com.github.nbena.librarymanager.core.Loan;
 
-public class LoanDetails extends AbstractDetailsWithController implements Details {
+public class LoanDetails extends AbstractDetails {
 	
-	private LoanView view;
-
-	public LoanDetails(UserController controller) {
-		super(controller);
+	public LoanDetails(ActionRenewLoan action){
+		super(action);
 		
-		this.view = new LoanView();
+		super.view = new LoanView();
 		
-		this.view.addActionListenerRenew(new ActionListener(){
+		super.view.addActionListenerOk(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				Loan l = controller.renewLoan((Loan) item);
-				if (l!=null){
-					item = l;
-					view.setLoan((Loan) item);
-				}
+				view.setVisible(false);
+				view.dispose();
+				
+			}
+			
+		});
+		
+		((LoanView) super.view).addActionListenerRenew(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				AbstractController.askConfirmationAndExecuteAction(action, (Component) view, null);
+				
+				view.setVisible(false);
+				view.dispose();
 			}
 			
 		});
 	}
+	
 
-	@Override
-	public void show() {
-		this.view.setVisible(true);
-		this.view.setLoan((Loan) super.item);
-	}
+//	@Override
+//	public void show() {
+//		this.view.setVisible(true);
+//		this.view.setLoan((Loan) super.item);
+//	}
 	
 
 }

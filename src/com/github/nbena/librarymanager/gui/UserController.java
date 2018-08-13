@@ -34,6 +34,7 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.gui.librarianint.ActionRenewLoan;
 import com.github.nbena.librarymanager.gui.userint.BookDetails;
 import com.github.nbena.librarymanager.gui.userint.ConsultationReservationDetails;
 import com.github.nbena.librarymanager.gui.userint.Details;
@@ -285,7 +286,8 @@ public class UserController extends AbstractController {
 					displayTableItems(new LoanTableModel(loans), genericTableView, userView,
 							TITLE_VIEW_LOANS);
 					
-					details = new LoanDetails(controller);
+					// details = new LoanDetails(controller);
+					details = new LoanDetails(new ActionRenewLoan(userModel));
 					
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);

@@ -413,7 +413,7 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				action = new ActionCleanup(model);
-				askConfirmationAndExecuteAction(new Object[]{});
+				askConfirmationAndExecuteAction(action, view, new Object[]{});
 			}
 			
 		});
@@ -585,7 +585,8 @@ public class LibrarianController extends AbstractController {
 				
 				// Consultation arg = (Consultation) consultationsView.getSelectedItem();
 
-				askConfirmationAndExecuteAction(arg);
+				AbstractController.askConfirmationAndExecuteAction(
+						action, view, arg);
 				
 			}
 			
@@ -606,7 +607,8 @@ public class LibrarianController extends AbstractController {
 //					arg = (LoanReservation) consultationsView.getSelectedItem();
 //				}
 				Object arg = genericBooksListView.getSelectedItem();
-				boolean [] res = askConfirmationAndExecuteAction(arg);
+				boolean [] res = AbstractController.askConfirmationAndExecuteAction(
+						action, view, arg);
 				if (res[0]){
 					genericBooksListView.setVisible(false);
 				}
@@ -701,43 +703,43 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent e) {
 				
 				Loan loan = (Loan) loansInLateView.getSelectedItem();
-				askConfirmationAndExecuteAction(loan);
+				AbstractController.askConfirmationAndExecuteAction(action, view, loan);
 			}
 			
 		});
 	}
 	
-	private int askActionConfirmation(){
-		return JOptionPane.showConfirmDialog(view, this.action.getConfirmationMessage(), "Conferma",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-	}
+//	public static int askActionConfirmation(Action action, JComponent view){
+//		return JOptionPane.showConfirmDialog(view, action.getConfirmationMessage(), "Conferma",
+//				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+//	}
+//	
+//	public static void showActionResult(Action action, JComponent view){
+//		JOptionPane.showMessageDialog(view, action.getResultMessage(), "Info",
+//				JOptionPane.INFORMATION_MESSAGE);
+//	}
 	
-	private void showActionResult(){
-		JOptionPane.showMessageDialog(view, this.action.getResultMessage(), "Info",
-				JOptionPane.INFORMATION_MESSAGE);
-	}
-	
-	private boolean[] askConfirmationAndExecuteAction(Object... args){
-		boolean thrown = false;
-		int ok = JOptionPane.OK_OPTION;
-		if (action.askConfirmation()){
-			ok = this.askActionConfirmation();
-		}
-		
-		if (ok == JOptionPane.OK_OPTION){
-			try {
-				if (args != null){
-					action.setArgs(args);
-				}
-				action.execute();
-				this.showActionResult();
-			} catch (SQLException | ReservationException e) {
-				displayError(view, e);
-				thrown = true;
-			}
-		}
-		return new boolean[]{ok == JOptionPane.OK_OPTION, thrown};
-	}
+//	private boolean[] askConfirmationAndExecuteAction(Object... args){
+//		boolean thrown = false;
+//		int ok = JOptionPane.OK_OPTION;
+//		if (action.askConfirmation()){
+//			ok = this.askActionConfirmation();
+//		}
+//		
+//		if (ok == JOptionPane.OK_OPTION){
+//			try {
+//				if (args != null){
+//					action.setArgs(args);
+//				}
+//				action.execute();
+//				this.showActionResult();
+//			} catch (SQLException | ReservationException e) {
+//				displayError(view, e);
+//				thrown = true;
+//			}
+//		}
+//		return new boolean[]{ok == JOptionPane.OK_OPTION, thrown};
+//	}
 	
 	
 	private void addUserViewListeners(){
@@ -747,7 +749,7 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				User user = userView.getUser();
-				askConfirmationAndExecuteAction(user);
+				AbstractController.askConfirmationAndExecuteAction(action, view, user);
 			}
 			
 		});
@@ -778,7 +780,8 @@ public class LibrarianController extends AbstractController {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				Book book = (Book) bookView.getSelectedItem();
-				boolean [] done = askConfirmationAndExecuteAction(book);
+				boolean [] done = AbstractController.askConfirmationAndExecuteAction(
+						action, view, book);
 
 				if (done[1] == true){
 					bookView.setVisible(false);
@@ -840,7 +843,8 @@ public class LibrarianController extends AbstractController {
 				action = new ActionAddCopies(model);
 				
 				if(doAction){
-					boolean [] done = askConfirmationAndExecuteAction(args);
+					boolean [] done = AbstractController.askConfirmationAndExecuteAction(
+							action, view, args);
 					
 					// refreshing the list
 					if (done[0] && !done[1]){
@@ -881,7 +885,8 @@ public class LibrarianController extends AbstractController {
 				
 				if(doAction){
 					// refreshing the list
-					boolean [] done = askConfirmationAndExecuteAction(args);
+					boolean [] done = AbstractController.askConfirmationAndExecuteAction(
+							action, view, args);
 					if (done[0] && !done[1]){
 						
 						try {

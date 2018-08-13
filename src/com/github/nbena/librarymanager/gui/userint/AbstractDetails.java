@@ -18,7 +18,7 @@
 
 package com.github.nbena.librarymanager.gui.userint;
 
-import com.github.nbena.librarymanager.gui.UserModel;
+import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.view.DetailsViewable;
 
 /**
@@ -28,18 +28,18 @@ import com.github.nbena.librarymanager.gui.view.DetailsViewable;
  */
 public abstract class AbstractDetails implements Details {
 	
-	protected Object item;
-	protected UserModel model;
+	protected Action action;
 	// children need to initialize this.
 	protected DetailsViewable view;
 	
-	protected AbstractDetails(UserModel model){
-		this.model = model;
+	protected AbstractDetails(Action action){
+		this.action = action;
 	}
 
 	// @Override
 	public void setItem(Object item) {
-		this.item = item;
+		this.view.setItem(item);
+		this.action.setArgs(new Object[]{item});
 	}
 	
 	@Override

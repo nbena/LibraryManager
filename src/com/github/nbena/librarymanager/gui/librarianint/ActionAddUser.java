@@ -6,7 +6,7 @@ import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionAddUser extends AbstractAction {
+public class ActionAddUser extends AbstractLibrarianAction {
 	
 	private User user;
 	

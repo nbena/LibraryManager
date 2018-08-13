@@ -6,7 +6,7 @@ import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionAddBook extends AbstractAction implements Action {
+public class ActionAddBook extends AbstractLibrarianAction implements Action {
 	
 	private /*@ spec_public @*/ Book book;
 	

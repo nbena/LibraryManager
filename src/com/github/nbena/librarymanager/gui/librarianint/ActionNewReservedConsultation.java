@@ -6,7 +6,7 @@ import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionNewReservedConsultation extends AbstractAction {
+public class ActionNewReservedConsultation extends AbstractLibrarianAction {
 	
 	private ConsultationReservation reservation;
 	

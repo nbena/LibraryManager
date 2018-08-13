@@ -17,26 +17,15 @@
 
 package com.github.nbena.librarymanager.gui.librarianint;
 
-import java.sql.SQLException;
+import com.github.nbena.librarymanager.gui.UserModel;
 
-import com.github.nbena.librarymanager.core.ReservationException;
-import com.github.nbena.librarymanager.gui.LibrarianModel;
-
-public class ActionCleanup extends AbstractLibrarianAction {
-
-	public ActionCleanup(LibrarianModel model) {
-		super(model);
-		super.ask = true;
-		super.resultMessage = "Pulizia effettuata";
-		super.confirmationMessage = "Confermi di voler pulire il db?";
+public abstract class AbstractUserAction extends AbstractAction {
+	
+	protected UserModel model;
+	
+	protected AbstractUserAction(UserModel model){
+		this.model = model;
 	}
 
-	@Override
-	public void setArgs(Object... args) {}
-
-	@Override
-	public void execute() throws SQLException, ReservationException {
-		this.model.cleanup();
-	}
 
 }

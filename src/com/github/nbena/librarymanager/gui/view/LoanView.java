@@ -18,7 +18,6 @@
 
 package com.github.nbena.librarymanager.gui.view;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -115,15 +114,15 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 		
 		super.setBounds(100, 100, 450, 351);
 		
-		super.addActionListenerOk(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				dispose();
-			}
-			
-		});
+//		super.addActionListenerOk(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				setVisible(false);
+//				dispose();
+//			}
+//			
+//		});
 		
 //		super.addActionListenerCancel(new ActionListener(){
 //

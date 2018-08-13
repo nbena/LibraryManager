@@ -20,7 +20,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public abstract class AbstractActionWithUser extends AbstractAction {
+public abstract class AbstractActionWithUser extends AbstractLibrarianAction {
 	
 	protected User user;
 	

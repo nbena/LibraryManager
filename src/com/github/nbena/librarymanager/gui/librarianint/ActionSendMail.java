@@ -6,7 +6,7 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionSendMail extends AbstractAction {
+public class ActionSendMail extends AbstractLibrarianAction {
 	
 	private Loan loan;
 	

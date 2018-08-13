@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import com.github.nbena.librarymanager.core.Consultation;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionDeliveryConsultation extends AbstractAction implements Action {
+public class ActionDeliveryConsultation extends AbstractLibrarianAction implements Action {
 	
 	private /*@ spec_public @*/ Consultation consultation;
 	

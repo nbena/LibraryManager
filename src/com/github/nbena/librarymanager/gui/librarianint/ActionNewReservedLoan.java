@@ -13,7 +13,7 @@ import com.github.nbena.librarymanager.gui.LibrarianModel;
  *
  */
 
-public class ActionNewReservedLoan extends AbstractAction implements Action{
+public class ActionNewReservedLoan extends AbstractLibrarianAction implements Action{
 	
 	private LoanReservation reservation;
 	

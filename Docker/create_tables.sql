@@ -70,7 +70,8 @@ create table loan (
 	end_date date,
 	renew_available boolean not null default true,
 	restitution_date date default null,
-	constraint cr_date_gte check (start_date >= current_date),
+	-- this fails when we add a renew, because the date is older than today
+	-- constraint cr_date_gte check (start_date >= current_date),
 	primary key (id),
 	foreign key (userid) references lm_user(id) on update cascade on delete cascade,
 	foreign key (copyid) references lm_copy(id) on update cascade on delete cascade

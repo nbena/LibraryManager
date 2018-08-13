@@ -23,7 +23,7 @@ import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionDeleteBook extends AbstractAction {
+public class ActionDeleteBook extends AbstractLibrarianAction {
 	
 	private Book book;
 

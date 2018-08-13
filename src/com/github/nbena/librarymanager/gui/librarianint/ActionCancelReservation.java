@@ -19,24 +19,30 @@ package com.github.nbena.librarymanager.gui.librarianint;
 
 import java.sql.SQLException;
 
+import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
-import com.github.nbena.librarymanager.gui.LibrarianModel;
+import com.github.nbena.librarymanager.gui.UserModel;
 
-public class ActionCleanup extends AbstractLibrarianAction {
+public class ActionCancelReservation extends AbstractUserAction {
+	
+	private AbstractReservation reservation;
 
-	public ActionCleanup(LibrarianModel model) {
+	protected ActionCancelReservation(UserModel model) {
 		super(model);
+		
 		super.ask = true;
-		super.resultMessage = "Pulizia effettuata";
-		super.confirmationMessage = "Confermi di voler pulire il db?";
+		super.confirmationMessage = "Confermi di voler cancellare questa prenotazione?";
+		super.resultMessage = "Confermato";
 	}
 
 	@Override
-	public void setArgs(Object... args) {}
+	public void setArgs(Object... args) {
+		this.reservation = (AbstractReservation) args[0];
+	}
 
 	@Override
 	public void execute() throws SQLException, ReservationException {
-		this.model.cleanup();
+		super.model.cancelReservation(this.reservation);
 	}
 
 }

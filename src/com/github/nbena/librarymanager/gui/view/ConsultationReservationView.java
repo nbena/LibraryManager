@@ -7,14 +7,15 @@ import javax.swing.JTextField;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 
 @SuppressWarnings("serial")
-public class ConsultationReservationView extends AbstractReservationWithBookView implements ReservationView {
+public class ConsultationReservationView extends AbstractReservationWithBookView
+	implements ReservationView, DetailsViewable {
 
 	protected JTextField textFieldReservationDate;
 	protected JTextField textFieldSeatNumber;
 	protected JTextField textFieldTableNumber;
 	
 	
-	public void setConsultationReservation(ConsultationReservation reservation){
+	private void setConsultationReservation(ConsultationReservation reservation){
 		super.setAbstractReservation(reservation);
 		
 		this.textFieldReservationDate.setText(reservation.getReservationDate().toString());
@@ -67,6 +68,11 @@ public class ConsultationReservationView extends AbstractReservationWithBookView
 		
 //		super.btnOk.setBounds(156, 275, 97, 18);
 //		super.btnCancelReservation.setBounds(186, 275, 97, 18);
+	}
+
+	@Override
+	public void setItem(Object item) {
+		this.setConsultationReservation((ConsultationReservation) item);
 	}
 
 

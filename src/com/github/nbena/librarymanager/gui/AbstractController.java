@@ -286,7 +286,7 @@ public abstract class AbstractController {
 	 * @return the date that the suer inserted, null if the inserted date is ''
 	 * @throws NumberFormatException if the date is not valid (date.isBefore(today))
 	 */
-	protected static LocalDate datePicker(Component parent, String message)  throws NumberFormatException{
+	public static LocalDate datePicker(Component parent, String message)  throws NumberFormatException{
 		LocalDate result = null;
 		
 		if (message == null){

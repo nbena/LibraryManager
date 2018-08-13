@@ -1,7 +1,23 @@
+/*  LibraryManager a toy library manager
+    Copyright (C) 2018 nbena
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    */
+
 package com.github.nbena.librarymanager.gui.view;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -15,8 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class SeatReservationView extends JDialog implements MainableView,
-	ReservationView, VisibleView {
+public class SeatReservationView extends JDialog implements DetailsViewable {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldTimestamp;
@@ -25,8 +40,9 @@ public class SeatReservationView extends JDialog implements MainableView,
 	private JTextField textFieldTableNumber;
 	private JButton btnCancelReservation;
 	private JLabel lblMain;
+	private JButton okButton;
 	
-	public void setSeatReservation(SeatReservation reservation){
+	private void setSeatReservation(SeatReservation reservation){
 		this.textFieldTimestamp.setText(reservation.getTimestamp().toString());
 		this.textFieldReservationDate.setText(reservation.getReservationDate().toString());
 		this.textFieldSeatNumber.setText(Integer.toString(reservation.getSeat().getNumber()));
@@ -61,25 +77,14 @@ public class SeatReservationView extends JDialog implements MainableView,
 		contentPanel.add(buttonPane);
 		buttonPane.setLayout(null);
 		
-		JButton okButton = new JButton("OK");
+		okButton = new JButton("OK");
 		okButton.setBounds(87, 12, 51, 24);
 		buttonPane.add(okButton);
 		
 		btnCancelReservation = new JButton("Annulla prenotazione");
 		btnCancelReservation.setBounds(150, 12, 172, 24);
 		buttonPane.add(btnCancelReservation);
-		
-		okButton.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				dispose();
-			}
 			
-		});
-		
-		
 		lblMain = new JLabel("");
 		lblMain.setBounds(12, 12, 416, 14);
 		contentPanel.add(lblMain);
@@ -130,9 +135,18 @@ public class SeatReservationView extends JDialog implements MainableView,
 	public void setMainTitle(String main) {
 		this.lblMain.setText(main);
 	}
-	
-	@Override
+
 	public void addActionListenerCancelReservation(ActionListener listener) {
 		this.btnCancelReservation.addActionListener(listener);
+	}
+
+	@Override
+	public void addActionListenerOk(ActionListener listener) {
+		this.okButton.addActionListener(listener);
+	}
+
+	@Override
+	public void setItem(Object item) {
+		this.setSeatReservation((SeatReservation) item);
 	}
 }

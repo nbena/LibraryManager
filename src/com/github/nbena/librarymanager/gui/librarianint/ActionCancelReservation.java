@@ -27,7 +27,7 @@ public class ActionCancelReservation extends AbstractUserAction {
 	
 	private AbstractReservation reservation;
 
-	protected ActionCancelReservation(UserModel model) {
+	public ActionCancelReservation(UserModel model) {
 		super(model);
 		
 		super.ask = true;

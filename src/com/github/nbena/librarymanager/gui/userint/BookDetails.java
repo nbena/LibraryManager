@@ -1,38 +1,71 @@
+/*  LibraryManager a toy library manager
+    Copyright (C) 2018 nbena
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    */
+
 package com.github.nbena.librarymanager.gui.userint;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import com.github.nbena.librarymanager.core.Book;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.gui.UserController;
+import com.github.nbena.librarymanager.gui.librarianint.ActionReserve;
 import com.github.nbena.librarymanager.gui.view.BookReserveView;
 
-public class BookDetails extends AbstractDetailsWithController implements Details {
+public class BookDetails extends AbstractDetails  {
 
-	protected BookReserveView view;
+	// protected BookReserveView view;
+	private Copy item;
 	
-	public BookDetails(UserController controller) {
-		super(controller);
+	public BookDetails(ActionReserve action) {
+		super(action);
 		
-		this.view = new BookReserveView();
-		this.view.addActionListenerReserveButton(new ActionListener(){
+		super.view = new BookReserveView();
+		((BookReserveView) this.view).addActionListenerReserveButton(new ActionListener(){
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				boolean ok = controller.reserve((Copy) item);
-				if (ok){
+
+				
+				boolean res = UserController.reserve(item, action, (Component) view);
+				if(res){
 					view.setVisible(false);
-					view.dispose();	
+					view.dispose();
 				}
 			}
 		});
+		
+		this.view.addActionListenerOk(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+				view.setVisible(false);
+				view.dispose();
+				
+			}
+			
+		});
 	}
 
-	@Override
-	public void show() {
-		this.view.setVisible(true);
-		this.view.setBook((Book) super.item);
-	}
+//	@Override
+//	public void show() {
+//		this.view.setVisible(true);
+//		this.view.setBook((Book) super.item);
+//	}
 
 }

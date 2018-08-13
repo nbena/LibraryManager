@@ -1,40 +1,61 @@
+/*  LibraryManager a toy library manager
+    Copyright (C) 2018 nbena
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    */
+
 package com.github.nbena.librarymanager.gui.userint;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-import com.github.nbena.librarymanager.core.AbstractReservation;
-import com.github.nbena.librarymanager.core.SeatReservation;
-import com.github.nbena.librarymanager.gui.UserController;
+import com.github.nbena.librarymanager.gui.AbstractController;
+import com.github.nbena.librarymanager.gui.librarianint.ActionCancelReservation;
+import com.github.nbena.librarymanager.gui.view.DetailsViewable;
 import com.github.nbena.librarymanager.gui.view.SeatReservationView;
 
-public class SeatReservationDetails extends AbstractDetailsWithController implements Details {
+public class SeatReservationDetails extends AbstractDetails implements Details {
 	
-	private SeatReservationView view;
-	
-	public SeatReservationDetails(UserController controller) {
-		super(controller);
+	public SeatReservationDetails(ActionCancelReservation action) {
+		super(action);
 		
-		this.view = new SeatReservationView();
-		this.view.addActionListenerCancelReservation(new ActionListener(){
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {	
-					
-					boolean ok = controller.unreserve((AbstractReservation) item, view, true);
-					if (ok){
-						view.setVisible(false);
-						view.dispose();
-					}
-				}		
+		this.view = (DetailsViewable) new SeatReservationView();
+		((SeatReservationView) this.view).addActionListenerCancelReservation(new ActionListener(){
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {	
+				
+				boolean [] res = AbstractController.askConfirmationAndExecuteAction(
+						action, (Component) view, null);
+				if (res[0]){
+					view.setVisible(false);
+					view.dispose();
+				}
+			}
 		});
-	}
+		
+		this.view.addActionListenerOk(new ActionListener(){
 
-	@Override
-	public void show() {
-		this.view.setSeatReservation((SeatReservation) super.item);
-		this.view.setVisible(true);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				view.setVisible(false);
+				view.dispose();
+			}
+			
+		});
 	}
 
 }

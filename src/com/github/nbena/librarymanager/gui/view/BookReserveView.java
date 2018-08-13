@@ -1,12 +1,13 @@
 package com.github.nbena.librarymanager.gui.view;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+import com.github.nbena.librarymanager.core.Book;
+
 @SuppressWarnings("serial")
-public class BookReserveView extends BasicBookView {
+public class BookReserveView extends BasicBookView implements DetailsViewable {
 	
 	protected JButton btnReserve;
 
@@ -64,16 +65,21 @@ public class BookReserveView extends BasicBookView {
 		this.btnReserve.setBounds(275, 12, 81, 24);
 		super.buttonPane.add(this.btnReserve);
 		
-		super.btnOk.addActionListener(new ActionListener(){
+//		super.btnOk.addActionListener(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				setVisible(false);
+//				dispose();
+//			}
+//			
+//		});
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
-				dispose();
-			}
-			
-		});
+	}
 
+	@Override
+	public void setItem(Object item) {
+		super.setBook((Book) item);
 	}
 
 }

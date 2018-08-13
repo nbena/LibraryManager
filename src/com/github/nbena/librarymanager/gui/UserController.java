@@ -17,6 +17,7 @@
 
 package com.github.nbena.librarymanager.gui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.InvalidParameterException;
@@ -34,7 +35,10 @@ import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
 import com.github.nbena.librarymanager.core.ReservationException;
 import com.github.nbena.librarymanager.core.SeatReservation;
+import com.github.nbena.librarymanager.gui.librarianint.Action;
+import com.github.nbena.librarymanager.gui.librarianint.ActionCancelReservation;
 import com.github.nbena.librarymanager.gui.librarianint.ActionRenewLoan;
+import com.github.nbena.librarymanager.gui.librarianint.ActionReserve;
 import com.github.nbena.librarymanager.gui.userint.BookDetails;
 import com.github.nbena.librarymanager.gui.userint.ConsultationReservationDetails;
 import com.github.nbena.librarymanager.gui.userint.Details;
@@ -66,6 +70,8 @@ public class UserController extends AbstractController {
 	
 	private UserController controller;
 	private GenericUserTableView genericTableView;
+	
+	// private Action action;
 	
 	private static final String TITLE_SEARCH_RESULTS = "Risultato ricerca";
 	private static final String TITLE_VIEW_LOANS = "I tuoi prestiti";
@@ -123,7 +129,7 @@ public class UserController extends AbstractController {
 				try {
 					List<Copy> copies = userModel.search(title, authors, year, topic, phouse);
 			
-					details = new BookDetails(controller);
+					details = new BookDetails(new ActionReserve(userModel));
 					
 					displayTableItems(new CopyTableModel(copies), genericTableView, userView,
 							TITLE_SEARCH_RESULTS);
@@ -184,7 +190,8 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				reserve((Copy) genericTableView.getSelectedItem());
+				ActionReserve action = new ActionReserve(userModel);
+				reserve((Copy) genericTableView.getSelectedItem(), action, userView);
 			}
 			
 		});
@@ -265,7 +272,8 @@ public class UserController extends AbstractController {
 							TITLE_VIEW_CONSULTATION_RESERVATIONS
 							);
 					
-					details = new ConsultationReservationDetails(controller);
+					details = new ConsultationReservationDetails(
+							new ActionCancelReservation(userModel));
 					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -309,7 +317,7 @@ public class UserController extends AbstractController {
 							genericTableView, userView,
 							TITLE_VIEW_LOAN_RESERVATIONS
 							);
-					
+					// TODO HERE
 					details = new LoanReservationDetails(controller);
 					
 					genericTableView.setMenuItemCancelEnabled(true);
@@ -335,6 +343,7 @@ public class UserController extends AbstractController {
 							TITLE_VIEW_SEAT_RESERVATIONS
 							);
 					
+					// TODO HERE
 					details = new SeatReservationDetails(controller);
 					
 					genericTableView.setMenuItemCancelEnabled(true);
@@ -436,7 +445,7 @@ public class UserController extends AbstractController {
 		return ok;
 	}
 	
-	public boolean reserve(Copy item){
+	public static boolean reserve(Copy item, Action action, Component view){
 		boolean ok = true;
 		String message = "Vuoi prenotare questo libro?";
 		if (item instanceof CopyForConsultation){
@@ -444,62 +453,64 @@ public class UserController extends AbstractController {
 		}
 		
 		// asking confirm
-		int res = JOptionPane.showConfirmDialog(userView, message, "Info", 
+		int res = JOptionPane.showConfirmDialog(view, message, "Info", 
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (res == JOptionPane.YES_OPTION){
 			try{
 				message = null;
 				if (item instanceof CopyForConsultation){
 					// asking user for when he wants to consult
-					LocalDate date = super.datePicker(userView,
+					LocalDate date = AbstractController.datePicker(view,
 							"Inserisci quando vuoi effettuare la consultazione "+
 							"nel formato DD-MM-YYYY o DD/MM/YYYY");
 					if (date!=null){
-						ConsultationReservation consultation =
-								userModel.reserveConsultation((CopyForConsultation) item, date);
-						message = String.format("%s%d:%s", "Prenotazione effettuata con successo, " +
-								"il tavolo:posto per te è ",
-								consultation.getSeat().getTableNumber(),
-								consultation.getSeat().getNumber());
+//						ConsultationReservation consultation =
+//								userModel.reserveConsultation((CopyForConsultation) item, date);
+//						message = String.format("%s%d:%s", "Prenotazione effettuata con successo, " +
+//								"il tavolo:posto per te è ",
+//								consultation.getSeat().getTableNumber(),
+//								consultation.getSeat().getNumber());
+						action.execute();
 					}
 				}else{
-					userModel.reserveLoan(item);
-					message = "Prenotazione effettuata con successo";
+//					userModel.reserveLoan(item);
+//					message = "Prenotazione effettuata con successo";
+					action.execute();
 				}
 				
-				if (message != null){
-					displayMessage(userView, message, null, Integer.MAX_VALUE);
-				}
+//				if (message != null){
+//					displayMessage(userView, message, null, Integer.MAX_VALUE);
+//				}
+				AbstractController.showActionResult(action, view);
 
 			}catch(SQLException | ReservationException | NumberFormatException e){
-				displayError(userView, e);
+				displayError(view, e);
 				ok = false;
 			}				
 		}
 		return ok;
 	}
 	
-	public Loan renewLoan(Loan loan){
-		
-		Loan renewed = null;
-		
-		int res = JOptionPane.showConfirmDialog(userView, "Confermi di voler rinnovare?",
-				"Conferma", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-		
-		if (res == JOptionPane.YES_OPTION){
-			try {
-				renewed = this.userModel.renewLoan(loan);
-
-				AbstractController.displayMessage(this.userView, "Confermi di voler rinnovare?", "Info",
-						JOptionPane.INFORMATION_MESSAGE);
-			} catch (SQLException | ReservationException e) {
-				AbstractController.displayError(this.userView, e);
-			}
-			
-		}
-		return renewed;
-
-	}
+//	public Loan renewLoan(Loan loan){
+//		
+//		Loan renewed = null;
+//		
+//		int res = JOptionPane.showConfirmDialog(userView, "Confermi di voler rinnovare?",
+//				"Conferma", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+//		
+//		if (res == JOptionPane.YES_OPTION){
+//			try {
+//				renewed = this.userModel.renewLoan(loan);
+//
+//				AbstractController.displayMessage(this.userView, "Confermi di voler rinnovare?", "Info",
+//						JOptionPane.INFORMATION_MESSAGE);
+//			} catch (SQLException | ReservationException e) {
+//				AbstractController.displayError(this.userView, e);
+//			}
+//			
+//		}
+//		return renewed;
+//	}
 	
 }
 

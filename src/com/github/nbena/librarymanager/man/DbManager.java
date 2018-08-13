@@ -1265,7 +1265,7 @@ public class DbManager {
     	// a left join is not enough because the count is evaluated to 1
     	String query = "select book.id, title, authors, year, main_topic, phouse, " +
     				   "'free', count(*) as c "+
-    				   "from book left outer join lm_copy on book.id = lm_copy.bookid "+
+    				   "from book join lm_copy on book.id = lm_copy.bookid "+
     				   "group by book.id "+
     				   //"order by title, authors "+
     				   "union "+

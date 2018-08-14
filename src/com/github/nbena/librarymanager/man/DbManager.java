@@ -1029,7 +1029,7 @@ public class DbManager {
 			}
 		}
 		
-		System.out.println(query);;
+		// System.out.println(query);;
 
 
 		PreparedStatement pstmt = this.connection.prepareStatement(query);

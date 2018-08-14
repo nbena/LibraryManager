@@ -268,6 +268,19 @@ begin
 end
 $$ language plpgsql;
 
+-- check before a loan update that is not a late loan
+create or replace function trigger_function_can_renew_loan() returns trigger as $$
+begin
+	if old.end_date <> new.end_date then
+		if old.end_date < current_date then
+			raise exception 'Cannot renew a late loan';
+		end if;
+	end if;
+
+	return new;
+end
+$$ language plpgsql;
+
 -- if the user has a loan, then he cannot delete itself.
 create or replace function trigger_function_user_can_delete() returns trigger as $$
 declare
@@ -362,6 +375,11 @@ create trigger trigger_delete_user
 before delete on lm_user
 for each row
 execute procedure trigger_function_user_can_delete();
+
+create trigger trigger_can_renew_loan
+before update on loan
+for each row
+execute procedure trigger_function_can_renew_loan();
 
 
 -- this function add more copies for a given book.

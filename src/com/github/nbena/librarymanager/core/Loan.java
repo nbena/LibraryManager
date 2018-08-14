@@ -119,7 +119,13 @@ public class Loan implements IDble {
 
 
 	public /*@ pure @*/ boolean isRenewAvailable() {
-		return renewAvailable;
+		// if end date is older that now
+		// then it's in late and we won't let you renew it
+		return renewAvailable && !this.isInLate();
+	}
+	
+	public boolean isInLate(){
+		return this.end.isBefore(LocalDate.now());
 	}
 
 	public void setRenewAvailable(boolean renewAvailable) {

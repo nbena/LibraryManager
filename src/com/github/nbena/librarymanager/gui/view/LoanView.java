@@ -18,6 +18,7 @@
 
 package com.github.nbena.librarymanager.gui.view;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -35,6 +36,7 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 	
 	private JButton btnRenew;
 	private JLabel lblRenew;
+	private JLabel lblLate;
 	
 	
 	public void setItem(Object item){
@@ -43,6 +45,15 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 		this.textFieldStart.setText(l.getStart().toString());
 		this.textFieldEnd.setText(l.getEnd().toString());
 		this.textFieldRenewable.setText(Boolean.toString(l.isRenewAvailable()));
+		
+		this.btnRenew.setEnabled(l.isRenewAvailable());
+		
+		if(l.isInLate()){
+			this.lblLate.setText(IN_LATE);
+			this.lblLate.setBackground(Color.RED);
+		}else{
+			this.lblLate.setVisible(false);
+		}
 	}
 	
 	
@@ -69,6 +80,7 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 		this.textFieldRenewable.setText("");
 	}	
 	
+	private static final String IN_LATE = "In ritardo";
 
 	public LoanView() {
 		super();
@@ -85,6 +97,11 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 		lblRenew = new JLabel("Rinnovabile?");
 		lblRenew.setBounds(12, 215, 97, 14);
 		super.contentPanel.add(lblRenew);
+		
+		this.lblLate = new JLabel("");
+		this.lblLate.setBounds(340, 213, 97, 18);
+		this.lblLate.setOpaque(true);
+		this.contentPanel.add(this.lblLate);
 		
 		
 		this.textFieldStart = new JTextField();
@@ -112,7 +129,7 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 		this.textFieldEnd.setEditable(false);
 		this.textFieldRenewable.setEditable(false);
 		
-		super.setBounds(100, 100, 450, 310);
+		super.setBounds(100, 100, 460, 310);
 		
 //		super.addActionListenerOk(new ActionListener(){
 //

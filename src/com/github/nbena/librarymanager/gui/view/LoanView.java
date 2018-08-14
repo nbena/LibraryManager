@@ -72,7 +72,7 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 
 	public LoanView() {
 		super();
-		buttonPane.setLocation(12, 270);
+		buttonPane.setLocation(12, 238);
 		
 		JLabel lblStart = new JLabel("Inizio");
 		lblStart.setBounds(12, 175, 97, 14);
@@ -112,7 +112,7 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 		this.textFieldEnd.setEditable(false);
 		this.textFieldRenewable.setEditable(false);
 		
-		super.setBounds(100, 100, 450, 351);
+		super.setBounds(100, 100, 450, 310);
 		
 //		super.addActionListenerOk(new ActionListener(){
 //

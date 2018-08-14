@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
@@ -41,7 +40,7 @@ import com.github.nbena.librarymanager.gui.librarianint.ActionRenewLoan;
 import com.github.nbena.librarymanager.gui.librarianint.ActionReserve;
 import com.github.nbena.librarymanager.gui.userint.BookDetails;
 import com.github.nbena.librarymanager.gui.userint.ConsultationReservationDetails;
-import com.github.nbena.librarymanager.gui.userint.Details;
+import com.github.nbena.librarymanager.gui.userint.DetailsController;
 import com.github.nbena.librarymanager.gui.userint.LoanDetails;
 import com.github.nbena.librarymanager.gui.userint.LoanReservationDetails;
 import com.github.nbena.librarymanager.gui.userint.SeatReservationDetails;
@@ -49,7 +48,6 @@ import com.github.nbena.librarymanager.gui.view.GenericUserTableView;
 import com.github.nbena.librarymanager.gui.view.LoanView;
 import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.UserView;
-import com.github.nbena.librarymanager.gui.view.VisibleView;
 import com.github.nbena.librarymanager.gui.view.table.ConsultationReservationTableModel;
 import com.github.nbena.librarymanager.gui.view.table.CopyTableModel;
 import com.github.nbena.librarymanager.gui.view.table.LoanReservationTableModel;
@@ -66,9 +64,11 @@ public class UserController extends AbstractController {
 	private UserModel userModel;
 	
 	private LoanView loanView;
-	private Details details;
+	// The mini controller is created when we show a list
+	// then we display one detailed item we call setItem
+	private DetailsController details;
 	
-	private UserController controller;
+	// private UserController controller;
 	private GenericUserTableView genericTableView;
 	
 	// private Action action;
@@ -78,6 +78,13 @@ public class UserController extends AbstractController {
 	private static final String TITLE_VIEW_LOAN_RESERVATIONS = "Le tue prenotazioni";
 	private static final String TITLE_VIEW_SEAT_RESERVATIONS = "Le tue prenotazioni per posti";
 	private static final String TITLE_VIEW_CONSULTATION_RESERVATIONS = "Le tue prenotazioni per consultazioni";
+	
+	private static final String TITLE_LOAN_RESERVATION_DETAILS = "Dettagli prenotazione prestito";
+	private static final String TITLE_LOAN_DETAILS = "Dettagli prestito";
+	private static final String TITLE_CONSULTATION_RESERVATION_DETAILS = "Dettagli prenotazione consultazione";
+	private static final String TITLE_SEAT_RESERVATION_DETAILS = "Dettagli prenotazione posto";
+	
+	private static final String TITLE_BOOK_DETAILS = "Dettagli libro";
 	// private static final String TITLE_UNREGISTER = "Deregistrati";
 	// private static final String RESERVE_SEAT = "Prenota posto";
 	// private static final String TITLE_LOGOUT = "Logout";
@@ -94,7 +101,7 @@ public class UserController extends AbstractController {
 		
 		this.userView.setVisible(true);
 		
-		this.controller = this;
+		// this.controller = this;
 	}
 	
 	public LoanView getLoanView(){
@@ -130,6 +137,8 @@ public class UserController extends AbstractController {
 					List<Copy> copies = userModel.search(title, authors, year, topic, phouse);
 			
 					details = new BookDetails(new ActionReserve(userModel));
+					
+					details.setMainTitle(TITLE_BOOK_DETAILS);
 					
 					displayTableItems(new CopyTableModel(copies), genericTableView, userView,
 							TITLE_SEARCH_RESULTS);
@@ -173,9 +182,12 @@ public class UserController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				unreserve((AbstractReservation) genericTableView.getSelectedItem(),
-						genericTableView, true);
+//				unreserve((AbstractReservation) genericTableView.getSelectedItem(),
+//						genericTableView, true);
 				// else do nothing
+				ActionCancelReservation action = new ActionCancelReservation(userModel);
+				AbstractController.askConfirmationAndExecuteAction(action,
+						userView, genericTableView.getSelectedItem());			
 			}
 			
 		});
@@ -274,6 +286,7 @@ public class UserController extends AbstractController {
 					
 					details = new ConsultationReservationDetails(
 							new ActionCancelReservation(userModel));
+					details.setMainTitle(TITLE_CONSULTATION_RESERVATION_DETAILS);
 					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -296,6 +309,7 @@ public class UserController extends AbstractController {
 					
 					// details = new LoanDetails(controller);
 					details = new LoanDetails(new ActionRenewLoan(userModel));
+					details.setMainTitle(TITLE_LOAN_DETAILS);
 					
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -318,7 +332,8 @@ public class UserController extends AbstractController {
 							TITLE_VIEW_LOAN_RESERVATIONS
 							);
 					// TODO HERE
-					details = new LoanReservationDetails(controller);
+					details = new LoanReservationDetails(new ActionCancelReservation(userModel));
+					details.setMainTitle(TITLE_LOAN_RESERVATION_DETAILS);
 					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -344,7 +359,10 @@ public class UserController extends AbstractController {
 							);
 					
 					// TODO HERE
-					details = new SeatReservationDetails(controller);
+					details = new SeatReservationDetails(
+							new ActionCancelReservation(userModel));
+					details.setMainTitle(TITLE_SEAT_RESERVATION_DETAILS);
+					
 					
 					genericTableView.setMenuItemCancelEnabled(true);
 					genericTableView.setMenuItemDetailsEnabled(true);
@@ -417,33 +435,34 @@ public class UserController extends AbstractController {
 //		
 	}
 	
-	public boolean unreserve(AbstractReservation reservation, VisibleView view, boolean dispose){
-		boolean ok = true;
-		int res = JOptionPane.showConfirmDialog(userView,
-				"Vuoi cancellare questa prenotazione?",
-				"Conferma",
-				JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE
-				);
-		if (res == JOptionPane.YES_OPTION){
-			try {
-				userModel.cancelReservation(reservation);
-				// TODO remove from the table
-				
-				AbstractController.displayCancellationOk(userView);
-				
-				// genericTableView.setVisible(false);
-				view.setVisible(false);
-				if (dispose){
-					view.dispose();
-				}
-			} catch (SQLException e1) {
-				displayError(userView, e1);
-				ok = false;
-			}
-		}
-		return ok;
-	}
+//	public static boolean unreserve(Action action, Component view, Object...objects args/*AbstractReservation reservation, VisibleView view, boolean dispose*/){
+////		boolean ok = true;
+////		int res = JOptionPane.showConfirmDialog(userView,
+////				"Vuoi cancellare questa prenotazione?",
+////				"Conferma",
+////				JOptionPane.YES_NO_OPTION,
+////				JOptionPane.QUESTION_MESSAGE
+////				);
+////		if (res == JOptionPane.YES_OPTION){
+////			try {
+////				userModel.cancelReservation(reservation);
+////				// TODO remove from the table
+////				
+////				AbstractController.displayCancellationOk(userView);
+////				
+////				// genericTableView.setVisible(false);
+////				view.setVisible(false);
+////				if (dispose){
+////					view.dispose();
+////				}
+////			} catch (SQLException e1) {
+////				displayError(userView, e1);
+////				ok = false;
+////			}
+////		}
+////		return ok;
+//		return AbstractController.askConfirmationAndExecuteAction(action, view, null)[0];
+//	}
 	
 	public static boolean reserve(Copy item, Action action, Component view){
 		boolean ok = true;
@@ -470,11 +489,13 @@ public class UserController extends AbstractController {
 //								"il tavolo:posto per te è ",
 //								consultation.getSeat().getTableNumber(),
 //								consultation.getSeat().getNumber());
+						action.setArgs(item, date);
 						action.execute();
 					}
 				}else{
 //					userModel.reserveLoan(item);
 //					message = "Prenotazione effettuata con successo";
+					action.setArgs(item);
 					action.execute();
 				}
 				
@@ -487,7 +508,7 @@ public class UserController extends AbstractController {
 				displayError(view, e);
 				ok = false;
 			}				
-		}
+		} /* res == JOptionPane.YES_OPTION */
 		return ok;
 	}
 	

@@ -27,7 +27,7 @@ import com.github.nbena.librarymanager.gui.view.AbstractReservationWithBookView;
 import com.github.nbena.librarymanager.gui.view.ConsultationReservationView;
 import com.github.nbena.librarymanager.gui.view.DetailsViewable;
 
-public class ConsultationReservationDetails extends AbstractDetails implements Details {
+public class ConsultationReservationDetails extends AbstractDetailsController implements DetailsController {
 	
 	public ConsultationReservationDetails(ActionCancelReservation action) {
 		super(action);
@@ -39,7 +39,7 @@ public class ConsultationReservationDetails extends AbstractDetails implements D
 			public void actionPerformed(ActionEvent arg0) {	
 				
 				boolean [] res = AbstractController.askConfirmationAndExecuteAction(
-						action, (Component) view, null);
+						action, (Component) view, new Object[]{});
 				if (res[0]){
 					view.setVisible(false);
 					view.dispose();

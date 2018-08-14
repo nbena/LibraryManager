@@ -18,38 +18,12 @@
 
 package com.github.nbena.librarymanager.gui.userint;
 
-import com.github.nbena.librarymanager.gui.librarianint.Action;
-import com.github.nbena.librarymanager.gui.view.DetailsViewable;
+import com.github.nbena.librarymanager.gui.view.MainableView;
 
-/**
- * Mini controller for calling DetailsViewable classes.
- * @author nicola
- *
- */
-public abstract class AbstractDetails implements Details {
+public interface DetailsController extends MainableView {
 	
-	protected Action action;
-	// children need to initialize this.
-	protected DetailsViewable view;
+	public void setItem(Object item);
 	
-	protected AbstractDetails(Action action){
-		this.action = action;
-	}
-
-	// @Override
-	public void setItem(Object item) {
-		this.view.setItem(item);
-		this.action.setArgs(new Object[]{item});
-	}
-	
-	@Override
-	public void setMainTitle(String title){
-		this.view.setMainTitle(title);
-	}
-	
-	@Override
-	public void show(){
-		this.view.setVisible(true);
-	}
+	public void show();
 
 }

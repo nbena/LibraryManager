@@ -31,7 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class SeatReservationView extends JDialog implements DetailsViewable {
+public class SeatReservationView extends JDialog implements DetailsViewable, ReservationView {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldTimestamp;
@@ -78,11 +78,11 @@ public class SeatReservationView extends JDialog implements DetailsViewable {
 		buttonPane.setLayout(null);
 		
 		okButton = new JButton("OK");
-		okButton.setBounds(87, 12, 51, 24);
+		okButton.setBounds(10, 12, 160, 24);
 		buttonPane.add(okButton);
 		
 		btnCancelReservation = new JButton("Annulla prenotazione");
-		btnCancelReservation.setBounds(150, 12, 172, 24);
+		btnCancelReservation.setBounds(180, 12, 160, 24);
 		buttonPane.add(btnCancelReservation);
 			
 		lblMain = new JLabel("");

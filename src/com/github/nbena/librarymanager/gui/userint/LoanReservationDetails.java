@@ -24,27 +24,38 @@ import java.awt.event.ActionListener;
 import com.github.nbena.librarymanager.gui.AbstractController;
 import com.github.nbena.librarymanager.gui.librarianint.ActionCancelReservation;
 import com.github.nbena.librarymanager.gui.view.AbstractReservationWithBookView;
-import com.github.nbena.librarymanager.gui.view.ConsultationReservationView;
 import com.github.nbena.librarymanager.gui.view.DetailsViewable;
+import com.github.nbena.librarymanager.gui.view.LoanReservationView;
 
-public class LoanReservationDetails extends AbstractDetails implements Details {
+public class LoanReservationDetails extends AbstractDetailsController implements DetailsController {
+	
 
 	public LoanReservationDetails(ActionCancelReservation action) {
 		super(action);
 		
-		this.view = (DetailsViewable) new ConsultationReservationView();
+		this.view = (DetailsViewable) new LoanReservationView();
 		((AbstractReservationWithBookView) this.view).addActionListenerCancelReservation(new ActionListener(){
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {	
 				
 				boolean [] res = AbstractController.askConfirmationAndExecuteAction(
-						action, (Component) view, null);
+						action, (Component) view, new Object[]{});
 				if (res[0]){
 					view.setVisible(false);
 					view.dispose();
 				}
 			}
+		});
+		
+		this.view.addActionListenerOk(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				view.setVisible(false);
+				view.dispose();
+			}
+			
 		});
 	}
 

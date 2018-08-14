@@ -363,7 +363,7 @@ public abstract class AbstractController {
 		
 		if (ok == JOptionPane.OK_OPTION){
 			try {
-				if (args != null){
+				if (args != null && args.length > 0){
 					action.setArgs(args);
 				}
 				action.execute();

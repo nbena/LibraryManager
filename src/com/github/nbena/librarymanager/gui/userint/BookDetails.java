@@ -26,7 +26,7 @@ import com.github.nbena.librarymanager.gui.UserController;
 import com.github.nbena.librarymanager.gui.librarianint.ActionReserve;
 import com.github.nbena.librarymanager.gui.view.BookReserveView;
 
-public class BookDetails extends AbstractDetails  {
+public class BookDetails extends AbstractDetailsController  {
 
 	// protected BookReserveView view;
 	private Copy item;
@@ -67,5 +67,11 @@ public class BookDetails extends AbstractDetails  {
 //		this.view.setVisible(true);
 //		this.view.setBook((Book) super.item);
 //	}
+	
+	@Override
+	public void setItem(Object item){
+		this.item = (Copy) item;
+		this.view.setItem(item);
+	}
 
 }

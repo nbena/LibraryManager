@@ -1,6 +1,6 @@
 package com.github.nbena.librarymanager.gui.view;
 
-import java.awt.event.ActionEvent;
+import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -9,9 +9,14 @@ import javax.swing.JTextField;
 
 import com.github.nbena.librarymanager.core.AbstractReservationWithBook;
 
+/**
+ * Base class inherited by LoanReservationView and ConsultationReservationView
+ * @author nicola
+ *
+ */
 @SuppressWarnings("serial")
-public class AbstractReservationWithBookView extends BasicBookView
-	implements MainableView, ReservationView, VisibleView {
+public abstract class AbstractReservationWithBookView extends BasicBookView
+	implements MainableView, ReservationView, VisibleView, DetailsViewable {
 	
 	protected JButton btnCancelReservation;
 	protected JTextField textFieldTimestamp;
@@ -26,45 +31,43 @@ public class AbstractReservationWithBookView extends BasicBookView
 		this.btnCancelReservation.addActionListener(listener);
 	}
 	
+	@Override
+	public void setMainTitle(String main){
+		this.lblMain.setText(main);
+	}
+	
+	
+	@Override
+	public void addActionListenerOk(ActionListener listener){
+		this.btnOk.addActionListener(listener);
+	}
 	
 	public AbstractReservationWithBookView(){
 		super();
 		
 		JLabel lblTimestamp = new JLabel("Effettuata il ");
-		lblTimestamp.setBounds(12, 175, 97, 14);
+		lblTimestamp.setBounds(12, 171, 97, 14);
 		super.contentPanel.add(lblTimestamp);
 		
 		this.textFieldTimestamp = new JTextField();
-		this.textFieldTimestamp.setBounds(136, 175, 97, 18);
+		this.textFieldTimestamp.setBounds(136, 171, 200, 18);
 		super.contentPanel.add(textFieldTimestamp);
 		this.textFieldTimestamp.setColumns(10);
 		
 		this.textFieldTimestamp.setEditable(false);
 		
 		this.btnCancelReservation = new JButton("Annulla prenotazione");
-		this.btnCancelReservation.setBounds(226, 12, 73, 24);
+		this.btnCancelReservation.setBounds(230, 12, 160, 24);
 		super.buttonPane.add(this.btnCancelReservation);
 		
 		super.setBounds(100, 100, 450, 301);
 		
-		super.addActionListenerOk(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
-				dispose();
-			}
-		});
+		Rectangle oldBounds = super.btnOk.getBounds();
 		
-//		super.addActionListenerCancel(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				setVisible(false);
-//				dispose();
-//			}
-//			
-//		});		
-	}	
+		super.btnOk.setBounds(65, oldBounds.y,
+			160/*oldBounds.width*/, oldBounds.height);
+	
+	}
+
 
 }

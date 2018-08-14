@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class LoanDetails extends AbstractDetails {
+public class LoanDetails extends AbstractDetailsController {
 	
 	public LoanDetails(ActionRenewLoan action){
 		super(action);
@@ -50,7 +50,8 @@ public class LoanDetails extends AbstractDetails {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				AbstractController.askConfirmationAndExecuteAction(action, (Component) view, null);
+				AbstractController.askConfirmationAndExecuteAction(action,
+						(Component) view, new Object[]{});
 				
 				view.setVisible(false);
 				view.dispose();

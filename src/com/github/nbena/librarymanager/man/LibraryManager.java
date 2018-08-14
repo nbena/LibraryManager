@@ -537,8 +537,8 @@ public class LibraryManager {
 //		return this.dbManager.fillUser(email);
 //	}
 	
-	public List<Loan> getLoansInLate() throws SQLException{
-		return this.dbManager.getLoansInLate();
+	public List<Loan> getLoansInLate(User user) throws SQLException{
+		return this.dbManager.getLoansInLate(user);
 	}
 	
 	public List<? extends Book> getDeletableBooks(boolean withCopiesNumber) throws SQLException{

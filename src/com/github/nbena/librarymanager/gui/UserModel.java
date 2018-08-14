@@ -115,6 +115,10 @@ public class UserModel extends AbstractModel {
 		}
 		return loan;
 	}
+	
+	public List<Loan> getLoansInLate() throws SQLException{
+		return super.manager.getLoansInLate(this.user);
+	}
 
 
 }

@@ -458,5 +458,25 @@ public class DbManagerHelper {
 		
 		return study;
 	}
+	
+	static final String LOANS_IN_LATE_QUERY = "select lm_user.id, name, surname, email, internal, "+
+			"loan.id, start_date, end_date, restitution_date, renew_available, "+
+			"lm_copy.id, title, authors, year, main_topic, phouse, status "+
+			"from lm_user join loan on lm_user.id = loan.userid "+
+			"join lm_copy on loan.copyid = lm_copy.id "+
+			"join book on lm_copy.bookid = book.id "+
+			"where end_date < current_date and restitution_date is null "+
+			"order by loan.userid";
+	
+	static final String LOANS_IN_LATE_BY_USER_QUERY = "select "+
+			"loan.id, start_date, end_date, restitution_date, renew_available, "+
+			"lm_copy.id, title, authors, year, main_topic, phouse, status "+
+			"from loan "+
+			"join lm_copy on loan.copyid = lm_copy.id "+
+			"join book on lm_copy.bookid = book.id "+
+			"where end_date < current_date and restitution_date is null "+
+			"and loan.userid = ? "+
+			"order by end_date - start_date desc";
+	
 			
 }

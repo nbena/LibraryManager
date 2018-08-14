@@ -247,7 +247,7 @@ public class LibrarianModel extends AbstractModel {
 //	}
 	
 	public List<Loan> getLoansInLate() throws SQLException{
-		return super.manager.getLoansInLate();
+		return super.manager.getLoansInLate(null);
 	}
 	
 	// here we cast from parent to child which is not good

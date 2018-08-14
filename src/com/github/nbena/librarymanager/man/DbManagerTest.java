@@ -394,7 +394,8 @@ public class DbManagerTest {
 	  // finding out the loanin late added in the Dockerfile.
 	  boolean found = false;
 	  
-	  List<Loan> loansInLate = this.db.getLoansInLate();
+	  List<Loan> loansInLate = this.db.getLoansInLate(null);
+	  User user = null;
 	 
 	  
 	  for(int i=0;i<loansInLate.size();i++){
@@ -402,9 +403,20 @@ public class DbManagerTest {
 		  if(loan.getCopy().getTitle().equals("Title3")){
 			  found = true;
 			  i = loansInLate.size();
+			  user = loan.getUser();
 		  }
 	  }
 	  
+	  assertTrue(found);
+	  
+	  loansInLate = this.db.getLoansInLate(user);
+	  for(int i=0;i<loansInLate.size();i++){
+		  Loan loan = loansInLate.get(i);
+		  if(loan.getCopy().getTitle().equals("Title3")){
+			  found = true;
+			  i = loansInLate.size();
+		  }
+	  }
 	  
 	  assertTrue(found);
   }

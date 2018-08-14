@@ -60,6 +60,10 @@ public class LoanDetails extends AbstractDetailsController {
 		});
 	}
 	
+	public void setRenewEnabled(boolean enabled){
+		((LoanView) this.view).setRenewEnabled(enabled);
+	}
+	
 
 //	@Override
 //	public void show() {

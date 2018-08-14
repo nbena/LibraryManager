@@ -72,6 +72,10 @@ public class LoanView extends BasicBookView implements DetailsViewable {
 		this.btnRenew.addActionListener(listener);
 	}
 	
+	public void setRenewEnabled(boolean enabled){
+		this.btnRenew.setEnabled(enabled);
+	}
+	
 	@Override
 	public void reset(){
 		super.reset();

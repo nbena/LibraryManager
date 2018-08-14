@@ -1196,31 +1196,42 @@ public class DbManager {
     /**
      * getLoanInLate returns a List that contains all the loans in late,
      * the ones that: end_date < today and restitution_date is null.
+     * @param user can be <pre>null</pre> to get all
      * @return List<Loan>
      * @throws SQLException
      */
-    public List<Loan> getLoansInLate() throws SQLException{
+    public List<Loan> getLoansInLate(User user) throws SQLException{
     	
-    	String query = "select lm_user.id, name, surname, email, internal, "+
-    					"loan.id, start_date, end_date, restitution_date, renew_available, "+
-    					"lm_copy.id, title, authors, year, main_topic, phouse, status "+
-    					"from lm_user join loan on lm_user.id = loan.userid "+
-    					"join lm_copy on loan.copyid = lm_copy.id "+
-    					"join book on lm_copy.bookid = book.id "+
-    					"where end_date < current_date and restitution_date is null "+
-    					"order by loan.userid";
+    	String query = null;
+    	if(user != null){
+    		query = DbManagerHelper.LOANS_IN_LATE_BY_USER_QUERY;
+    	}else{
+    		query = DbManagerHelper.LOANS_IN_LATE_QUERY;
+    	}
     	
-    	Statement stat = this.connection.createStatement();
+    	PreparedStatement pstmt = this.connection.prepareStatement(query);
+    	
+    	if(user != null){
+    		pstmt.setInt(1, user.getID());
+    	}
     	
     	List<Loan> loans = new LinkedList<Loan>();
     	
-    	ResultSet rs = stat.executeQuery(query);
+    	ResultSet rs = pstmt.executeQuery();
     	
     	while(rs.next()){
+    		Loan loan = null;
+    		Copy copy = null;
     		
-    		User user = DbManagerHelper.getUserFrom(rs, 1);
-    		Copy copy = DbManagerHelper.getCopyFrom(rs, 11);
-    		Loan loan = DbManagerHelper.getLoanFrom(rs, 6, copy, user);
+    		if(user == null){
+        		user = DbManagerHelper.getUserFrom(rs, 1);
+        		copy = DbManagerHelper.getCopyFrom(rs, 11);
+        		loan = DbManagerHelper.getLoanFrom(rs, 6, copy, user);
+    		}else{
+    			copy = DbManagerHelper.getCopyFrom(rs, 6);
+    			loan = DbManagerHelper.getLoanFrom(rs, 1, copy, user);
+    		}
+
     		loans.add(loan);
     	}
     	return loans;

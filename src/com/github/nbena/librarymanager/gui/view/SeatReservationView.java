@@ -106,22 +106,22 @@ public class SeatReservationView extends JDialog implements DetailsViewable, Res
 		contentPanel.add(lblSeatTable);
 		
 		textFieldTimestamp = new JTextField();
-		textFieldTimestamp.setBounds(152, 48, 113, 18);
+		textFieldTimestamp.setBounds(152, 48, 182, 18);
 		contentPanel.add(textFieldTimestamp);
 		textFieldTimestamp.setColumns(10);
 		
 		textFieldReservationDate = new JTextField();
-		textFieldReservationDate.setBounds(151, 74, 114, 18);
+		textFieldReservationDate.setBounds(151, 74, 183, 18);
 		contentPanel.add(textFieldReservationDate);
 		textFieldReservationDate.setColumns(10);
 		
 		textFieldSeatNumber = new JTextField();
-		textFieldSeatNumber.setBounds(152, 100, 113, 18);
+		textFieldSeatNumber.setBounds(152, 100, 182, 18);
 		contentPanel.add(textFieldSeatNumber);
 		textFieldSeatNumber.setColumns(10);
 		
 		textFieldTableNumber = new JTextField();
-		textFieldTableNumber.setBounds(151, 126, 114, 18);
+		textFieldTableNumber.setBounds(151, 126, 183, 18);
 		contentPanel.add(textFieldTableNumber);
 		textFieldTableNumber.setColumns(10);
 		

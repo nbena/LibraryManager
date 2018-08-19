@@ -38,6 +38,8 @@ public class SearchableBookView extends BasicBookView
 		super.textFieldTopic.setEditable(true);
 		super.textFieldYear.setEditable(true);
 		super.textFieldPhouse.setEditable(true);
+		
+		super.textFieldAuthors.setToolTipText("Separa gli autori con ';'");
 	}
 
 }

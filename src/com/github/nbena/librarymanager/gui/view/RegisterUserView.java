@@ -2,6 +2,8 @@ package com.github.nbena.librarymanager.gui.view;
 
 import java.security.NoSuchAlgorithmException;
 
+import javax.swing.JOptionPane;
+
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.utils.Hash;
@@ -24,7 +26,16 @@ public class RegisterUserView extends BasicUserView {
 	 */
 	public User getUser(){
 		String hashedPassword = Hash.hash(new String(super.passwordFieldPassword.getPassword()));
-		User u;
+		User u = null;
+		if(super.textFieldEmail.getText().equals("") ||
+				super.textFieldName.getText().equals("") ||
+				super.textFieldSurname.getText().equals("") ||
+				super.passwordFieldPassword.getPassword().equals("")){
+			JOptionPane.showMessageDialog(this, "Per favore riempi tutti i campi",
+					"Errore", JOptionPane.ERROR_MESSAGE);
+			return u;
+		}
+		
 		if (super.rdbtnInternalUser.isSelected()){
 			u = new InternalUser();
 		}else{

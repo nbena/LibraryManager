@@ -39,28 +39,7 @@ public class BookReserveView extends BasicBookView implements DetailsViewable {
 	 */
 	public BookReserveView() {
 		super();
-//		setBounds(100, 100, 450, 300);
-//		getContentPane().setLayout(new BorderLayout());
-//		contentPanel.setLayout(new FlowLayout());
-//		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-//		getContentPane().add(contentPanel, BorderLayout.CENTER);
-//		{
-//			JPanel buttonPane = new JPanel();
-//			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-//			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-//			{
-//				JButton okButton = new JButton("OK");
-//				okButton.setActionCommand("OK");
-//				buttonPane.add(okButton);
-//				getRootPane().setDefaultButton(okButton);
-//			}
-//			{
-//				JButton cancelButton = new JButton("Cancel");
-//				cancelButton.setActionCommand("Cancel");
-//				buttonPane.add(cancelButton);
-//			}
-//		}
-//	}
+
 		super.btnOk.setBounds(106, 12, 81, 24);
 		
 		// super.btnCancel.setBounds(190, 12, 81, 24);
@@ -69,16 +48,6 @@ public class BookReserveView extends BasicBookView implements DetailsViewable {
 		this.btnReserve.setBounds(275, 12, 81, 24);
 		super.buttonPane.add(this.btnReserve);
 		
-//		super.btnOk.addActionListener(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				setVisible(false);
-//				dispose();
-//			}
-//			
-//		});
-
 	}
 
 	@Override

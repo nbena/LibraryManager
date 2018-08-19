@@ -749,10 +749,13 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				User user = userView.getUser();
-				boolean [] done = AbstractController.askConfirmationAndExecuteAction(
-						action, userView, user);
-				if(done[0]){
-					userView.setVisible(false);
+				if (user != null){
+					boolean [] done = AbstractController.askConfirmationAndExecuteAction(
+							action, userView, user);
+					if(done[0]){
+						userView.setVisible(false);
+					}
+					userView.reset();	
 				}
 			}
 			

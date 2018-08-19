@@ -17,6 +17,7 @@
 
 package com.github.nbena.librarymanager.gui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -297,15 +298,9 @@ public class LibrarianController extends AbstractController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				try {
-					action = new ActionAddBook(model);
-//					showWithUsersView(/*false, */TITLE_ADD_BOOK);
-					searchableBookView = new SearchableBookView();
-					searchableBookView.setMainTitle(TITLE_ADD_BOOK);
-					searchableBookView.setVisible(true);
-//				} catch (SQLException e1) {
-//					displayError(view, e1);
-//				}
+				action = new ActionAddBook(model);
+				searchableBookView.setMainTitle(TITLE_ADD_BOOK);
+				searchableBookView.setVisible(true);
 			}
 			
 		});
@@ -628,40 +623,34 @@ public class LibrarianController extends AbstractController {
 				searchableBookView.setVisible(false);
 				
 				Object [] res = searchableBookViewResults();
-				// Object [] args;
-				
-				// if (isWithUser){
-				//	User user = ((SearchableBookUserView)searchableBookView).getSelectedUser();
-				//	args = ArrayUtils.addAll(new Object[]{user}, res);
-				// }else{
-				//	args = res;
-				// }
-				
+
 				action.setArgs(res);
 				try {
 					action.execute();
-					User old = ((AbstractActionWithUser) action).getUser();
 					
-					if(action instanceof ActionGetAvailableCopiesForLoan){
-						@SuppressWarnings("unchecked")
-						List<Copy> result = (List<Copy>) action.getResult();
-						action = new ActionNewNotReservedLoan(model);
-						((ActionNewNotReservedLoan) action).setUser(old);
-						showAvailableCopiesForLoan(result);
-					}else if(action instanceof ActionGetAvailableCopiesForConsultation){
-						@SuppressWarnings("unchecked")
-						List<CopyForConsultation> result = (List<CopyForConsultation>) action.getResult();
-						action = new ActionNewNotReservedConsultation(model);
-						((ActionNewNotReservedConsultation) action).setUser(old);
-						showAvailableCopiesForConsultation(result);
+					if(action instanceof ActionAddBook){
+						AbstractController.showActionResult(action, (Component) searchableBookView);
+						// searchableBookView.setVisible(false);
+					}else{
+						User old = ((AbstractActionWithUser) action).getUser();
+						if(action instanceof ActionGetAvailableCopiesForLoan){
+							@SuppressWarnings("unchecked")
+							List<Copy> result = (List<Copy>) action.getResult();
+							action = new ActionNewNotReservedLoan(model);
+							((ActionNewNotReservedLoan) action).setUser(old);
+							showAvailableCopiesForLoan(result);
+						}else if(action instanceof ActionGetAvailableCopiesForConsultation){
+							@SuppressWarnings("unchecked")
+							List<CopyForConsultation> result = (List<CopyForConsultation>) action.getResult();
+							action = new ActionNewNotReservedConsultation(model);
+							((ActionNewNotReservedConsultation) action).setUser(old);
+							showAvailableCopiesForConsultation(result);
+						}
 					}
-					
+					searchableBookView.setVisible(false);
 				} catch (SQLException | LibraryManagerException e) {
 					displayError(view, e);
 				}
-				
-				
-				// askConfirmationAndExecuteAction(args);
 			}
 			
 			

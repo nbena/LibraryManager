@@ -18,7 +18,8 @@
 
 package com.github.nbena.librarymanager.gui.userint;
 
-import com.github.nbena.librarymanager.gui.librarianint.Action;
+import java.awt.Component;
+import com.github.nbena.librarymanager.gui.action.Action;
 import com.github.nbena.librarymanager.gui.view.DetailsViewable;
 
 /**
@@ -52,7 +53,7 @@ public abstract class AbstractDetailsController implements DetailsController {
 	
 	@Override
 	public void show(){
-		this.view.setVisible(true);
+		((Component) this.view).setVisible(true);
 	}
 
 }

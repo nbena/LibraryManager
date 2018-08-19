@@ -15,25 +15,33 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
-import com.github.nbena.librarymanager.core.User;
+import java.sql.SQLException;
+
+import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public abstract class AbstractActionWithUser extends AbstractLibrarianAction {
+public class ActionDeleteBook extends AbstractLibrarianAction {
 	
-	protected User user;
-	
-	protected AbstractActionWithUser(LibrarianModel model){
+	private Book book;
+
+	public ActionDeleteBook(LibrarianModel model) {
 		super(model);
+		super.ask = true;
+		super.confirmationMessage = "Confermi l'eliminazione di questo libro?";
+		super.resultMessage = "Eliminazione confermata";
 	}
-	
-	public void setUser(User user){
-		this.user = user;
+
+	@Override
+	public void setArgs(Object... args) {
+		this.book = (Book) args[0];
 	}
-	
-	public User getUser(){
-		return this.user;
+
+	@Override
+	public void execute() throws SQLException, LibraryManagerException {
+		super.model.deleteBook(this.book);
 	}
 
 }

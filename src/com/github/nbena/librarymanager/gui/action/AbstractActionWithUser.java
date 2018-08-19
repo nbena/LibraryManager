@@ -15,28 +15,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
-import java.sql.SQLException;
-
-import com.github.nbena.librarymanager.core.LibraryManagerException;
+import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionCleanup extends AbstractLibrarianAction {
-
-	public ActionCleanup(LibrarianModel model) {
+public abstract class AbstractActionWithUser extends AbstractLibrarianAction {
+	
+	protected User user;
+	
+	protected AbstractActionWithUser(LibrarianModel model){
 		super(model);
-		super.ask = true;
-		super.resultMessage = "Pulizia effettuata";
-		super.confirmationMessage = "Confermi di voler pulire il db?";
 	}
-
-	@Override
-	public void setArgs(Object... args) {}
-
-	@Override
-	public void execute() throws SQLException, LibraryManagerException {
-		this.model.cleanup();
+	
+	public void setUser(User user){
+		this.user = user;
+	}
+	
+	public User getUser(){
+		return this.user;
 	}
 
 }

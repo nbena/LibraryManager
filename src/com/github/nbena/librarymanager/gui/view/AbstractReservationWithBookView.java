@@ -16,7 +16,7 @@ import com.github.nbena.librarymanager.core.AbstractReservationWithBook;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractReservationWithBookView extends BasicBookView
-	implements MainableView, ReservationView, VisibleView, DetailsViewable {
+	implements MainableView, ReservationView, DetailsViewable {
 	
 	protected JButton btnCancelReservation;
 	protected JTextField textFieldTimestamp;
@@ -66,6 +66,8 @@ public abstract class AbstractReservationWithBookView extends BasicBookView
 		
 		super.btnOk.setBounds(65, oldBounds.y,
 			160/*oldBounds.width*/, oldBounds.height);
+		
+		super.setAlwaysOnTop(true);
 	
 	}
 

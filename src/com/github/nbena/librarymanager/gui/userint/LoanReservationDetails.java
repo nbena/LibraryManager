@@ -18,11 +18,12 @@
 package com.github.nbena.librarymanager.gui.userint;
 
 import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import com.github.nbena.librarymanager.gui.AbstractController;
-import com.github.nbena.librarymanager.gui.librarianint.ActionCancelReservation;
+import com.github.nbena.librarymanager.gui.action.ActionCancelReservation;
 import com.github.nbena.librarymanager.gui.view.AbstractReservationWithBookView;
 import com.github.nbena.librarymanager.gui.view.DetailsViewable;
 import com.github.nbena.librarymanager.gui.view.LoanReservationView;
@@ -42,8 +43,8 @@ public class LoanReservationDetails extends AbstractDetailsController implements
 				boolean [] res = AbstractController.askConfirmationAndExecuteAction(
 						action, (Component) view, new Object[]{});
 				if (res[0]){
-					view.setVisible(false);
-					view.dispose();
+					((Component) view).setVisible(false);
+					((Window) view).dispose();
 				}
 			}
 		});
@@ -52,8 +53,8 @@ public class LoanReservationDetails extends AbstractDetailsController implements
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				view.setVisible(false);
-				view.dispose();
+				((Component) view).setVisible(false);
+				((Window) view).dispose();
 			}
 			
 		});

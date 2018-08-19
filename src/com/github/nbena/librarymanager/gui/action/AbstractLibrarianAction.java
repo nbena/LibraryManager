@@ -15,7 +15,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 

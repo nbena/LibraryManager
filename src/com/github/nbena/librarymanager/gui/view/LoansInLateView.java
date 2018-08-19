@@ -23,7 +23,7 @@ import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 
 @SuppressWarnings("serial")
-public class LoansInLateView extends AbstractTableView implements VisibleView {
+public class LoansInLateView extends AbstractTableView  {
 
 	private JMenuItem mntmSendMail;
 	/**

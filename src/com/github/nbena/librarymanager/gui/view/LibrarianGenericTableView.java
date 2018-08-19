@@ -34,7 +34,7 @@ import java.awt.event.ActionListener;
  * @author nicola
  *
  */
-public class LibrarianGenericTableView extends AbstractTableView implements VisibleView,
+public class LibrarianGenericTableView extends AbstractTableView implements
 	Popupable {
 
 	// private final JPanel contentPanel = new JPanel();

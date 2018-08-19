@@ -22,7 +22,7 @@ import javax.swing.SwingConstants;
  * @author nicola
  *
  */
-public class BasicBookView extends JDialog implements ViewableBook, MainableView {
+public class BasicBookView extends JDialog implements /*ViewableBook, */MainableView {
 
 	// protected final JPanel contentPanel = new JPanel();
 	protected JPanel contentPanel;
@@ -176,5 +176,7 @@ public class BasicBookView extends JDialog implements ViewableBook, MainableView
 		this.textFieldTopic.setEditable(false);
 		this.textFieldYear.setEditable(false);
 		this.textFieldPhouse.setEditable(false);
+		
+		super.setAlwaysOnTop(true);
 	}
 }

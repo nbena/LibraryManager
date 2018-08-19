@@ -15,34 +15,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
 import java.sql.SQLException;
 
-import com.github.nbena.librarymanager.core.AbstractReservation;
 import com.github.nbena.librarymanager.core.LibraryManagerException;
-import com.github.nbena.librarymanager.gui.UserModel;
+import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionCancelReservation extends AbstractUserAction {
-	
-	private AbstractReservation reservation;
+public class ActionCleanup extends AbstractLibrarianAction {
 
-	public ActionCancelReservation(UserModel model) {
+	public ActionCleanup(LibrarianModel model) {
 		super(model);
-		
 		super.ask = true;
-		super.confirmationMessage = "Confermi di voler cancellare questa prenotazione?";
-		super.resultMessage = "Confermato";
+		super.resultMessage = "Pulizia effettuata";
+		super.confirmationMessage = "Confermi di voler pulire il db?";
 	}
 
 	@Override
-	public void setArgs(Object... args) {
-		this.reservation = (AbstractReservation) args[0];
-	}
+	public void setArgs(Object... args) {}
 
 	@Override
 	public void execute() throws SQLException, LibraryManagerException {
-		super.model.cancelReservation(this.reservation);
+		this.model.cleanup();
 	}
 
 }

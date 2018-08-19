@@ -18,10 +18,12 @@
 package com.github.nbena.librarymanager.gui.userint;
 
 import com.github.nbena.librarymanager.gui.AbstractController;
-import com.github.nbena.librarymanager.gui.librarianint.ActionRenewLoan;
+import com.github.nbena.librarymanager.gui.action.ActionRenewLoan;
 import com.github.nbena.librarymanager.gui.view.LoanView;
 
 import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -38,8 +40,8 @@ public class LoanDetails extends AbstractDetailsController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				view.setVisible(false);
-				view.dispose();
+				((Dialog) view).setVisible(false);
+				((Window) view).dispose();
 				
 			}
 			
@@ -53,8 +55,8 @@ public class LoanDetails extends AbstractDetailsController {
 				AbstractController.askConfirmationAndExecuteAction(action,
 						(Component) view, new Object[]{});
 				
-				view.setVisible(false);
-				view.dispose();
+				((Dialog) view).setVisible(false);
+				((Window) view).dispose();
 			}
 			
 		});

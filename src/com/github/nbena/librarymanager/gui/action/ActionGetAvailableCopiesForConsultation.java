@@ -15,40 +15,36 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
-import com.github.nbena.librarymanager.core.Book;
+import com.github.nbena.librarymanager.core.CopyForConsultation;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public abstract class ActionChangeCopiesNumber extends AbstractLibrarianAction {
-	
+public class ActionGetAvailableCopiesForConsultation extends AbstractActionWithBookUser {
 
+	List<CopyForConsultation>  result;
 	
-	protected Book book;
-	protected int previousNumber;
-	protected int difference;
-	
-
-	public ActionChangeCopiesNumber(LibrarianModel model) {
+	public ActionGetAvailableCopiesForConsultation(LibrarianModel model) {
 		super(model);
-		super.ask = true;
-		super.confirmationMessage = "Confermi la modifica del numero di copie? Ricordati che "+
-				"se vuoi diminuirne il numero, può darsi che la riduzione sarà minore rispetto "+
-				"a quella desiderata";
-		super.resultMessage = "Modifica confermata";
 	}
 
 	@Override
-	/**
-	 * args = [book, previousNumber, difference]
-	 */
-	public void setArgs(Object... args) {
-		this.book = (Book) args[0];
-		this.previousNumber = (int) args[1];
-		this.difference = (int) args[2];
+	public void execute() throws SQLException, LibraryManagerException {
+		this.result = this.model.getAvailableCopiesForConsultation(
+				LocalDate.now(),
+				super.title,
+				super.authors, super.year, super.topic, super.phouse);
 	}
-
-
+	
+	@Override
+	public List<CopyForConsultation> getResult(){
+		return this.result;
+	}
+	
 
 }

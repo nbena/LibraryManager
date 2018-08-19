@@ -42,7 +42,7 @@ import com.github.nbena.librarymanager.gui.view.table.SelectableItem;
 
 @SuppressWarnings("serial")
 public abstract class AbstractTableView extends JDialog implements
-	Popupable, VisibleView, MainableView {
+	Popupable, MainableView {
 	
 	protected JTable table;
 	protected JPopupMenu menu;

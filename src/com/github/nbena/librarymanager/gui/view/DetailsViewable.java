@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 /**
  * GUIs must implement this interface to show item details
  */
-public interface DetailsViewable extends MainableView, VisibleView {
+public interface DetailsViewable extends MainableView {
 	
 	public void addActionListenerOk(ActionListener listener);
 	

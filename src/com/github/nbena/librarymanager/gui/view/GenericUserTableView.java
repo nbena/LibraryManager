@@ -8,7 +8,7 @@ import com.github.nbena.librarymanager.gui.view.table.Popupable;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
-public class GenericUserTableView extends AbstractTableView implements Popupable, VisibleView {
+public class GenericUserTableView extends AbstractTableView implements Popupable {
 
 	// private final JPanel contentPanel = new JPanel();
 	// private JTable table;

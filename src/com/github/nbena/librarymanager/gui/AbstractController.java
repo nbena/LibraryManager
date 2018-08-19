@@ -28,9 +28,9 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 
 import com.github.nbena.librarymanager.core.LibraryManagerException;
-import com.github.nbena.librarymanager.gui.librarianint.Action;
+import com.github.nbena.librarymanager.gui.action.Action;
 import com.github.nbena.librarymanager.gui.view.AbstractTableView;
-import com.github.nbena.librarymanager.gui.view.SearchableBook;
+import com.github.nbena.librarymanager.gui.view.SearchableBookView;
 import com.github.nbena.librarymanager.gui.view.table.Popupable;
 
 public abstract class AbstractController {
@@ -42,7 +42,7 @@ public abstract class AbstractController {
 	
 	
 	// protected GenericTableView genericTableView;
-	protected SearchableBook searchableBookView;
+	protected SearchableBookView searchableBookView;
 	
 	/**
 	 * <pre>askNumber</pre> asks the user to insert a number >= 0

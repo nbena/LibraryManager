@@ -15,17 +15,39 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
-import com.github.nbena.librarymanager.gui.UserModel;
+/**
+ * Top-class for the ActionPattern.
+ * @author nicola
+ *
+ */
+public abstract class AbstractAction implements Action {
+	
+	protected boolean ask;
+	protected String confirmationMessage;
+	protected String resultMessage;
 
-public abstract class AbstractUserAction extends AbstractAction {
-	
-	protected UserModel model;
-	
-	protected AbstractUserAction(UserModel model){
-		this.model = model;
+	@Override
+	public boolean askConfirmation() {
+		return this.ask;
 	}
 
+
+
+	@Override
+	public String getConfirmationMessage() {
+		return this.confirmationMessage;
+	}
+
+	@Override
+	public String getResultMessage() {
+		return this.resultMessage;
+	}
+
+	@Override
+	public Object getResult() {
+		return null;
+	}
 
 }

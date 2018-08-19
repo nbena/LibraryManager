@@ -84,6 +84,8 @@ public class ConsultationReservationView extends AbstractReservationWithBookView
 		
 		super.buttonPane.setBounds(0, 280, 450, 45);
 		
+		super.setAlwaysOnTop(true);
+		
 //		super.btnOk.setBounds(156, 275, 97, 18);
 //		super.btnCancelReservation.setBounds(186, 275, 97, 18);
 	}

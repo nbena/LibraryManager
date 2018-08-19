@@ -1,4 +1,4 @@
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
 import java.sql.SQLException;
 

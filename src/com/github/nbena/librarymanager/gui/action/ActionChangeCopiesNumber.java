@@ -15,33 +15,40 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
-import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.Book;
-import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
-public class ActionDeleteBook extends AbstractLibrarianAction {
+public abstract class ActionChangeCopiesNumber extends AbstractLibrarianAction {
 	
-	private Book book;
 
-	public ActionDeleteBook(LibrarianModel model) {
+	
+	protected Book book;
+	protected int previousNumber;
+	protected int difference;
+	
+
+	public ActionChangeCopiesNumber(LibrarianModel model) {
 		super(model);
 		super.ask = true;
-		super.confirmationMessage = "Confermi l'eliminazione di questo libro?";
-		super.resultMessage = "Eliminazione confermata";
+		super.confirmationMessage = "Confermi la modifica del numero di copie? Ricordati che "+
+				"se vuoi diminuirne il numero, può darsi che la riduzione sarà minore rispetto "+
+				"a quella desiderata";
+		super.resultMessage = "Modifica confermata";
 	}
 
 	@Override
+	/**
+	 * args = [book, previousNumber, difference]
+	 */
 	public void setArgs(Object... args) {
 		this.book = (Book) args[0];
+		this.previousNumber = (int) args[1];
+		this.difference = (int) args[2];
 	}
 
-	@Override
-	public void execute() throws SQLException, LibraryManagerException {
-		super.model.deleteBook(this.book);
-	}
+
 
 }

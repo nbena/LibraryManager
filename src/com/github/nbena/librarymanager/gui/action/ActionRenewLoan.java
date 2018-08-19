@@ -15,36 +15,34 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
     */
 
-package com.github.nbena.librarymanager.gui.librarianint;
+package com.github.nbena.librarymanager.gui.action;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
 
-import com.github.nbena.librarymanager.core.CopyForConsultation;
+import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LibraryManagerException;
-import com.github.nbena.librarymanager.gui.LibrarianModel;
+import com.github.nbena.librarymanager.gui.UserModel;
 
-public class ActionGetAvailableCopiesForConsultation extends AbstractActionWithBookUser {
-
-	List<CopyForConsultation>  result;
+public class ActionRenewLoan extends AbstractUserAction {
 	
-	public ActionGetAvailableCopiesForConsultation(LibrarianModel model) {
+	private Loan loan;
+
+	public ActionRenewLoan(UserModel model) {
 		super(model);
+		
+		super.ask = true;
+		super.confirmationMessage = "Sei sicuro di voler rinnovare?";
+		super.resultMessage = "Rinnovo confermato";
+	}
+
+	@Override
+	public void setArgs(Object... args) {
+		this.loan = (Loan) args[0];
 	}
 
 	@Override
 	public void execute() throws SQLException, LibraryManagerException {
-		this.result = this.model.getAvailableCopiesForConsultation(
-				LocalDate.now(),
-				super.title,
-				super.authors, super.year, super.topic, super.phouse);
+		super.model.renewLoan(loan);
 	}
-	
-	@Override
-	public List<CopyForConsultation> getResult(){
-		return this.result;
-	}
-	
 
 }

@@ -18,12 +18,13 @@
 package com.github.nbena.librarymanager.gui.userint;
 
 import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.gui.UserController;
-import com.github.nbena.librarymanager.gui.librarianint.ActionReserve;
+import com.github.nbena.librarymanager.gui.action.ActionReserve;
 import com.github.nbena.librarymanager.gui.view.BookReserveView;
 
 public class BookDetails extends AbstractDetailsController  {
@@ -43,8 +44,8 @@ public class BookDetails extends AbstractDetailsController  {
 				
 				boolean res = UserController.reserve(item, action, (Component) view);
 				if(res){
-					view.setVisible(false);
-					view.dispose();
+					((Component) view).setVisible(false);
+					((Window) view).dispose();
 				}
 			}
 		});
@@ -54,8 +55,8 @@ public class BookDetails extends AbstractDetailsController  {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-				view.setVisible(false);
-				view.dispose();
+				((Component) view).setVisible(false);
+				((Window) view).dispose();
 				
 			}
 			

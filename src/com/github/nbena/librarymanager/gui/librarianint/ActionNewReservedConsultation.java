@@ -3,7 +3,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.ConsultationReservation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionNewReservedConsultation extends AbstractLibrarianAction {
@@ -19,7 +19,7 @@ public class ActionNewReservedConsultation extends AbstractLibrarianAction {
 	
 	
 	@Override
-	public void execute() throws SQLException, ReservationException{
+	public void execute() throws SQLException, LibraryManagerException{
 		super.model.startReservedConsultation(this.reservation);
 	}
 

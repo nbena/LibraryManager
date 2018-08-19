@@ -19,7 +19,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 
 import java.sql.SQLException;
 
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionCleanup extends AbstractLibrarianAction {
@@ -35,7 +35,7 @@ public class ActionCleanup extends AbstractLibrarianAction {
 	public void setArgs(Object... args) {}
 
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		this.model.cleanup();
 	}
 

@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.github.nbena.librarymanager.core.CopyForConsultation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionGetAvailableCopiesForConsultation extends AbstractActionWithBookUser {
@@ -34,7 +34,7 @@ public class ActionGetAvailableCopiesForConsultation extends AbstractActionWithB
 	}
 
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		this.result = this.model.getAvailableCopiesForConsultation(
 				LocalDate.now(),
 				super.title,

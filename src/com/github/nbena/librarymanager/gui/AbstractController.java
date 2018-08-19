@@ -27,7 +27,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.view.AbstractTableView;
 import com.github.nbena.librarymanager.gui.view.SearchableBook;
@@ -368,7 +368,7 @@ public abstract class AbstractController {
 				}
 				action.execute();
 				showActionResult(action, view);
-			} catch (SQLException | ReservationException e) {
+			} catch (SQLException | LibraryManagerException e) {
 				displayError(view, e);
 				thrown = true;
 			}

@@ -18,7 +18,7 @@ package com.github.nbena.librarymanager.core.turnstile;
 
 import java.sql.SQLException;
 
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.man.LibraryManager;
@@ -42,7 +42,7 @@ public class TurnstileController {
 		return "No seats available";
 	}
 	
-	Seat sendRequestForUser(User user) throws SQLException, ReservationException{
+	Seat sendRequestForUser(User user) throws SQLException, LibraryManagerException{
 		return this.manager.getOrAssignSeat(user);
 	}
 	

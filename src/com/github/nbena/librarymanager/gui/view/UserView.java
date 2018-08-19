@@ -94,6 +94,13 @@ public class UserView extends JFrame {
 	public void addActionListenerViewLoansInLate(ActionListener listener){
 		this.btnViewLoansInLate.addActionListener(listener);
 	}
+	
+	public void setReservationEnabled(boolean enabled){
+		this.btnNewSeatReservation.setEnabled(enabled);
+		this.btnViewConsultationReservation.setEnabled(enabled);
+		this.btnViewLoanReservation.setEnabled(enabled);
+		this.btnViewSeatReservation.setEnabled(enabled);
+	}
 
 	/**
 	 * Create the frame.

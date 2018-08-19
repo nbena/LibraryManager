@@ -73,5 +73,14 @@ public class BookDetails extends AbstractDetailsController  {
 		this.item = (Copy) item;
 		this.view.setItem(item);
 	}
+	
+	/**
+	 * Specific to tell if the 'reserve' button could be
+	 * enabled.
+	 * @param enabled
+	 */
+	public void setReserveEnabled(boolean enabled){
+		((BookReserveView) super.view).setButtonReserveEnabled(enabled);
+	}
 
 }

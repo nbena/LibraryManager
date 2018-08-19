@@ -30,9 +30,10 @@ import javax.swing.JOptionPane;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
+import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.gui.librarianint.Action;
 import com.github.nbena.librarymanager.gui.librarianint.ActionCancelReservation;
@@ -97,6 +98,8 @@ public class UserController extends AbstractController {
 		super.searchableBookView = new SearchableBookView();
 		this.loanView = new LoanView();
 		
+		this.setReservationEnabled();
+		
 		this.addListeners();
 		
 		this.userView.setVisible(true);
@@ -142,7 +145,16 @@ public class UserController extends AbstractController {
 					
 					displayTableItems(new CopyTableModel(copies), genericTableView, userView,
 							TITLE_SEARCH_RESULTS);
-					genericTableView.setMenuItemReserveEnabled(true);
+					
+					boolean canReserve = false;
+					
+					if(isUserInternal()){
+						canReserve = true;
+					}
+					
+					((BookDetails) details).setReserveEnabled(canReserve);
+					
+					genericTableView.setMenuItemReserveEnabled(canReserve);
 					genericTableView.setMenuItemCancelEnabled(false);
 					genericTableView.setMenuItemDetailsEnabled(true);
 				} catch (SQLException e) {
@@ -254,7 +266,7 @@ public class UserController extends AbstractController {
 				}
 				catch(NumberFormatException e1){
 					displayMessage(userView, "Errore nell'input", "Errore", JOptionPane.ERROR_MESSAGE);
-				} catch (ReservationException | SQLException e) {
+				} catch (LibraryManagerException | SQLException e) {
 					displayMessage(userView, "Errore nella prenotazione", "Errore", JOptionPane.ERROR_MESSAGE);
 				} 
 			}
@@ -429,6 +441,8 @@ public class UserController extends AbstractController {
 	
 	public static boolean reserve(Copy item, Action action, Component view){
 		boolean ok = true;
+		
+		
 		String message = "Vuoi prenotare questo libro?";
 		if (item instanceof CopyForConsultation){
 			message = "Vuoi prenotare una consultazione per questo libro?";
@@ -457,12 +471,22 @@ public class UserController extends AbstractController {
 				
 				AbstractController.showActionResult(action, view);
 
-			}catch(SQLException | ReservationException | NumberFormatException e){
+			}catch(SQLException | LibraryManagerException | NumberFormatException e){
 				displayError(view, e);
 				ok = false;
 			}				
 		} /* res == JOptionPane.YES_OPTION */
 		return ok;
+	}
+	
+	private boolean isUserInternal(){
+		return this.userModel.getUser() instanceof InternalUser;
+	}
+	
+	
+	private void setReservationEnabled(){
+		boolean enabled = this.isUserInternal();
+		this.userView.setReservationEnabled(enabled);
 	}
 	
 	

@@ -3,7 +3,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.Loan;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionSendMail extends AbstractLibrarianAction {
@@ -24,7 +24,7 @@ public class ActionSendMail extends AbstractLibrarianAction {
 	}
 
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		super.model.sendMailFor(this.loan);
 	}
 

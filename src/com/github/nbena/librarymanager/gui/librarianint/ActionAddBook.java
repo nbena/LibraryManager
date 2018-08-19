@@ -3,7 +3,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.Book;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionAddBook extends AbstractLibrarianAction implements Action {
@@ -42,7 +42,7 @@ public class ActionAddBook extends AbstractLibrarianAction implements Action {
 	 @ requires this.book != null;
 	 @*/
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		super.model.addBook(this.book);
 	}
 

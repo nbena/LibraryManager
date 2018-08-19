@@ -28,7 +28,7 @@ import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.core.User;
 import com.github.nbena.librarymanager.man.LibraryManager;
@@ -57,7 +57,7 @@ public class UserModel extends AbstractModel {
 	}
 	
 	
-	public SeatReservation reserveSeat(LocalDate date) throws ReservationException, SQLException{
+	public SeatReservation reserveSeat(LocalDate date) throws LibraryManagerException, SQLException{
 		return super.manager.tryReserveSeat((InternalUser) user, date);
 	}
 	
@@ -66,7 +66,7 @@ public class UserModel extends AbstractModel {
 //	}
 //	
 	public ConsultationReservation reserveConsultation(CopyForConsultation copy,
-			LocalDate date) throws ReservationException, SQLException{
+			LocalDate date) throws LibraryManagerException, SQLException{
 		return super.manager.tryReserveConsultation((InternalUser) user, copy, date);
 	}
 	
@@ -74,7 +74,7 @@ public class UserModel extends AbstractModel {
 		super.manager.cancelReservation(reservation);
 	}
 	
-	public LoanReservation reserveLoan(Copy copy) throws SQLException, ReservationException{
+	public LoanReservation reserveLoan(Copy copy) throws SQLException, LibraryManagerException{
 		return super.manager.tryReserveLoan((InternalUser) user, copy);
 	}
 	
@@ -108,10 +108,10 @@ public class UserModel extends AbstractModel {
 		super.manager.deregisterUser(this.user);
 	}
 	
-	public Loan renewLoan(Loan loan) throws SQLException, ReservationException{
+	public Loan renewLoan(Loan loan) throws SQLException, LibraryManagerException{
 		boolean res = super.manager.tryRenewLoan(loan);
 		if (!res){
-			throw new ReservationException("Impossibile rinnovare");
+			throw new LibraryManagerException("Impossibile rinnovare");
 		}
 		return loan;
 	}
@@ -120,5 +120,8 @@ public class UserModel extends AbstractModel {
 		return super.manager.getLoansInLate(this.user);
 	}
 
+	public User getUser(){
+		return this.user;
+	}
 
 }

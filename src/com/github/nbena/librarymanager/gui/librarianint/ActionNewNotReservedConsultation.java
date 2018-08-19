@@ -20,7 +20,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.CopyForConsultation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
@@ -42,7 +42,7 @@ public class ActionNewNotReservedConsultation extends AbstractActionWithUser {
 	}
 
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		this.seat = super.model.startNotReservedConsultation(super.user, this.copy);
 	}
 	

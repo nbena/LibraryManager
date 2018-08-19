@@ -68,7 +68,7 @@ import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.core.Study;
 
 public class LibrarianController extends AbstractController {
@@ -145,7 +145,7 @@ public class LibrarianController extends AbstractController {
 		
 		try {
 			u = askAndFillUser();
-		} catch (SQLException | ReservationException e1) {
+		} catch (SQLException | LibraryManagerException e1) {
 			displayError(view, e1);
 		}
 		
@@ -208,10 +208,10 @@ public class LibrarianController extends AbstractController {
 					action = new ActionNewReservedLoan(model);
 					// showWithUsersView(true, TITLE_NEW_RESERVED_LOAN);
 					showLoanReservationsPerUser();
-				} catch (SQLException | ReservationException e) {
+				} catch (SQLException | LibraryManagerException e) {
 					displayError(view, e);
 				} catch (ClassCastException e1){
-					ReservationException ex = new ReservationException("Qualcosa è andato storto", e1);
+					LibraryManagerException ex = new LibraryManagerException("Qualcosa è andato storto", e1);
 					displayError(view, ex);
 				}
 			}
@@ -225,10 +225,10 @@ public class LibrarianController extends AbstractController {
 					action = new ActionDeliveryLoan(model);
 					// showWithUsersView(true, TITLE_REGISTER_LOAN_DELIVERY);
 					showLoansInProgressPerUser();
-				} catch (SQLException | ReservationException e1) {
+				} catch (SQLException | LibraryManagerException e1) {
 					displayError(view, e1);
 				}catch (ClassCastException e1){
-					ReservationException ex = new ReservationException("Qualcosa è andato storto", e1);
+					LibraryManagerException ex = new LibraryManagerException("Qualcosa è andato storto", e1);
 					displayError(view, ex);
 				}
 			}
@@ -253,10 +253,10 @@ public class LibrarianController extends AbstractController {
 				try {
 					action = new ActionNewReservedConsultation(model);
 					showConsultationsReservationPerUser();
-				} catch (SQLException | ReservationException e1) {
+				} catch (SQLException | LibraryManagerException e1) {
 					displayError(view, e1);
 				} catch (ClassCastException e1){
-					ReservationException ex = new ReservationException("Qualcosa è andato storto", e1);
+					LibraryManagerException ex = new LibraryManagerException("Qualcosa è andato storto", e1);
 					displayError(view, ex);
 				}
 			}
@@ -274,7 +274,7 @@ public class LibrarianController extends AbstractController {
 					
 				} catch (SQLException e1) {
 					displayError(view, e1);
-				} catch (ReservationException e1) {
+				} catch (LibraryManagerException e1) {
 					displayError(view, e1);
 				}
 			}
@@ -440,7 +440,7 @@ public class LibrarianController extends AbstractController {
 				"Inserisci la mail dell'uente", "Info", JOptionPane.QUESTION_MESSAGE);
 	}
 	
-	private User fillUser(String email) throws SQLException, ReservationException{
+	private User fillUser(String email) throws SQLException, LibraryManagerException{
 		User u = null;
 		/* need to check it's not null because it's called afeter askUser() */
 		if (email != null && (email != "" && ! email.trim().equals(""))){
@@ -449,7 +449,7 @@ public class LibrarianController extends AbstractController {
 		return u;
 	}
 	
-	private User askAndFillUser() throws SQLException, ReservationException{
+	private User askAndFillUser() throws SQLException, LibraryManagerException{
 		String email = this.askUser();
 		return this.fillUser(email);
 	}
@@ -490,7 +490,7 @@ public class LibrarianController extends AbstractController {
 				bookView, view, title);
 	}
 
-	private void showConsultationsPerUser() throws SQLException, ReservationException{
+	private void showConsultationsPerUser() throws SQLException, LibraryManagerException{
 		User user = askAndFillUser();
 
 		if (user!=null){
@@ -511,10 +511,10 @@ public class LibrarianController extends AbstractController {
 	 * the user object, then it gets all the consultations reservations
 	 * that that user has for today.
 	 * @throws SQLException
-	 * @throws ReservationException
+	 * @throws LibraryManagerException
 	 * @throws ClassCastException if the user is not internal
 	 */
-	private void showConsultationsReservationPerUser() throws SQLException, ReservationException, ClassCastException{ 
+	private void showConsultationsReservationPerUser() throws SQLException, LibraryManagerException, ClassCastException{ 
 		
 		InternalUser user = (InternalUser) askAndFillUser();
 		if(user!=null){
@@ -530,7 +530,7 @@ public class LibrarianController extends AbstractController {
 		}
 	}
 	
-	private void showLoanReservationsPerUser() throws SQLException, ReservationException{
+	private void showLoanReservationsPerUser() throws SQLException, LibraryManagerException{
 		InternalUser user = (InternalUser) askAndFillUser();
 		if (user!=null){
 			List<LoanReservation> reservations = model.getLoanReservationsByUser(user);
@@ -545,7 +545,7 @@ public class LibrarianController extends AbstractController {
 		}
 	}
 	
-	private void showLoansInProgressPerUser() throws SQLException, ReservationException{
+	private void showLoansInProgressPerUser() throws SQLException, LibraryManagerException{
 		InternalUser user = (InternalUser) askAndFillUser();
 		if (user!=null){
 			List<Loan> loans = model.getLoansInProgressByUser(user);
@@ -607,9 +607,9 @@ public class LibrarianController extends AbstractController {
 //					arg = (LoanReservation) consultationsView.getSelectedItem();
 //				}
 				Object arg = genericBooksListView.getSelectedItem();
-				boolean [] res = AbstractController.askConfirmationAndExecuteAction(
+				boolean [] done = AbstractController.askConfirmationAndExecuteAction(
 						action, view, arg);
-				if (res[0]){
+				if (done[0]){
 					genericBooksListView.setVisible(false);
 				}
 			}
@@ -656,7 +656,7 @@ public class LibrarianController extends AbstractController {
 						showAvailableCopiesForConsultation(result);
 					}
 					
-				} catch (SQLException | ReservationException e) {
+				} catch (SQLException | LibraryManagerException e) {
 					displayError(view, e);
 				}
 				
@@ -749,7 +749,11 @@ public class LibrarianController extends AbstractController {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				User user = userView.getUser();
-				AbstractController.askConfirmationAndExecuteAction(action, view, user);
+				boolean [] done = AbstractController.askConfirmationAndExecuteAction(
+						action, userView, user);
+				if(done[0]){
+					userView.setVisible(false);
+				}
 			}
 			
 		});

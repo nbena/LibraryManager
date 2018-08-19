@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import com.github.nbena.librarymanager.core.ConsultationReservation;
 import com.github.nbena.librarymanager.core.Copy;
 import com.github.nbena.librarymanager.core.CopyForConsultation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.UserModel;
 
 public class ActionReserve extends AbstractUserAction {
@@ -50,7 +50,7 @@ public class ActionReserve extends AbstractUserAction {
 	}
 
 	@Override
-	public void execute() throws SQLException, ReservationException {	
+	public void execute() throws SQLException, LibraryManagerException {	
 		if(this.date == null){
 			super.model.reserveLoan(this.copy);
 		}else{

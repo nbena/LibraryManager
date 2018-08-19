@@ -2,7 +2,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 
 import java.sql.SQLException;
 
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionDeleteCopies extends ActionChangeCopiesNumber {
@@ -13,7 +13,7 @@ public class ActionDeleteCopies extends ActionChangeCopiesNumber {
 	
 	// TODO jmlify this
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		
 		int changed = model.deleteCopies(this.book, this.difference);
 

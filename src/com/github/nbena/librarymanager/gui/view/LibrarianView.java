@@ -155,15 +155,15 @@ public class LibrarianView extends JFrame {
 		panel_1.add(btnNewNotReservedLoan);
 		
 		btnNewReservedLoan = new JButton("Nuovo prestito prenotato");
-		btnNewReservedLoan.setBounds(12, 58, 226, 24);
+		btnNewReservedLoan.setBounds(12, 60, 226, 24);
 		panel_1.add(btnNewReservedLoan);
 		
 		btnDeliveryLoan = new JButton("Registra consegna prestito");
-		btnDeliveryLoan.setBounds(12, 102, 226, 24);
+		btnDeliveryLoan.setBounds(12, 98, 226, 24);
 		panel_1.add(btnDeliveryLoan);
 		
 		btnViewLoansInLate = new JButton("Vedi prestiti in ritardo");
-		btnViewLoansInLate.setBounds(12, 150, 226, 24);
+		btnViewLoansInLate.setBounds(12, 136, 226, 24);
 		panel_1.add(btnViewLoansInLate);
 		
 		JPanel panel_2 = new JPanel();

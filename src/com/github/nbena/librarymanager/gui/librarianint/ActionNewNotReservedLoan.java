@@ -20,7 +20,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.Copy;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionNewNotReservedLoan extends AbstractActionWithUser {
@@ -40,7 +40,7 @@ public class ActionNewNotReservedLoan extends AbstractActionWithUser {
 	}
 
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		super.model.loanNotReserved(super.user, this.copy);
 
 	}

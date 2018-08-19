@@ -17,7 +17,6 @@
 
 package com.github.nbena.librarymanager.core.turnstile;
 
-import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;

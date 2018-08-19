@@ -20,7 +20,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 import java.sql.SQLException;
 
 import com.github.nbena.librarymanager.core.AbstractReservation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.UserModel;
 
 public class ActionCancelReservation extends AbstractUserAction {
@@ -41,7 +41,7 @@ public class ActionCancelReservation extends AbstractUserAction {
 	}
 
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		super.model.cancelReservation(this.reservation);
 	}
 

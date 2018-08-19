@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.github.nbena.librarymanager.core.Copy;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.gui.LibrarianModel;
 
 public class ActionGetAvailableCopiesForLoan extends AbstractActionWithBookUser {
@@ -34,7 +34,7 @@ public class ActionGetAvailableCopiesForLoan extends AbstractActionWithBookUser 
 
 
 	@Override
-	public void execute() throws SQLException, ReservationException {
+	public void execute() throws SQLException, LibraryManagerException {
 		this.result = this.model.getAvailableCopiesForLoan(super.title,
 				super.authors, super.year, super.topic, super.phouse);
 		

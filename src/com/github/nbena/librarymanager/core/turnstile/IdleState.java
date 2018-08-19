@@ -19,7 +19,7 @@ package com.github.nbena.librarymanager.core.turnstile;
 
 import java.sql.SQLException;
 
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.User;
 
@@ -28,7 +28,7 @@ public class IdleState implements TurnstileState {
 	public static IdleState IDLE_STATE = new IdleState();
 	
 	@Override
-	public Seat userEnter(Turnstile turnstile, User user) throws SQLException, ReservationException{
+	public Seat userEnter(Turnstile turnstile, User user) throws SQLException, LibraryManagerException{
 		Seat seat = turnstile.sendRequestForUser(user);
 		// turnstile.setState(RequestState.REQUEST_STATE);
 		

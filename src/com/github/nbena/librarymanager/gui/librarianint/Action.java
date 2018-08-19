@@ -2,7 +2,7 @@ package com.github.nbena.librarymanager.gui.librarianint;
 
 import java.sql.SQLException;
 
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 
 public interface Action {
 	
@@ -10,7 +10,7 @@ public interface Action {
 	
 	public void setArgs(Object... args);
 	
-	public void execute() throws SQLException, ReservationException;
+	public void execute() throws SQLException, LibraryManagerException;
 	
 	public String getConfirmationMessage();
 	

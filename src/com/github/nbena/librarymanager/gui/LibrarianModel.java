@@ -30,7 +30,7 @@ import com.github.nbena.librarymanager.core.CopyForConsultation;
 import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.Study;
 import com.github.nbena.librarymanager.core.User;
@@ -58,14 +58,14 @@ public class LibrarianModel extends AbstractModel {
 //		return user;
 //	}
 //	
-	public User getUser(User u) throws SQLException, ReservationException{
+	public User getUser(User u) throws SQLException, LibraryManagerException{
 		return this.getUser(u.getEmail());
 	}
 	
-	public User getUser(String email) throws ReservationException, SQLException{
+	public User getUser(String email) throws LibraryManagerException, SQLException{
 		User user = super.manager.getUserFromMail(email);
 		if(user == null){
-			throw new ReservationException("Utente non trovato");
+			throw new LibraryManagerException("Utente non trovato");
 		}
 		return user;
 	}
@@ -110,10 +110,10 @@ public class LibrarianModel extends AbstractModel {
 //		super.manager.deliveryBook(user, copy);
 //	}
 	
-	public void deliveryLoan(Loan loan) throws SQLException, ReservationException{
+	public void deliveryLoan(Loan loan) throws SQLException, LibraryManagerException{
 
 		if(loan == null){
-			throw new ReservationException(LibraryManager.NO_LOAN);
+			throw new LibraryManagerException(LibraryManager.NO_LOAN);
 		}
 		
 		super.manager.deliveryLoan(loan);
@@ -143,11 +143,11 @@ public class LibrarianModel extends AbstractModel {
 //		return super.manager.loanNotReserved(user, copy);
 //	}
 	
-	public Loan loanReserved(LoanReservation reservation) throws SQLException, ReservationException{
+	public Loan loanReserved(LoanReservation reservation) throws SQLException, LibraryManagerException{
 		
 
 		if (reservation == null){
-			throw new ReservationException(LibraryManager.NO_RESERVATION);
+			throw new LibraryManagerException(LibraryManager.NO_RESERVATION);
 		}
 
 		return super.manager.loanReserved(reservation);
@@ -167,7 +167,7 @@ public class LibrarianModel extends AbstractModel {
 //				authors, year, mainTopic, phouse);
 //	}
 	
-	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws ReservationException, SQLException{
+	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws LibraryManagerException, SQLException{
 		return super.manager.startNotReservedConsultation(user, copy);
 	}
 
@@ -185,9 +185,9 @@ public class LibrarianModel extends AbstractModel {
 //		return super.manager.startReservedConsultation(reservation);
 //	}
 	
-	public Seat startReservedConsultation(ConsultationReservation reservation) throws SQLException, ReservationException{
+	public Seat startReservedConsultation(ConsultationReservation reservation) throws SQLException, LibraryManagerException{
 		if (reservation == null){
-			throw new ReservationException(LibraryManager.NO_RESERVATION);
+			throw new LibraryManagerException(LibraryManager.NO_RESERVATION);
 		}
 		return super.manager.startReservedConsultation(reservation);
 	}

@@ -29,6 +29,10 @@ public class BookReserveView extends BasicBookView implements DetailsViewable {
 	public void addActionListenerReserveButton(ActionListener listener){
 		this.btnReserve.addActionListener(listener);
 	}
+	
+	public void setButtonReserveEnabled(boolean enabled){
+		this.btnReserve.setEnabled(enabled);
+	}
 
 	/**
 	 * Create the dialog.

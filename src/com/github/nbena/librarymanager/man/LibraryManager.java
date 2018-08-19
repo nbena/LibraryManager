@@ -38,7 +38,7 @@ import com.github.nbena.librarymanager.core.InternalUser;
 import com.github.nbena.librarymanager.core.Librarian;
 import com.github.nbena.librarymanager.core.Loan;
 import com.github.nbena.librarymanager.core.LoanReservation;
-import com.github.nbena.librarymanager.core.ReservationException;
+import com.github.nbena.librarymanager.core.LibraryManagerException;
 import com.github.nbena.librarymanager.core.Seat;
 import com.github.nbena.librarymanager.core.SeatReservation;
 import com.github.nbena.librarymanager.core.Study;
@@ -114,7 +114,7 @@ public class LibraryManager {
 	 * @param user
 	 * @param date
 	 * @return
-	 * @throws ReservationException
+	 * @throws LibraryManagerException
 	 * @throws SQLException
 	 */
 	/*@
@@ -122,11 +122,11 @@ public class LibraryManager {
 	 @ ensures user != null;
 	 @
 	 @*/
-	public SeatReservation tryReserveSeat(InternalUser user, LocalDate date) throws ReservationException, SQLException{
+	public SeatReservation tryReserveSeat(InternalUser user, LocalDate date) throws LibraryManagerException, SQLException{
 
 			List<Seat> seats = this.dbManager.getAvailableSeats(date);
 			if (seats.size() <= 0){
-				throw new ReservationException(NO_SEATS);
+				throw new LibraryManagerException(NO_SEATS);
 			}
 
 			SeatReservation reservation = new SeatReservation(user, date, seats.get(0));
@@ -137,10 +137,10 @@ public class LibraryManager {
 	/*@
 	 @ ensures \result.isFree() == false; 
 	 @*/
-	private Seat getSeatOrException(LocalDate date) throws SQLException, ReservationException{
+	private Seat getSeatOrException(LocalDate date) throws SQLException, LibraryManagerException{
 		List<Seat> seats = this.dbManager.getAvailableSeats(date);
 		if (seats.size() <= 0){
-			throw new ReservationException(NO_SEATS);
+			throw new LibraryManagerException(NO_SEATS);
 		}
 
 		Seat seat = seats.get(0);
@@ -159,17 +159,17 @@ public class LibraryManager {
 	 @
 	 @*/
 	public ConsultationReservation tryReserveConsultation(InternalUser user, CopyForConsultation copy,
-			LocalDate date) throws ReservationException, SQLException{
+			LocalDate date) throws LibraryManagerException, SQLException{
 
 		// CopyForConsultation copy = this.dbManager.getOneAvailableCopyForConsultation(book, date);
 		// need to check if it's valid, we can't know where this copy comes from.
 		CopyForConsultation returned = this.dbManager.getIfAvailableForConsultation(copy, date);
 		if (returned == null){
-			throw new ReservationException(NO_COPIES);
+			throw new LibraryManagerException(NO_COPIES);
 		}
 		List<Seat> seats = this.dbManager.getAvailableSeats(date);
 		if (seats.size() <= 0){
-			throw new ReservationException(NO_SEATS);
+			throw new LibraryManagerException(NO_SEATS);
 		}
 
 		ConsultationReservation reservation = new ConsultationReservation(
@@ -183,10 +183,10 @@ public class LibraryManager {
 	 @ ensures \result.getCopy().getStatus() == CopyStatus.RESERVED;
 	 @ 
 	 @*/
-	public LoanReservation tryReserveLoan(InternalUser user, Copy copy) throws SQLException, ReservationException{
+	public LoanReservation tryReserveLoan(InternalUser user, Copy copy) throws SQLException, LibraryManagerException{
 
 		if(copy.getStatus() == CopyStatus.RESERVED){
-			throw new ReservationException("Questa copia è già riservata");
+			throw new LibraryManagerException("Questa copia è già riservata");
 		}
 
 		Loan loan = this.dbManager.getActiveLoanByCopy(copy);
@@ -337,12 +337,12 @@ public class LibraryManager {
 	 @ 
 	 @ ensures \result.isFree() == false;
 	 @*/
-	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws ReservationException, SQLException{
+	public Seat startNotReservedConsultation(User user, CopyForConsultation copy) throws LibraryManagerException, SQLException{
 		this.dbManager.autoSave(false);
 		
 		List<Seat> seats = this.dbManager.getAvailableSeats(LocalDate.now());
 		if (seats.size() <= 0){
-			throw new ReservationException(NO_SEATS);
+			throw new LibraryManagerException(NO_SEATS);
 		}
 		Seat seat = seats.get(0);
 		// seat.setFree(false);
@@ -368,7 +368,7 @@ public class LibraryManager {
 	 @ requires reservation != null;
 	 @ ensures \result.isFree() != false;
 	 @*/
-	public Seat startReservedConsultation(ConsultationReservation reservation) throws SQLException, ReservationException{
+	public Seat startReservedConsultation(ConsultationReservation reservation) throws SQLException, LibraryManagerException{
 		// ConsultationReservation reservation = this.dbManager.getConsultationReservation(user, book, LocalDate.now());
 
 //		if (reservation == null){
@@ -400,7 +400,7 @@ public class LibraryManager {
 	}
 	
 
-	public Seat getOrAssignSeat(User user) throws SQLException, ReservationException{
+	public Seat getOrAssignSeat(User user) throws SQLException, LibraryManagerException{
 		Seat seat = null;
 		if (user instanceof InternalUser){
 			seat = this.dbManager.getReservedSeatOrNothing((InternalUser) user, LocalDate.now());

@@ -138,6 +138,7 @@ public class BasicUserView extends JDialog implements ResettableView, MainableVi
 		contentPanel.add(rdbtnInternalUser);
 		
 		rdbtnExternalUser = new JRadioButton("Esterno");
+		buttonGroup.add(rdbtnExternalUser);
 		rdbtnExternalUser.setBounds(187, 147, 121, 22);
 		contentPanel.add(rdbtnExternalUser);
 		
